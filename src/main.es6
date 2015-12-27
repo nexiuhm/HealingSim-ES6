@@ -1,5 +1,5 @@
-﻿import Boot from 'src/states/Boot';
-import AddonManager from 'src/gameObjects/addonManager';
+﻿import Boot from './states/boot';
+import AddonManager from './gameObjects/addonManager';
 // Phaser is imported globally in the html file
 
 window.onload = () => {

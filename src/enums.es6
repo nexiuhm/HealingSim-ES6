@@ -1,6 +1,6 @@
-﻿//import Enum from "es6-enum" // Node module
+﻿import Enum from "./util/enum";
  
-/*
+
 
 const stat_e = Enum("STRENGHT", "AGILITY", "STAMINA", "INTELLECT", "SPIRIT");
 const class_e = Enum("WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "DEATHKNIGHT", "SHAMAN", "MAGE", "WARLOCK", "MONK", "DRUID");
@@ -30,12 +30,19 @@ const combat_rating_e = Enum(
     "RATING_MOD_VERS_HEAL",
     "RATING_MOD_VERS_MITIG"
 );
-*/
 
-/* todo
-const player_level = Enum("MIN" = 1, "MAX" = 100, "DEFAULT" = 100 };
-const player_race { MIN = 7, MAX = 21 };
-const player_class { MIN = 0, MAX = 10 };
-const raid_size { GROUP = 5, TENMAN = 10, TWENTYFIVEMAN = 25 };
-const player_role { TANK, HEALER, DAMAGE };
-*/
+const player_role = Enum("TANK", "HEALER", "DAMAGE");
+
+
+const PLAYER_LEVEL_MIN = 1;
+const PLAYER_LEVEL_MAX = 100;
+const PLAYER_RACE_MIN = 7;
+const PLAYER_RACE_MAX = 21;
+const PLAYER_CLASS_MIN = 0;
+const PLAYER_CLASS_MAX = 10;
+
+const RAIDSIZE_TWENTYFIVEMAN = 25;
+const RAIDSIZE_TENMAN = 10;
+const RAIDSIZE_GROUP = 5;
+
+export {stat_e,class_e,race_e,combat_rating_e,PLAYER_LEVEL_MAX, PLAYER_LEVEL_MIN, PLAYER_RACE_MAX, PLAYER_RACE_MIN, PLAYER_CLASS_MAX, PLAYER_CLASS_MIN,RAIDSIZE_GROUP, RAIDSIZE_TENMAN, RAIDSIZE_TWENTYFIVEMAN};

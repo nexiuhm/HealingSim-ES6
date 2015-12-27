@@ -1,93 +1,100 @@
-﻿class Raid {
-    players = [];
-    events;
-    deathCounter: number;
-    raidSize: number;
+﻿import * as e from "../enums";
 
-    constructor(eventManager: EventManager) {
+
+export default class Raid {
+
+    constructor(eventManager) {
         this.events = eventManager;
+        this.players = [];
+        this.raidSize = null;
     }
 
-    setRaidSize(size: raid_size) {
+
+    setRaidSize(size) {
         this.raidSize = size;
     }
 
-    getPlayerList(): any {
+    getPlayerList() {
         return this.players;
     }
 
     generateTestPlayers() {
-        var numberOfTanks: number;
-        var numberOfHealers: number;
-        var numberOfDps: number;
+        let numberOfTanks, numberOfHealers, numberOfDps;
+        let validTankClasses = [0, 1, 5, 9, 10];
+        let validHealerClasses = [1, 4, 6, 9, 10];
 
-        if (this.raidSize == raid_size.GROUP) {
+        if (this.raidSize == e.raid_size.GROUP) {
             numberOfTanks = 1;
             numberOfHealers = 0;
             numberOfDps = 3;
         }
 
-        if (this.raidSize == raid_size.TENMAN) {
+        if (this.raidSize == e.raid_size.TENMAN) {
             numberOfTanks = 2;
             numberOfHealers = 2;
             numberOfDps = 5;
         }
 
-        if (this.raidSize == raid_size.TWENTYFIVEMAN) {
+        if (this.raidSize == e.raid_size.TWENTYFIVEMAN) {
             numberOfTanks = 2;
             numberOfHealers = 5;
             numberOfDps = 17;
         }
-       
-        var validTankClasses: number[] = [0, 1, 5, 9, 10];
-        var validHealerClasses: number[] = [1, 4, 6, 9, 10];
-             
+
+
+
         while (numberOfTanks--) {
             var classs = validTankClasses[game.rnd.integerInRange(0, validTankClasses.length - 1)],
                 race = game.rnd.integerInRange(player_race.MIN, player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
-     
+
             var unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
 
         while (numberOfHealers--) {
             var classs = validHealerClasses[game.rnd.integerInRange(0, validHealerClasses.length - 1)],
-                race = game.rnd.integerInRange(player_race.MIN, player_race.MAX),
+                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
- 
+
             var unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
-       
+
         while (numberOfDps--) {
             var classs = game.rnd.integerInRange(player_class.MIN, player_class.MAX),
                 race = game.rnd.integerInRange(player_race.MIN, player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
-            
+
             var unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
     }
 
-    addPlayer(unit: Player) {
+
+    /**
+     * Add a player to the raidgroup
+     * @param {Object(Player)} unit
+     */
+
+    addPlayer(unit) {
         this.players.push(unit);
     }
-  
+
     // When you create a unit you also have to pass them a reference to the event manager, so they know how to communicate events.
-    createUnit(classs, race, level, name) { 
+    createUnit(classs, race, level, name) {
 
         // Check if a valid "level" is chosen;
-        if (level < player_level.MIN || level > player_level.MAX)
-            level = player_level.DEFAULT;
+        if (level < e.PLAYER_LEVEL_MIN || level > e.PLAYER_LEVEL_MAX)
+            level = e.PLAYER_LEVEL_MAX;
         else
             level = level;
 
         switch (classs) {
-            case class_e.PRIEST:
+            case e.class_e.PRIEST:
                 return new Priest.Priest(race, level, name, this.events);
                 break;
 
@@ -118,11 +125,16 @@
 
         function bossSpike() {
             var massiveBlow = game.rnd.between(330000, 340900);
-           
-            tank.recive_damage({ amount: massiveBlow });
-            offTank.recive_damage({ amount: massiveBlow / 2 });
+
+            tank.recive_damage({
+                amount: massiveBlow
+            });
+            offTank.recive_damage({
+                amount: massiveBlow / 2
+            });
 
         }
+
         function bossSwing() {
             var bossSwing = game.rnd.between(70000, 90900);
             var bossSwingCriticalHit = Math.random();
@@ -130,15 +142,21 @@
             // 20% chance to critt. Experimental.
             if (bossSwingCriticalHit < 0.85)
                 bossSwing *= 1.5;
-            tank.recive_damage({ amount: bossSwing });
-            offTank.recive_damage({ amount: bossSwing / 2 });
+            tank.recive_damage({
+                amount: bossSwing
+            });
+            offTank.recive_damage({
+                amount: bossSwing / 2
+            });
 
         }
 
         function bossAoEDamage() {
-            for (var i = 0; i < this.players.length-1; i++) {
+            for (var i = 0; i < this.players.length - 1; i++) {
                 var player = this.players[i]
-                player.recive_damage({ amount: 170000 });
+                player.recive_damage({
+                    amount: 170000
+                });
             }
         }
 
@@ -146,18 +164,21 @@
             var i = game.rnd.between(0, this.players.length - 1);
             for (; i < this.players.length; i++) {
                 var player = this.players[i];
-                player.recive_damage({ amount: game.rnd.between(85555, 168900) })
+                player.recive_damage({
+                    amount: game.rnd.between(85555, 168900)
+                })
             }
         }
 
         function singelTargetDamage() {
-            var random = game.rnd.between(2, this.players.length-1);
-            this.players[random].recive_damage({ amount: game.rnd.between(100000, 150000) });
+            var random = game.rnd.between(2, this.players.length - 1);
+            this.players[random].recive_damage({
+                amount: game.rnd.between(100000, 150000)
+            });
         }
 
-        function bossEncounterAdds() {
-        }
- 
+        function bossEncounterAdds() {}
+
         function raidHealing() {
 
             for (var i = 0; i < this.players.length; i++) {
@@ -168,7 +189,7 @@
                 // 20% chance to critt. Experimental.
                 if (criticalHeal < 0.8)
                     incomingHeal *= 1.5;
-                
+
                 player.setHealth(incomingHeal);
             }
         }

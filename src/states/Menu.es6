@@ -1,4 +1,4 @@
-export default class MainMenu  {
+export default class MainMenu {
     // Show HTML form on screen. 
     // - Options to select player, difficulty,--
     // Validate/Process form input
@@ -18,10 +18,11 @@ export default class MainMenu  {
             this.add.bitmapText(0, lineHeight * i + lineHeight, game.defaultFont, "## Addon Name: " + addonList[i][0] + "  ## Enabled : " + addonList[i][1], 14);
         }
     }
-    
+
     handleKeyBoardInput(keyCode) {
-        console.log("starting main");
-    // On any input, the game is started
-    game.state.start("Play");
-}
+        console.log("startingds main");
+
+        // On any input, the game is started
+        this.game.state.start("Play");
+    }
 }

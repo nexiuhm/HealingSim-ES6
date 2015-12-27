@@ -1,18 +1,17 @@
-﻿
-/* Adding some extra functionality to the Phaser.Group  */
+﻿/* Adding some extra functionality to the Phaser.Group  */
 /* Todo: add interaction functionality to the frame */
 
-class Frame extends Phaser.Graphics  {
-    _width = 200;
-    _height = 100;
-    
-    constructor(parent){   
+class Frame extends Phaser.Graphics {
+
+    constructor(parent) {
         super(game);
         if (parent === 'UIParent')
             MAINSTATE.UIParent.addChild(this);
         else
             parent.addChild(this);
 
+        this._width = 200;
+        this._height = 100;
 
     }
 
@@ -22,7 +21,7 @@ class Frame extends Phaser.Graphics  {
 
 
     };
-    setPos(x:number, y:number) {
+    setPos(x, y) {
         this.x = x;
         this.y = y;
     };
@@ -30,39 +29,38 @@ class Frame extends Phaser.Graphics  {
 }
 
 
-class StatusBar extends Frame  {
-    // defaults
-    private _animationStyle = "Linear";
-    private _animationDuration = 200;
+class StatusBar extends Frame {
 
-    
-    // displayObjects
-    private _bar: PIXI.Graphics;
-    private _texture: Phaser.Sprite;
-    //
-    private _minValue = 0;
-    private _maxValue = 1;
-    private _currentValue = 1;
-     
-    constructor(parent, width,height) {
-       
+
+
+    constructor(parent, width, height) {
+
         super(parent);
-        
         this.setPos(0, 0);
         this.setSize(width, height);
-        
-        // The moving bar
-        this._bar = new Phaser.Graphics(game,0,0);
+
+        // defaults. How fast the bar should react to change in values.
+        this._animationStyle = "Linear";
+        this._animationDuration = 200;
+
+        // The values for the bar. Default is full bar.
+        this._minValue = 0;
+        this._maxValue = 1;
+        this._currentValue = 1;
+
+        // Init bar
+        this._bar = new Phaser.Graphics(game, 0, 0);
         this._bar.beginFill(0xFFFFFF);
         this._bar.drawRect(0, 0, this._width, this._height);
         this._bar.endFill();
-        
+
         // Works as both a texture and a background
         this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
         this._texture.width = this._width;
         this._texture.height = this._height;
         this._texture.blendMode = PIXI.blendModes.MULTIPLY;
 
+        // Add children to parent frame
         this.addChild(this._bar);
         this.addChild(this._texture);
 
@@ -70,15 +68,22 @@ class StatusBar extends Frame  {
 
     };
 
-    private _updateBarWidth() {
+    /**
+     * [_updateBarWidth description]
+     * @return {[type]} [description]
+     * @private
+     */
+    _updateBarWidth() {
         var barWidthInPixels = Math.round((this._currentValue / this._maxValue) * this._width);
         if (barWidthInPixels <= 0) // something bad happens if it goes to 0
             barWidthInPixels = 1;
 
         if (!this._animationDuration)
             this._bar.width = barWidthInPixels;
-        else 
-            game.add.tween(this._bar).to({ width: barWidthInPixels }, this._animationDuration, this._animationStyle, true);
+        else
+            game.add.tween(this._bar).to({
+                width: barWidthInPixels
+            }, this._animationDuration, this._animationStyle, true);
     }
 
     /* Public interface below */
@@ -88,7 +93,7 @@ class StatusBar extends Frame  {
 
     }
 
-    setValues(min, max, current){
+    setValues(min, max, current) {
         this._maxValue = max;
         this._minValue = min;
         this._currentValue = current;
@@ -99,12 +104,12 @@ class StatusBar extends Frame  {
         // 
     }
 
-    setMaxValue(newMaxValue: number) {
+    setMaxValue(newMaxValue) {
         this._maxValue = newMaxValue;
         this._updateBarWidth();
     }
 
-    setValue(newValue:number, duration?) {
+    setValue(newValue, duration) {
         if (newValue <= this._minValue)
             this._currentValue = this._minValue;
         else if (newValue > this._maxValue)
@@ -115,40 +120,31 @@ class StatusBar extends Frame  {
             this._animationDuration = duration;
         else if (duration === 0)
             this._animationDuration = duration;
-       
+
         this._updateBarWidth();
-       
+
     }
 }
 
 class UnitFrame extends Frame {
-  
-    unit: Player;
-    config = {
-        powerBarEnabled: false,
-        playerNameEnabled: true,
-        enemyColor: 0xFA1A16,
-        powerBarColor: 0x00D1FF,
-    };
-    // DisplayObjects
-    healthBar: StatusBar;
-    absorbBar: StatusBar; // ## TODO ##
-    powerBar: StatusBar;
-    playerName: Phaser.BitmapText;
-    manaPercentText: Phaser.BitmapText;
-    dragonTexture: Phaser.Sprite;
 
-    constructor(parent, unit: Player, width?, height?) {
+    constructor(parent, unit, width, height) {
         super(parent);
+        if (width) this._width = width;
+        if (height) this._height = height;
 
         this.unit = unit;
-        if (width)  this._width = width;
-        if (height) this._height = height;
+        this.config = {
+            powerBarEnabled: false,
+            playerNameEnabled: true,
+            enemyColor: 0xFA1A16,
+            powerBarColor: 0x00D1FF
+        };
 
         this._init();
     }
-    
-    private _init() {
+
+    _init() {
         // Clear all displayObjects from the Frame
         this.removeChildren();
         this.events.destroy();
@@ -160,26 +156,28 @@ class UnitFrame extends Frame {
         }
 
         if (this.unit.isEnemy) {
-            this.dragonTexture = new Phaser.Sprite(game, this._width-55, -10, "elite");
+            this.dragonTexture = new Phaser.Sprite(game, this._width - 55, -10, "elite");
             this.addChild(this.dragonTexture);
         }
 
         this.inputEnabled = true;
-        this.events.onInputDown.add(() => { setTarget(this.unit) });
+        this.events.onInputDown.add(() => {
+            setTarget(this.unit)
+        });
 
         this._initEventListeners();
     }
 
-    private _initEventListeners() {
+    _initEventListeners() {
         //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
         MAINSTATE.events.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
         MAINSTATE.events.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
-        if(this.config.powerBarEnabled)
+        if (this.config.powerBarEnabled)
             MAINSTATE.events.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
 
     }
 
-    private _initPowerBar() {
+    _initPowerBar() {
         this.powerBar = new StatusBar(this, this._width, this._height / 4);
         this.powerBar.setValues(0, this.unit.getMana(), this.unit.getMaxMana());
         this.powerBar.setPos(0, this.healthBar._height);
@@ -191,8 +189,8 @@ class UnitFrame extends Frame {
         this.powerBar.addChild(this.manaPercentText);
 
     }
-    
-    private _initHealthBar() {
+
+    _initHealthBar() {
         this.healthBar = new StatusBar(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4));
         this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId));
         this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth());
@@ -206,7 +204,7 @@ class UnitFrame extends Frame {
         }
     }
 
-    private _onUnitHealthChanged(unit) {
+    _onUnitHealthChanged(unit) {
         if (unit != this.unit)
             return;
         this.healthBar.setValue(this.unit.getCurrentHealth());
@@ -215,25 +213,25 @@ class UnitFrame extends Frame {
             this.healthBar.setColor(red)
         } */
     }
-    private _onUnitMaxHealthChanged(unit) {
+    _onUnitMaxHealthChanged(unit) {
         this.healthBar.setMaxValue(this.unit.getMaxHealth());
     }
-    private _onUnitManaChanged(unit) {
-  
+    _onUnitManaChanged(unit) {
+
         this.powerBar.setValue(this.unit.getMana());
 
-        var mana_pct = ( this.unit.getMana() / this.unit.getMaxMana() ) * 100;
+        var mana_pct = (this.unit.getMana() / this.unit.getMaxMana()) * 100;
         this.manaPercentText.setText(mana_pct.toFixed(1) + "%");
     }
 
-    private _onUnitRoleChanged() {
+    _onUnitRoleChanged() {
         // set role icon
     }
 
-    private _onUnitDeath(unit) {
+    _onUnitDeath(unit) {
         if (unit != this.unit)
             return;
-        this.healthBar.setValue(0);        
+        this.healthBar.setValue(0);
     }
 
     /* Public interface below */
@@ -243,7 +241,7 @@ class UnitFrame extends Frame {
         this._init();
     }
 
-    setUnit(unit: Player) {
+    setUnit(unit) {
         this.unit = unit;
         this._init();
     }
@@ -252,32 +250,23 @@ class UnitFrame extends Frame {
 
 /* ## TODO ## fix fix */
 class StatusIcon {
-    x = 500;
-    y = 500;
-    w = 50;
-    h = 50;
-    spellid;
-    playState: States.Play;
 
-    // Display objects
-    container: Phaser.Group;
-    spellIcon: Phaser.Image;
-    texture;
-    cd_overlay: Phaser.Graphics;
 
-    // Angle needs to be an object so we can pass it as a reference to the onGameUpdate callback
-    angle = {current: 0}; 
-    animTween: Phaser.Tween;
 
-    constructor(state: States.Play, spellid, x, y ) {
+    constructor(state, spellid, x, y) {
 
         this.playState = state;
-        this.spellid = spellid; 
+        this.spellid = spellid;
 
         this.container = this.playState.add.group();
         this.container.x = x;
         this.container.y = y;
+        this.w = 50;
+        this.h = 50;
 
+        this.angle = {
+            current: 0
+        };
 
         // Spell icon
         var spellIcon = this.playState.add.image(0, 0, "icon_" + spellid);
@@ -288,7 +277,7 @@ class StatusIcon {
         var mask = this.playState.add.graphics(this.container.x, this.container.y);
         mask.beginFill(0xFFFFFF);
         mask.drawRect(0, 0, this.w, this.h);
-        
+
         // Cooldown overlay arc init
         this.cd_overlay = this.playState.add.graphics(0, 0);
         this.cd_overlay.alpha = 0.8;
@@ -304,20 +293,22 @@ class StatusIcon {
         this.playState.events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
     }
 
-    private _onCooldownStart(event) {
-       
+    _onCooldownStart(event) {
+
         // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
         if (event.spellid != this.spellid)
-           return;
+            return;
         // Create a timer that updates a variable locally.
         this.cd_overlay.alpha = 0.8;
-        this.animTween = game.add.tween(this.angle).to({ current: 270 }, event.cooldownLenght,undefined, true);
+        this.animTween = game.add.tween(this.angle).to({
+            current: 270
+        }, event.cooldownLenght, undefined, true);
         // Hook the update cooldown arc to the main loop
         this.playState.events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
 
     }
 
-    private _onCooldownEnded(event) {
+    _onCooldownEnded(event) {
         if (event.spellid != this.spellid)
             return;
         //this.hook.remove();
@@ -326,10 +317,10 @@ class StatusIcon {
         this.animTween.stop();
         this.angle.current = 0;
         this.cd_overlay.clear();
-    
+
     }
 
-    private _updateCooldownArc() {
+    _updateCooldownArc() {
 
         this.cd_overlay.clear();
         this.cd_overlay.beginFill(0x323232);
@@ -345,7 +336,7 @@ class StatusIcon {
 
 // Addon API function toolkit ## mainstate isnt supposed to be global etc. This is just temp
 
-function setTarget(unit){
+function setTarget(unit) {
     MAINSTATE.player.setTarget(unit);
 }
 

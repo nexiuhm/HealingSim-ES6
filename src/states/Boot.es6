@@ -1,5 +1,7 @@
 /* The Boot state configures the Phaser this.game engine and loads assets */
-import mainMenu from "./Menu"
+import menuState from "./menu";
+import playState from "./play";
+
 export default class Boot {
 	// Load assets
     preload() {
@@ -31,13 +33,14 @@ export default class Boot {
         this.game.tweens.frameBased = true;
 
         // Register games-states
-        this.game.state.add("MainMenu", mainMenu);
-        //this.game.state.add("Play", States.Play);
+        this.game.state.add("MainMenu", menuState);
+        this.game.state.add("Play", playState);
         
         // Setup the keyboard for the this.game.
         this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
         // Start the post-boot state
         this.game.state.start("MainMenu");
+
     }
 
 }
