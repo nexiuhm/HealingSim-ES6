@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "babel-brunch": "^6.0.0",
+    "brunch": "^2.0.4",
+    "javascript-brunch": "^1.8.0",
+     "babel-preset-es2015": "^6.3.13"
+  }
+
+}
