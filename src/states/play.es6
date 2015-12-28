@@ -1,13 +1,16 @@
-﻿var MAINSTATE; // ## Temporary - used for testing ##
+﻿
+
 import EventManager from "../gameObjects/eventManager";
 import Raid from "../gameObjects/raid";
 import * as e from "../enums";
+import * as data from "../gameObjects/data";
 export default class Play {
 
 
     create() {
-        MAINSTATE = this; // ## Temporary ##
-
+        window.MAINSTATE = this;
+        _G.MAINSTATE = this; // ## Temporary: making this state accesible globally ##
+        console.log(e.stat_e.AGILITY);
         // Start the world fade-in effect
         this.world.alpha = 0;
         this.add.tween(this.world).to({alpha: 1}, 4000, Phaser.Easing.Cubic.InOut, true);
@@ -22,7 +25,7 @@ export default class Play {
         this.raid = new Raid(this.events); 
 
         // Set raid size
-        this.raid.setRaidSize(e.RAID_SIZE_TWENTYFIVEMAN);
+        this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);
 
         // Init player. ## TODO ##: Use data from selection screen. See Phaser documentation for sending args between states?
         this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF, 100, "Player");
@@ -36,8 +39,8 @@ export default class Play {
         this.raid.startTestDamage();
 
         // Testing cooldown frames
-        var test = new StatusIcon(this, 5, 500, 500);
-        var test2 = new StatusIcon(this, 2, 555, 500);
+        //var test = new StatusIcon(this, 5, 500, 500);
+        //var test2 = new StatusIcon(this, 2, 555, 500);
     }
 
     update() {

@@ -1,30 +1,14 @@
 ﻿//* Base spell class that all spells extends upon //
 
-class SpellBase {
+export default class SpellBase {
     //### Spell data ###
-    
-    powerType: string;
-    powerCost: number;
-    school: string;
-    name: string;
-    base_casttime: number;
-    base_cooldown: number;
-    spellid: number;
-    // #################
-    player: Player;
-    target: Player;
-    //### Timers ######
-    current_cast: Phaser.TimerEvent;
-    current_cooldown: Phaser.TimerEvent;
-    //### Bools ######
-    onCooldown: boolean = false;
-    hasCooldown = false;
-    hasPowerCost = false;
-    isInstant = false;
+
 
     constructor(spelldata, player) {
         // The player that owns the spell
         this.player = player;
+
+        //### Spell data ###
         this.powerCost = spelldata.resource_cost;
         this.powerType = spelldata.resourceType;
         this.school = spelldata.school;
@@ -33,14 +17,14 @@ class SpellBase {
         this.base_casttime = spelldata.casttime;
         this.base_cooldown = spelldata.cooldown;
 
-        if (this.base_cooldown > 0)
-            this.hasCooldown = true;
+        //### Bools ###
+        this.hasCooldown = this.base_cooldown ? true : false;
+        this.hasPowerCost = this.powerCost ? true : false;
+        this.isInstant = this.base_casttime ? false : true;
+        this.onCooldown = false;
 
-        if (this.powerCost > 0)
-            this.hasPowerCost = true;
-
-        if (this.base_casttime == 0)
-            this.isInstant = true;
+        //Storage for timers ( Phaser.Timer )
+        var current_cast, current_cooldown;
     }
 
     use() {
@@ -89,7 +73,7 @@ class SpellBase {
         this.player.events.ON_COOLDOWN_START.dispatch({ cooldownLenght: cd, spellid:this.spellid });
     }
 
-   can_use():boolean {
+   can_use(){
         if (this.onCooldown) {
             return false;
         }

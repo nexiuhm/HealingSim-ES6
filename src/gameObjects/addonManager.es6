@@ -4,6 +4,8 @@
  * this information as a reaction to events the game creates
  */
 
+import * as api from "./addon_api/api";
+
 export default class AddonManager {
     constructor(){
         this._addons = {};
@@ -40,8 +42,9 @@ export default class AddonManager {
     loadEnabledAddons() {
         for (var addon in this._addons) {
             var currentAddon = this._addons[addon];
-            if (currentAddon.enabled)
-                currentAddon.code();
+            console.log(currentAddon);
+            if (currentAddon.enabled && currentAddon.code)
+                currentAddon.code(api);
         }
     }
 }

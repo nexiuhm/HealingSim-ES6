@@ -1,5 +1,7 @@
 ﻿import * as e from "../enums";
-
+import Player from "./player";
+import Priest from "./class_modules/priest";
+import * as data from "./data";
 
 export default class Raid {
 
@@ -19,10 +21,11 @@ export default class Raid {
     }
 
     generateTestPlayers() {
-        let numberOfTanks, numberOfHealers, numberOfDps;
-        let validTankClasses = [0, 1, 5, 9, 10];
-        let validHealerClasses = [1, 4, 6, 9, 10];
-
+        var  game = _G.MAINSTATE.game;
+        var numberOfTanks, numberOfHealers, numberOfDps;
+        var validTankClasses = [0, 1, 5, 9, 10];
+        var validHealerClasses = [1, 4, 6, 9, 10];
+        console.log(e.raid_size.GROUP);
         if (this.raidSize == e.raid_size.GROUP) {
             numberOfTanks = 1;
             numberOfHealers = 0;
@@ -45,7 +48,7 @@ export default class Raid {
 
         while (numberOfTanks--) {
             var classs = validTankClasses[game.rnd.integerInRange(0, validTankClasses.length - 1)],
-                race = game.rnd.integerInRange(player_race.MIN, player_race.MAX),
+                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
@@ -64,11 +67,11 @@ export default class Raid {
         }
 
         while (numberOfDps--) {
-            var classs = game.rnd.integerInRange(player_class.MIN, player_class.MAX),
-                race = game.rnd.integerInRange(player_race.MIN, player_race.MAX),
+            var classs = game.rnd.integerInRange(e.player_class.MIN, e.player_class.MAX),
+                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
-
+                console.log("HERE");
             var unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
@@ -95,7 +98,7 @@ export default class Raid {
 
         switch (classs) {
             case e.class_e.PRIEST:
-                return new Priest.Priest(race, level, name, this.events);
+                return new Priest(race, level, name, this.events);
                 break;
 
             default:
@@ -108,6 +111,7 @@ export default class Raid {
     startTestDamage() {
         var tank = this.players[0];
         var offTank = this.players[1];
+        var game = _G.MAINSTATE.game;
 
         // --- Create some random damage for testing purposes ----
         var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
@@ -120,7 +124,7 @@ export default class Raid {
         var spike = setInterval(bossSpike.bind(this), 8000);
 
         function gain_mana() {
-            MAINSTATE.player.gain_resource(1600);
+            _G.MAINSTATE.player.gain_resource(1600);
         }
 
         function bossSpike() {

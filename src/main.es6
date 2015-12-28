@@ -2,6 +2,7 @@
 import AddonManager from './gameObjects/addonManager';
 // Phaser is imported globally in the html file
 
+window._G = {}; // we use this to contain "global vars"
 window.onload = () => {
 
     /**
@@ -9,8 +10,8 @@ window.onload = () => {
 	 * Automatically starts the boot state aka. application entry point
 	 * Note: No need to save this var since all the states have access to it anyway
 	 */
-
-    new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, Boot);
+    window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, Boot);
+    // object to store global vars. much like in LUA
 
 
 };

@@ -1,4 +1,4 @@
-﻿namespace Addons {
+﻿
     export function Debug() {
         var player:Player = localPlayer();
         MAINSTATE.events.GAME_LOOP_RENDER.add(() => onRenderGame());
@@ -32,4 +32,3 @@
             game.debug.text("Mouse Y: " + game.input.y, 20, 420, '#00FF96');
         }
     }
-}
