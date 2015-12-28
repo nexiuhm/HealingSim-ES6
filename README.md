@@ -8,13 +8,14 @@ Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 u
 https://nodejs.org/en/
 
 #####Install dependencies
+ Nagivate to the project folder. And execute the following commands:
 ```
 npm install -g brunch bower
 npm install
 bower install
 ```
-- All *".es6"* files in *"/app/"* will be compiled to *"/public/js/main.js"*
-- All files in *"/app/static/"* will be copied to *"/public/"* folder
+- All *".es6"* files in *"/src/"* will be compiled to *"/public/js/main.js"*
+- All files in *"/static/"* will be copied to *"/public/"* folder
 
 #####Start the watcher & localhost server
 ```
