@@ -6,13 +6,14 @@ import playState from "./play";
 import castFrame from "../addons/castbar";
 import raidFrames from "../addons/raid_frame";
 import debugAddon from "../addons/debug";
-
+import bossTimers from "../addons/timers";
 // addons
 
 
 export default class Boot {
     // Load assets
     preload() {
+        this.game.load.video('win', './assets/video/win.mp4');
         this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
         this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
         this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
@@ -47,15 +48,15 @@ export default class Boot {
         // Register addons to the game
         game.addons.add("Cast Bar 0.1", castFrame);
         game.addons.add("Raid Frames 0.1", raidFrames);
-        //game.addons.add("Unit Frames 0.1", UnitFrames);
-         game.addons.add("Debug", debugAddon);
-        //game.addons.add("BossTimers", Addons.BigWigs);
+        //game.addons.add("Unit Frames 0.1", unitFrames);
+        game.addons.add("Debug", debugAddon);
+        game.addons.add("BossTimers", bossTimers);
 
 
         // Setup the keyboard for the this.game.
         this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
         // Start the post-boot state
-        this.game.state.start("MainMenu");
+        this.game.state.start("Play"); // Go directly to playstate when developing
 
     }
 

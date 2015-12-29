@@ -11,7 +11,6 @@ window.onload = () => {
 	 * Note: No need to save this var since all the states have access to it anyway
 	 */
     window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, Boot);
-    // object to store global vars. much like in LUA
 
 
 };
@@ -27,6 +26,7 @@ class PhaserCustomGame extends Phaser.Game {
     constructor(width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
         super(width,height,renderer,parent,state,transparent,antialias,physicsConfig);
         this.addons = new AddonManager();
+        this.version = 0.1;
     }
 
     /**

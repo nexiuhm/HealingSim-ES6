@@ -109,7 +109,64 @@
   require._cache = cache;
   globals.require = require;
 })();
-require.register("src/addons/castbar", function(exports, require, module) {
+/* jshint ignore:start */
+(function() {
+  var WebSocket = window.WebSocket || window.MozWebSocket;
+  var br = window.brunch = (window.brunch || {});
+  var ar = br['auto-reload'] = (br['auto-reload'] || {});
+  if (!WebSocket || ar.disabled) return;
+
+  var cacheBuster = function(url){
+    var date = Math.round(Date.now() / 1000).toString();
+    url = url.replace(/(\&|\\?)cacheBuster=\d*/, '');
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') +'cacheBuster=' + date;
+  };
+
+  var browser = navigator.userAgent.toLowerCase();
+  var forceRepaint = ar.forceRepaint || browser.indexOf('chrome') > -1;
+
+  var reloaders = {
+    page: function(){
+      window.location.reload(true);
+    },
+
+    stylesheet: function(){
+      [].slice
+        .call(document.querySelectorAll('link[rel=stylesheet]'))
+        .filter(function(link) {
+          var val = link.getAttribute('data-autoreload');
+          return link.href && val != 'false';
+        })
+        .forEach(function(link) {
+          link.href = cacheBuster(link.href);
+        });
+
+      // Hack to force page repaint after 25ms.
+      if (forceRepaint) setTimeout(function() { document.body.offsetHeight; }, 25);
+    }
+  };
+  var port = ar.port || 9485;
+  var host = br.server || window.location.hostname || 'localhost';
+
+  var connect = function(){
+    var connection = new WebSocket('ws://' + host + ':' + port);
+    connection.onmessage = function(event){
+      if (ar.disabled) return;
+      var message = event.data;
+      var reloader = reloaders[message] || reloaders.page;
+      reloader();
+    };
+    connection.onerror = function(){
+      if (connection.readyState) connection.close();
+    };
+    connection.onclose = function(){
+      window.setTimeout(connect, 1000);
+    };
+  };
+  connect();
+})();
+/* jshint ignore:end */
+;require.register("src/addons/castbar", function(exports, require, module) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -120,9 +177,7 @@ exports.default = CastFrame;
 // $ = the api we inject into addowns from addonManager
 
 function CastFrame($) {
-    console.log($);
     // quick dirty fix
-    var game = _G.MAINSTATE.game;
     var events = _G.MAINSTATE.events;
 
     var config = {
@@ -225,7 +280,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = RaidFrame;
 function RaidFrame($) {
-    var game = _G.MAINSTATE.game;
+
     var unitFrames = [];
     var config = {
         spacing: 2,
@@ -238,7 +293,7 @@ function RaidFrame($) {
     //this.raidFrame.inputEnabled = true;
     //this.raidFrame.input.enableDrag();
 
-    (function () {
+    {
         // Anonymous namespace, since we dont want to pollute this function scope
         var MAX_GROUPS = 5;
         var MAX_PLAYERS_PER_GROUP = 5;
@@ -257,7 +312,7 @@ function RaidFrame($) {
                 unitFrames.push(unitFrame);
             }
         }
-    })(); // -- END --
+    } // -- END --
 
     /* Position parent frame base on how big the raid got */
 
@@ -268,6 +323,58 @@ function RaidFrame($) {
             y: -800
         }, 1550 + player * 10, Phaser.Easing.Elastic.Out, true, undefined, undefined, true);
     }
+}
+});
+
+;require.register("src/addons/timers", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = BigWigs;
+function BigWigs($) {
+    var timerTestData = {
+        ability: "Heavy Aoe",
+        repeats: true,
+        time: 30000
+    };
+
+    var timers = [];
+    // Container for timers
+    var timerFrame = new $.Frame("UIParent");
+    timerFrame.setPos(1200, 900);
+
+    /*    Create test timer, when timers are finished they will either be removed or respawn  */
+    {
+        // -- SCOPE / ANONYMOUS NAMESPACE?--
+
+        var timer = new $.StatusBar(timerFrame, 200, 25);
+        timer.setValues(0, 1, 0);
+        timer.setValue(0, 30000);
+        timer.setColor(0xFF5E14);
+
+        var ability_name = new Phaser.BitmapText(game, 5, 5, "myriad", timerTestData.ability, 14);
+        timer.addChild(ability_name);
+
+        timers.push(timer);
+    } // -- END --
+    /* ## Todo ## make this kind of functionalty so addons can hook some script to the game loop.
+           
+    timer.setScript("OnLoop", function () {          
+                
+    if (bar.timeLeft < config.emphasizedTime)
+                    
+             // move bar to BigTimerFrame
+        
+    }); */
+
+    //## Called when a timerbar is removed or added.
+
+    function rearrangeBars() {
+        // loop through all "timers" and rearrange to anchor.
+
+    };
 }
 });
 
@@ -327,7 +434,9 @@ exports.raid_size = raid_size;
 });
 
 require.register("src/gameObjects/addonManager", function(exports, require, module) {
-"use strict";
+'use strict';
+
+var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * Addon manager class - To keep things consistant it works a lot like how Phaser deals with states.
@@ -339,7 +448,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _api = require("./addon_api/api");
+var _api = require('./addon_api/api');
 
 var api = _interopRequireWildcard(_api);
 
@@ -351,44 +460,99 @@ var AddonManager = (function () {
     function AddonManager() {
         _classCallCheck(this, AddonManager);
 
-        this._addons = {};
+        this._addons = new Map();
     }
 
     _createClass(AddonManager, [{
-        key: "add",
+        key: 'add',
         value: function add(addonKey, addonCode) {
-            this._addons[addonKey] = { name: addonKey, enabled: true, code: addonCode };
+            this._addons.set(addonKey, {
+                name: addonKey,
+                enabled: true,
+                execute: addonCode
+            });
         }
     }, {
-        key: "disableAddon",
+        key: 'disableAddon',
         value: function disableAddon(addonKey) {
-            if (!this._addons[addonKey]) return;else this._addons[addonKey].enabled = false;
+            if (!this._addons.has(addonKey)) return;else this._addons[addonKey].enabled = false;
         }
     }, {
-        key: "enableAddon",
+        key: 'enableAddon',
         value: function enableAddon(addonKey) {
-            if (!this._addons[addonKey]) return;else this._addons[addonKey].enabled = true;
+            if (!this._addons.has(addonKey)) return;else this._addons[addonKey].enabled = true;
         }
     }, {
-        key: "getListOfAddons",
+        key: 'getListOfAddons',
         value: function getListOfAddons() {
             var addonList = [];
-            for (var addon in this._addons) {
-                var currentAddon = this._addons[addon];
-                addonList.push([currentAddon.name, currentAddon.enabled]);
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this._addons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var addon = _step.value;
+
+                    addonList.push([addon.name, addon.enabled]);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
             }
+
             return addonList;
         }
 
         /* Loads addons to the current context/state*/
 
     }, {
-        key: "loadEnabledAddons",
-        value: function loadEnabledAddons() {
-            for (var addon in this._addons) {
-                var currentAddon = this._addons[addon];
-                console.log(currentAddon);
-                if (currentAddon.enabled && currentAddon.code) currentAddon.code(api);
+        key: 'loadEnabledAddons',
+        value: function loadEnabledAddons(state) {
+
+            var apiFunctions = api.init(state);
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = this._addons[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var _step2$value = _slicedToArray(_step2.value, 2);
+
+                    var _ = _step2$value[0];
+                    var addon = _step2$value[1];
+
+                    if (addon.enabled) {
+                        try {
+                            addon.execute(apiFunctions);
+                        } catch (error) {
+                            console.log('%c %c %c Error executing addon: %c ' + addon.name + '\n%c ' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
             }
         }
     }]);
@@ -403,9 +567,9 @@ exports.default = AddonManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
-exports.localPlayer = exports.getGroupMembers = exports.setTarget = exports.StatusIcon = exports.UnitFrame = exports.StatusBar = exports.Frame = undefined;
+exports.init = init;
 
 var _frame = require("./frame");
 
@@ -425,30 +589,51 @@ var _status_icon2 = _interopRequireDefault(_status_icon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Addon API function toolkit ## mainstate isnt supposed to be global etc. This is just temp
+var game = null;
+var player = null;
+var raid = null;
 
 function setTarget(unit) {
-    _G.MAINSTATE.player.setTarget(unit);
+	player.setTarget(unit);
 }
 
 function getGroupMembers() {
-    return _G.MAINSTATE.raid.getPlayerList();
+	return raid.getPlayerList();
 }
 
 function localPlayer() {
-    return _G.MAINSTATE.player;
+	return player;
 }
 
-exports.Frame = _frame2.default;
-exports.StatusBar = _status_bar2.default;
-exports.UnitFrame = _unit_frame2.default;
-exports.StatusIcon = _status_icon2.default;
-exports.setTarget = setTarget;
-exports.getGroupMembers = getGroupMembers;
-exports.localPlayer = localPlayer;
+/**
+ * Inits the api. Returns an object containing api functions based on which state is provided.
+ * @param  {Phaser.State}
+ * @return {[type]}       [description]
+ */
+function init(state) {
+
+	game = state.game;
+	player = state.player;
+	raid = state.raid;
+
+	var api = {
+		"getGroupMembers": getGroupMembers,
+		"localPlayer": localPlayer,
+		"setTarget": setTarget,
+		"Frame": _frame2.default,
+		"UnitFrame": _unit_frame2.default,
+		"StatusIcon": _status_icon2.default,
+		"StatusBar": _status_bar2.default
+
+	};
+
+	api.freeze; // Might aswell freeze the object cause it should never change
+
+	return api;
+}
 });
 
-require.register("src/gameObjects/addon_api/frame", function(exports, require, module) {
+;require.register("src/gameObjects/addon_api/frame", function(exports, require, module) {
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -785,6 +970,7 @@ var UnitFrame = (function (_Frame) {
         };
 
         _this._init();
+
         return _this;
     }
 
@@ -1116,7 +1302,7 @@ function getArmoryData(name,realm){ //validate realm <- Check out regular expres
 //validate name
 var blizz_api_url="https://eu.api.battle.net";var api_key='fhmzgc7qd2ypwdg87t2j8nuv6pxcbftb'; // risky to have it here ? :p
 //  var data = $.getJSON(blizz_api_url + '/wow/character/' + realm + '/' + name + '?fields=stats&locale=en_GB&apikey=' + api_key);
-}function classBaseStats(_class,level,stat){console.table(arguments);return class_base_stats_by_level[_class+1][level-1][stat];}function getKeyBindings(){return keybindings;}function raceBaseStats(race,stat){return race_base_stats[race][stat];}function getHpPerStamina(level){return hp_per_stamina[level-1];}function getCombatRating(rating,level){return 1/combat_rating_multipliers[rating][level-1];}function getManaByClass(_class,level){return mana_by_class[_class+1][level-1];} /* Future goal:  grab spelldata from simcraft files.  */function getSpellData(spell){return spelldata[spell];}function getClassColor(classId){var classColors=[0xC79C6E,0xF58CBA,0xABD473,0xFFF569,0xFFFFFF,0xC41F3B,0x0070DE,0x69CCF0,0x9482C9,0x00FF96,0xFF7D0A];return classColors[classId]||classColors[1];}function generatePlayerName(){var nameList="Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu";var nameArray=nameList.split(",");var random_index=game.rnd.between(0,nameArray.length-1);return nameArray[random_index];} // Needed for some spells. ## Todo: fix this function since its been moved from player
+}function classBaseStats(_class,level,stat){return class_base_stats_by_level[_class+1][level-1][stat];}function getKeyBindings(){return keybindings;}function raceBaseStats(race,stat){return race_base_stats[race][stat];}function getHpPerStamina(level){return hp_per_stamina[level-1];}function getCombatRating(rating,level){return 1/combat_rating_multipliers[rating][level-1];}function getManaByClass(_class,level){return mana_by_class[_class+1][level-1];} /* Future goal:  grab spelldata from simcraft files.  */function getSpellData(spell){return spelldata[spell];}function getClassColor(classId){var classColors=[0xC79C6E,0xF58CBA,0xABD473,0xFFF569,0xFFFFFF,0xC41F3B,0x0070DE,0x69CCF0,0x9482C9,0x00FF96,0xFF7D0A];return classColors[classId]||classColors[1];}function generatePlayerName(){var nameList="Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu";var nameArray=nameList.split(",");var random_index=game.rnd.between(0,nameArray.length-1);return nameArray[random_index];} // Needed for some spells. ## Todo: fix this function since its been moved from player
 function findMostInjuredPlayers(players){var playersInRange=this.instance.getPlayerList();var lowestPlayers=playersInRange.sort(function sortByDamageTakenAscending(player,otherPlayer){if(player.getHealthPercent()<otherPlayer.getHealthPercent()){return -1;}else if(player.getHealthPercent()>otherPlayer.getHealthPercent()){return 1;}else {return 0;}});return lowestPlayers.slice(0,players);}var keybindings={ // keybinding         // spellbidning
 ACTION_BUTTON_1:{key:'1',spell:'flash_of_light'},ACTION_BUTTON_2:{key:'2',spell:'power_word_shield'},ACTION_BUTTON_3:{key:'3',spell:'clarity_of_will'},ACTION_BUTTON_4:{key:'4',spell:'power_infusion'}};var spelldata={flash_of_light:{casttime:1500,resource_cost:6700,resource_type:"mana",cooldown:0,name:'Flash Of Light',id:1},power_infusion:{casttime:0,resource_cost:5000,resource_type:"mana",cooldown:30000,name:'Power Infusion',id:2},healing_surge:{casttime:1500,resource_cost:10000,resource_type:"mana",cooldown:0,name:'Flash Of Light',id:3},chain_heal:{casttime:1620,resource_cost:10,resource_type:"mana",cooldown:0,name:'Chain Heal',id:4},power_word_shield:{casttime:0,resource_cost:4400,resource_type:"mana",cooldown:6000,name:'Power Word Shield',id:5},clarity_of_will:{casttime:2500,resource_cost:3300,resource_type:"mana",cooldown:0,name:'Clarity Of Will',id:6}};var combat_rating_multipliers=[ // Dodge rating multipliers
 [0.796153187751770,0.796153068542480,0.796153068542480,0.796153068542480,0.796152949333191,0.796153128147125,0.796153068542480,0.796153008937836,0.796153008937836,0.796153128147125,1.194230556488037,1.592308163642883,1.990383744239807,2.388461112976074,2.786539077758789,3.184616804122925,3.582691907882690,3.980769872665405,4.378847599029541,4.776922702789307,5.175000190734863,5.573077678680420,5.971153259277344,6.369230747222900,6.767308712005615,7.165383338928223,7.563461780548096,7.961538791656494,8.359617233276367,8.757692337036133,9.155768394470215,9.553846359252930,9.951925277709961,10.350001335144043,10.748077392578125,11.146153450012207,11.544231414794922,11.942307472229004,12.340383529663086,12.738462448120117,13.136537551879883,13.534616470336914,13.932692527770996,14.330768585205078,14.728846549987793,15.126925468444824,15.524999618530273,15.923077583312988,16.321155548095703,16.719230651855469,17.117309570312500,17.515386581420898,17.913461685180664,18.311538696289062,18.709617614746094,19.107692718505859,19.505769729614258,19.903848648071289,20.301923751831055,20.700000762939453,20.924497604370117,21.198993682861328,21.473491668701172,21.747989654541016,22.022485733032227,22.296983718872070,22.571481704711914,22.845977783203125,23.120475769042969,23.394973754882812,23.669469833374023,23.943967819213867,24.218465805053711,24.492961883544922,24.767459869384766,25.041955947875977,25.316453933715820,25.590951919555664,25.865447998046875,26.139945983886719,27.206882476806641,28.273818969726562,28.807287216186523,28.807287216186523,29.340755462646484,30.407691955566406,31.474628448486328,32.541564941406250,33.608501434326172,34.000000000000000,40.000000000000000,47.000000000000000,56.000000000000000,65.000000000000000,75.000000000000000,89.000000000000000,103.000000000000000,121.000000000000000,140.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000], // Parry rating multipliers
@@ -1876,7 +2062,7 @@ var Raid = (function () {
                     race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
                     level = 100,
                     name = data.generatePlayerName();
-                console.log("HERE");
+
                 var unit = this.createUnit(classs, race, level, name);
                 this.addPlayer(unit);
             }
@@ -2195,7 +2381,6 @@ window.onload = function () {
     * Note: No need to save this var since all the states have access to it anyway
     */
     window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, _boot2.default);
-    // object to store global vars. much like in LUA
 };
 
 /**
@@ -2212,6 +2397,7 @@ var PhaserCustomGame = (function (_Phaser$Game) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PhaserCustomGame).call(this, width, height, renderer, parent, state, transparent, antialias, physicsConfig));
 
         _this.addons = new _addonManager2.default();
+        _this.version = 0.1;
         return _this;
     }
 
@@ -2265,6 +2451,10 @@ var _debug = require("../addons/debug");
 
 var _debug2 = _interopRequireDefault(_debug);
 
+var _timers = require("../addons/timers");
+
+var _timers2 = _interopRequireDefault(_timers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2281,6 +2471,7 @@ var Boot = (function () {
 
         // Load assets
         value: function preload() {
+            this.game.load.video('win', './assets/video/win.mp4');
             this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
             this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
             this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
@@ -2321,14 +2512,14 @@ var Boot = (function () {
             // Register addons to the game
             game.addons.add("Cast Bar 0.1", _castbar2.default);
             game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-            //game.addons.add("Unit Frames 0.1", UnitFrames);
+            //game.addons.add("Unit Frames 0.1", unitFrames);
             game.addons.add("Debug", _debug2.default);
-            //game.addons.add("BossTimers", Addons.BigWigs);
+            game.addons.add("BossTimers", _timers2.default);
 
             // Setup the keyboard for the this.game.
             this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
             // Start the post-boot state
-            this.game.state.start("MainMenu");
+            this.game.state.start("Play"); // Go directly to playstate when developing
         }
     }]);
 
@@ -2457,7 +2648,7 @@ var Play = (function () {
             this.raid.addPlayer(this.player);
 
             // Load enabled addons
-            this.game.addons.loadEnabledAddons();
+            this.game.addons.loadEnabledAddons(this);
 
             // Start the boss/healing simulator
             this.raid.startTestDamage();

@@ -41,17 +41,20 @@ export default class AddonManager {
     }
 
     /* Loads addons to the current context/state*/
-    loadEnabledAddons() {
-        for (let [_, addon] of this._addons) {
+    loadEnabledAddons(state) {
 
+       let apiFunctions = api.init(state);
+        for (let [_, addon] of this._addons) {
             if (addon.enabled) {
                 try {
-                    addon.execute(api);
-                } catch (e) {
-                    console.log('%c %c %c Error executing addon:' + e,
+                    addon.execute(apiFunctions);
+                } catch (error) {
+                    console.log('%c %c %c Error executing addon: %c ' + addon.name + '\n%c '+ error.stack,
                         'background: #9854d8',
                         'background: #6c2ca7',
-                        'color: #ffffff; background: #450f78;');
+                        'color: #ffffff; background: #450f78;',
+                        'color: #450f78; ',
+                        'color: #ce0000;');
                 }
             }
         }

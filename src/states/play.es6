@@ -33,7 +33,7 @@ export default class Play {
         this.raid.addPlayer(this.player);
 
         // Load enabled addons
-        this.game.addons.loadEnabledAddons();
+        this.game.addons.loadEnabledAddons(this);
 
         // Start the boss/healing simulator
         this.raid.startTestDamage();

@@ -71,7 +71,7 @@ export default class Raid {
                 race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
-                console.log("HERE");
+
             var unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }

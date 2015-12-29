@@ -1,4 +1,4 @@
-﻿namespace Addons {
+﻿
     export function BigWigs() {
 
         var timers: Array<StatusBar> = [],
@@ -42,6 +42,3 @@
         };
 
     }
-
-}
-

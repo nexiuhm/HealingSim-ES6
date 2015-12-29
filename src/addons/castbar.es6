@@ -2,9 +2,7 @@
                     // $ = the api we inject into addowns from addonManager
 
 export default function CastFrame($) {
-    console.log($);
     // quick dirty fix
-    var game = _G.MAINSTATE.game;
     var events = _G.MAINSTATE.events;
 
     var config = {

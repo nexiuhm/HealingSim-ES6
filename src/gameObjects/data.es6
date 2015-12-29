@@ -9,7 +9,6 @@ function getArmoryData(name, realm) {
 }
 
 export function classBaseStats(_class, level, stat) {
-    console.table(arguments);
     return class_base_stats_by_level[(_class + 1)][(level - 1)][stat];
 }
 
