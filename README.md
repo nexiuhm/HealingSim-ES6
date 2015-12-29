@@ -7,6 +7,10 @@ Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 u
 #####Install Node
 https://nodejs.org/en/
 
+#####Install Python (required for some node packages we use)
+https://www.python.org/
+Make sure to add python to PATH - this is disabled by default in the installer. (Windows)
+
 #####Install dependencies
  Nagivate to the project folder. And execute the following commands:
 ```
