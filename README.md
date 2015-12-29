@@ -7,9 +7,8 @@ Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 u
 #####Install Node
 https://nodejs.org/en/
 
-#####Install Python (required for some node packages we use)
-https://www.python.org/ ( v2.7.10 or higher. v 3.x.x is not supported  )
-- Make sure to add python to PATH - this is disabled by default in the installer. (Windows)
+#####Install required programs to run node-gyp
+- See their installation guide here: https://www.npmjs.com/package/node-gyp
 
 #####Install dependencies
  - Nagivate to the project folder. And execute the following commands:
