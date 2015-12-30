@@ -2,13 +2,12 @@
 import AddonManager from './gameObjects/addonManager';
 // Phaser is imported globally in the html file
 
-window._G = {}; // we use this to contain "global vars"
 window.onload = () => {
 
     /**
 	 * Force WEBGL since Canvas doesnt support textures / blendmodes which we use heavily.
 	 * Automatically starts the boot state aka. application entry point
-	 * Note: No need to save this var since all the states have access to it anyway
+	 * Note: Maybe there is no need to have game global since all the states have access to it anyway?
 	 */
     window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, Boot);
 

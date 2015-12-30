@@ -3,7 +3,6 @@
 
 export default function CastFrame($) {
     // quick dirty fix
-    var events = _G.MAINSTATE.events;
 
     var config = {
         castSuccessColor: 0x00FF96,
@@ -16,12 +15,12 @@ export default function CastFrame($) {
 
 
     // Frame
-    var castingFrame = new $.Frame("UIParent");
+    var castingFrame = new $.newFrame("UIParent");
     castingFrame.setPos(500 - config.width / 2, 500 - config.height / 2);
     castingFrame.alpha = 0;
 
     // Status bar
-    var cast_bar = new $.StatusBar(castingFrame, config.width, config.height)
+    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height)
     cast_bar.setValues(0, 1, 0);
 
     // Status text #todo#
@@ -30,8 +29,8 @@ export default function CastFrame($) {
     cast_bar.addChild(spell_name);
 
     // Listen to player events ## todo ## remove global MAINSTATE
-    events.UNIT_STARTS_SPELLCAST.add((s, t) => onUnitStartCast(s, t));
-    events.UNIT_FINISH_SPELLCAST.add(() => onUnitFinishCast());
+    $.events.UNIT_STARTS_SPELLCAST.add((s, t) => onUnitStartCast(s, t));
+    $.events.UNIT_FINISH_SPELLCAST.add(() => onUnitFinishCast());
 
 
     function onUnitStartCast(castTime, spellName) {

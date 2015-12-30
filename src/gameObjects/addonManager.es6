@@ -5,7 +5,7 @@
  */
 
 import * as api from "./addon_api/api";
-
+import {printPrettyError} from "../util";
 export default class AddonManager {
     constructor() {
         this._addons = new Map();
@@ -49,12 +49,7 @@ export default class AddonManager {
                 try {
                     addon.execute(apiFunctions);
                 } catch (error) {
-                    console.log('%c %c %c Error executing addon: %c ' + addon.name + '\n%c '+ error.stack,
-                        'background: #9854d8',
-                        'background: #6c2ca7',
-                        'color: #ffffff; background: #450f78;',
-                        'color: #450f78; ',
-                        'color: #ce0000;');
+                    printPrettyError("Executing addon failed: " + addon.name,error);
                 }
             }
         }

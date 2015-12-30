@@ -3,12 +3,8 @@ export default class Frame extends Phaser.Graphics {
 
     constructor(parent) {
         super(game);
-        if (parent === 'UIParent') {
-            var UIParent = _G.MAINSTATE.UIParent; //quick fix, fix later
-            UIParent.addChild(this);
-        } else {
-            parent.addChild(this);
-        }
+        parent.addChild(this);
+        
 
         this._width = 200;
         this._height = 100;

@@ -7,6 +7,7 @@ import castFrame from "../addons/castbar";
 import raidFrames from "../addons/raid_frame";
 import debugAddon from "../addons/debug";
 import bossTimers from "../addons/timers";
+import unitFrames from "../addons/unit_frames";
 // addons
 
 
@@ -48,7 +49,7 @@ export default class Boot {
         // Register addons to the game
         game.addons.add("Cast Bar 0.1", castFrame);
         game.addons.add("Raid Frames 0.1", raidFrames);
-        //game.addons.add("Unit Frames 0.1", unitFrames);
+        game.addons.add("Unit Frames 0.1", unitFrames);
         game.addons.add("Debug", debugAddon);
         game.addons.add("BossTimers", bossTimers);
 

@@ -1,6 +1,6 @@
-﻿export default class EventManager {
+﻿export default class EventManager {    // ### TODO ### 
 
-    // ### TODO ### 
+
     constructor() {
         this.GAME_LOOP_UPDATE = new Phaser.Signal();
         this.TARGET_CHANGE_EVENT = new Phaser.Signal();

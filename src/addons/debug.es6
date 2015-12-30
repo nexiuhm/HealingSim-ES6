@@ -1,6 +1,6 @@
 ﻿export default function Debug($) {
     var player = $.localPlayer();
-    MAINSTATE.events.GAME_LOOP_RENDER.add(() => onRenderGame());
+    $.events.GAME_LOOP_RENDER.add(() => onRenderGame());
 
     function onRenderGame() {
         game.debug.text(game.time.fps + " FPS", 20, 20, '#00FF96');

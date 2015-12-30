@@ -8,9 +8,7 @@ export default class Play {
 
 
     create() {
-        window.MAINSTATE = this;
-        _G.MAINSTATE = this; // ## Temporary: making this state accesible globally ##
-        console.log(e.stat_e.AGILITY);
+
         // Start the world fade-in effect
         this.world.alpha = 0;
         this.add.tween(this.world).to({alpha: 1}, 4000, Phaser.Easing.Cubic.InOut, true);
@@ -22,7 +20,7 @@ export default class Play {
         this.UIParent = this.add.group(this.world);
 
         this.events = new EventManager(); 
-        this.raid = new Raid(this.events); 
+        this.raid = new Raid(this); 
 
         // Set raid size
         this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);

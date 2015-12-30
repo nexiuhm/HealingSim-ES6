@@ -7,14 +7,14 @@
 
     var timers =  [];
     // Container for timers
-    var timerFrame = new $.Frame("UIParent");
+    var timerFrame = new $.newFrame("UIParent");
     timerFrame.setPos(1200, 900);
 
 
     /*    Create test timer, when timers are finished they will either be removed or respawn  */
     { // -- SCOPE / ANONYMOUS NAMESPACE?-- 
 
-        let timer = new $.StatusBar(timerFrame, 200, 25);
+        let timer = new $.newStatusBar(timerFrame, 200, 25);
         timer.setValues(0, 1, 0);
         timer.setValue(0, 30000);
         timer.setColor(0xFF5E14);

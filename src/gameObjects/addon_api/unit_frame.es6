@@ -3,11 +3,12 @@ import StatusBar from "./status_bar";
 import * as data from "../data";
 export default class UnitFrame extends Frame {
 
-    constructor(parent, unit, width, height) {
+    constructor(parent, unit, width, height, _events) {
         super(parent);
         if (width) this._width = width;
         if (height) this._height = height;
 
+        this.events = _events;
         this.unit = unit;
         this.config = {
             powerBarEnabled: false,
@@ -23,7 +24,6 @@ export default class UnitFrame extends Frame {
     _init() {
         // Clear all displayObjects from the Frame
         this.removeChildren();
-        this.events.destroy();
 
         this._initHealthBar();
 
@@ -36,20 +36,16 @@ export default class UnitFrame extends Frame {
             this.addChild(this.dragonTexture);
         }
 
-        this.inputEnabled = true;
-        this.events.onInputDown.add(() => {
-            setTarget(this.unit)
-        });
 
         this._initEventListeners();
     }
 
     _initEventListeners() {
         //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
-        MAINSTATE.events.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
-        MAINSTATE.events.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
+        this.events.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
+        this.events.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
         if (this.config.powerBarEnabled)
-            MAINSTATE.events.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
+            this.events.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
 
     }
 

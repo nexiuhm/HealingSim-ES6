@@ -2,11 +2,12 @@
 import Player from "./player";
 import Priest from "./class_modules/priest";
 import * as data from "./data";
+import {rng} from "../util";
 
 export default class Raid {
 
-    constructor(eventManager) {
-        this.events = eventManager;
+    constructor(state) {
+        this.events = state.events;
         this.players = [];
         this.raidSize = null;
     }
@@ -21,11 +22,10 @@ export default class Raid {
     }
 
     generateTestPlayers() {
-        var  game = _G.MAINSTATE.game;
         var numberOfTanks, numberOfHealers, numberOfDps;
         var validTankClasses = [0, 1, 5, 9, 10];
         var validHealerClasses = [1, 4, 6, 9, 10];
-        console.log(e.raid_size.GROUP);
+
         if (this.raidSize == e.raid_size.GROUP) {
             numberOfTanks = 1;
             numberOfHealers = 0;
@@ -47,8 +47,8 @@ export default class Raid {
 
 
         while (numberOfTanks--) {
-            var classs = validTankClasses[game.rnd.integerInRange(0, validTankClasses.length - 1)],
-                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            var classs = validTankClasses[rng.integerInRange(0, validTankClasses.length - 1)],
+                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
@@ -57,8 +57,8 @@ export default class Raid {
         }
 
         while (numberOfHealers--) {
-            var classs = validHealerClasses[game.rnd.integerInRange(0, validHealerClasses.length - 1)],
-                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            var classs = validHealerClasses[rng.integerInRange(0, validHealerClasses.length - 1)],
+                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
@@ -67,8 +67,8 @@ export default class Raid {
         }
 
         while (numberOfDps--) {
-            var classs = game.rnd.integerInRange(e.player_class.MIN, e.player_class.MAX),
-                race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            var classs = rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
+                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
@@ -111,7 +111,6 @@ export default class Raid {
     startTestDamage() {
         var tank = this.players[0];
         var offTank = this.players[1];
-        var game = _G.MAINSTATE.game;
 
         // --- Create some random damage for testing purposes ----
         var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
@@ -124,11 +123,12 @@ export default class Raid {
         var spike = setInterval(bossSpike.bind(this), 8000);
 
         function gain_mana() {
-            _G.MAINSTATE.player.gain_resource(1600);
+            var player = this.players[this.players.length-1];
+            player.gain_resource(1600);
         }
 
         function bossSpike() {
-            var massiveBlow = game.rnd.between(330000, 340900);
+            var massiveBlow = rng.between(330000, 340900);
 
             tank.recive_damage({
                 amount: massiveBlow
@@ -140,7 +140,7 @@ export default class Raid {
         }
 
         function bossSwing() {
-            var bossSwing = game.rnd.between(70000, 90900);
+            var bossSwing = rng.between(70000, 90900);
             var bossSwingCriticalHit = Math.random();
 
             // 20% chance to critt. Experimental.
@@ -165,19 +165,19 @@ export default class Raid {
         }
 
         function raidDamage() {
-            var i = game.rnd.between(0, this.players.length - 1);
+            var i = rng.between(0, this.players.length - 1);
             for (; i < this.players.length; i++) {
                 var player = this.players[i];
                 player.recive_damage({
-                    amount: game.rnd.between(85555, 168900)
-                })
+                    amount: rng.between(85555, 168900)
+                });
             }
         }
 
         function singelTargetDamage() {
-            var random = game.rnd.between(2, this.players.length - 1);
+            var random = rng.between(2, this.players.length - 1);
             this.players[random].recive_damage({
-                amount: game.rnd.between(100000, 150000)
+                amount: rng.between(100000, 150000)
             });
         }
 
@@ -187,7 +187,7 @@ export default class Raid {
 
             for (var i = 0; i < this.players.length; i++) {
                 var player = this.players[i];
-                var incomingHeal = player.getCurrentHealth() + game.rnd.between(80000, 120000);
+                var incomingHeal = player.getCurrentHealth() + rng.between(80000, 120000);
                 var criticalHeal = Math.random();
 
                 // 20% chance to critt. Experimental.
@@ -200,7 +200,7 @@ export default class Raid {
 
         function applyAbsorb() {
             //this.player.setAbsorb(game.rnd.between(115, 88900));
-            tank.setHealth(tank.getCurrentHealth() + game.rnd.between(10000, 38900));
+            tank.setHealth(tank.getCurrentHealth() + rng.between(10000, 38900));
         }
 
         // Legge inn AI shields på raidmembers.

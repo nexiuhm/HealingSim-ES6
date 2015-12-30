@@ -7,7 +7,7 @@
         unitFrameHeight: 40
     };
 
-    var raidFrame = new $.Frame("UIParent");
+    var raidFrame = $.newFrame("UIParent");
     raidFrame.setPos(800,400);
     //this.raidFrame.inputEnabled = true;
     //this.raidFrame.input.enableDrag();
@@ -19,10 +19,10 @@
 
         for (var g = 0; g < MAX_GROUPS; g++) {
             for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
-                var unit = playersInRaid[(g * 5) + p];
+                let unit = playersInRaid[(g * 5) + p];
                 if (!unit) break;
 
-                var unitFrame = new $.UnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
+                let unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
                 if (unit === $.localPlayer())
                     unitFrame.togglePowerBar();
 

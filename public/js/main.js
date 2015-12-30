@@ -178,7 +178,6 @@ exports.default = CastFrame;
 
 function CastFrame($) {
     // quick dirty fix
-    var events = _G.MAINSTATE.events;
 
     var config = {
         castSuccessColor: 0x00FF96,
@@ -190,12 +189,12 @@ function CastFrame($) {
     var castingUnit = $.localPlayer();
 
     // Frame
-    var castingFrame = new $.Frame("UIParent");
+    var castingFrame = new $.newFrame("UIParent");
     castingFrame.setPos(500 - config.width / 2, 500 - config.height / 2);
     castingFrame.alpha = 0;
 
     // Status bar
-    var cast_bar = new $.StatusBar(castingFrame, config.width, config.height);
+    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height);
     cast_bar.setValues(0, 1, 0);
 
     // Status text #todo#
@@ -204,10 +203,10 @@ function CastFrame($) {
     cast_bar.addChild(spell_name);
 
     // Listen to player events ## todo ## remove global MAINSTATE
-    events.UNIT_STARTS_SPELLCAST.add(function (s, t) {
+    $.events.UNIT_STARTS_SPELLCAST.add(function (s, t) {
         return onUnitStartCast(s, t);
     });
-    events.UNIT_FINISH_SPELLCAST.add(function () {
+    $.events.UNIT_FINISH_SPELLCAST.add(function () {
         return onUnitFinishCast();
     });
 
@@ -237,7 +236,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = Debug;
 function Debug($) {
     var player = $.localPlayer();
-    MAINSTATE.events.GAME_LOOP_RENDER.add(function () {
+    $.events.GAME_LOOP_RENDER.add(function () {
         return onRenderGame();
     });
 
@@ -288,7 +287,7 @@ function RaidFrame($) {
         unitFrameHeight: 40
     };
 
-    var raidFrame = new $.Frame("UIParent");
+    var raidFrame = $.newFrame("UIParent");
     raidFrame.setPos(800, 400);
     //this.raidFrame.inputEnabled = true;
     //this.raidFrame.input.enableDrag();
@@ -304,12 +303,12 @@ function RaidFrame($) {
                 var unit = playersInRaid[g * 5 + p];
                 if (!unit) break;
 
-                var unitFrame = new $.UnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
-                if (unit === $.localPlayer()) unitFrame.togglePowerBar();
+                var _unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
+                if (unit === $.localPlayer()) _unitFrame.togglePowerBar();
 
-                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+                _unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
 
-                unitFrames.push(unitFrame);
+                unitFrames.push(_unitFrame);
             }
         }
     } // -- END --
@@ -342,14 +341,14 @@ function BigWigs($) {
 
     var timers = [];
     // Container for timers
-    var timerFrame = new $.Frame("UIParent");
+    var timerFrame = new $.newFrame("UIParent");
     timerFrame.setPos(1200, 900);
 
     /*    Create test timer, when timers are finished they will either be removed or respawn  */
     {
         // -- SCOPE / ANONYMOUS NAMESPACE?--
 
-        var timer = new $.StatusBar(timerFrame, 200, 25);
+        var timer = new $.newStatusBar(timerFrame, 200, 25);
         timer.setValues(0, 1, 0);
         timer.setValue(0, 30000);
         timer.setColor(0xFF5E14);
@@ -375,6 +374,47 @@ function BigWigs($) {
         // loop through all "timers" and rearrange to anchor.
 
     };
+}
+});
+
+;require.register("src/addons/unit_frames", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = UnitFrames;
+
+var _player = require("../gameObjects/player");
+
+var _player2 = _interopRequireDefault(_player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function UnitFrames($) {
+
+    // Local player
+    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50);
+    playerFrame.togglePowerBar();
+    playerFrame.setPos(500, 800);
+    //playerFrame.input.enableDrag();
+
+    // Target
+    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50);
+    targetFrame.setPos(1000, 800);
+    $.events.TARGET_CHANGE_EVENT.add(function () {
+        return targetFrame.setUnit(localPlayer().target);
+    });
+
+    // Boss
+    var testBoss = new _player2.default(4, 4, 100, "Ragnaros", $.events, true);
+    setInterval(function () {
+        testBoss.recive_damage({
+            amount: 5250
+        });
+    }, 1200);
+    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50);
+    bossFrame.setPos(1200, 500);
 }
 });
 
@@ -434,7 +474,7 @@ exports.raid_size = raid_size;
 });
 
 require.register("src/gameObjects/addonManager", function(exports, require, module) {
-'use strict';
+"use strict";
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
@@ -448,9 +488,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _api = require('./addon_api/api');
+var _api = require("./addon_api/api");
 
 var api = _interopRequireWildcard(_api);
+
+var _util = require("../util");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -464,7 +506,7 @@ var AddonManager = (function () {
     }
 
     _createClass(AddonManager, [{
-        key: 'add',
+        key: "add",
         value: function add(addonKey, addonCode) {
             this._addons.set(addonKey, {
                 name: addonKey,
@@ -473,17 +515,17 @@ var AddonManager = (function () {
             });
         }
     }, {
-        key: 'disableAddon',
+        key: "disableAddon",
         value: function disableAddon(addonKey) {
             if (!this._addons.has(addonKey)) return;else this._addons[addonKey].enabled = false;
         }
     }, {
-        key: 'enableAddon',
+        key: "enableAddon",
         value: function enableAddon(addonKey) {
             if (!this._addons.has(addonKey)) return;else this._addons[addonKey].enabled = true;
         }
     }, {
-        key: 'getListOfAddons',
+        key: "getListOfAddons",
         value: function getListOfAddons() {
             var addonList = [];
             var _iteratorNormalCompletion = true;
@@ -517,7 +559,7 @@ var AddonManager = (function () {
         /* Loads addons to the current context/state*/
 
     }, {
-        key: 'loadEnabledAddons',
+        key: "loadEnabledAddons",
         value: function loadEnabledAddons(state) {
 
             var apiFunctions = api.init(state);
@@ -536,7 +578,7 @@ var AddonManager = (function () {
                         try {
                             addon.execute(apiFunctions);
                         } catch (error) {
-                            console.log('%c %c %c Error executing addon: %c ' + addon.name + '\n%c ' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
+                            (0, _util.printPrettyError)("Executing addon failed: " + addon.name, error);
                         }
                     }
                 }
@@ -567,7 +609,7 @@ exports.default = AddonManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 exports.init = init;
 
@@ -589,52 +631,80 @@ var _status_icon2 = _interopRequireDefault(_status_icon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var game = null;
-var player = null;
-var raid = null;
+var game = undefined,
+    player = undefined,
+    raid = undefined,
+    state = undefined;
 
 function setTarget(unit) {
-	player.setTarget(unit);
+    player.setTarget(unit);
 }
 
 function getGroupMembers() {
-	return raid.getPlayerList();
+    return raid.getPlayerList();
 }
 
 function localPlayer() {
-	return player;
+    return player;
+}
+
+function newFrame(parent) {
+    if (parent === "UIParent") {
+        parent = state.UIParent ? state.UIParent : state.world;
+    }
+
+    return new _frame2.default(parent);
+}
+
+function newUnitFrame(parent, unit, width, height) {
+    if (parent === "UIParent") {
+        parent = state.UIParent ? state.UIParent : state.world;
+    }
+    console.log(state.events);
+    return new _unit_frame2.default(parent, unit, width, height, state.events);
+}
+
+function newStatusBar(parent, width, height) {
+    if (parent === "UIParent") {
+        parent = state.UIParent ? state.UIParent : state.world;
+    }
+    return new _status_bar2.default(parent, width, height);
 }
 
 /**
- * Inits the api. Returns an object containing api functions based on which state is provided.
+ * Inits the addon api. Returns an object containing api functions based on which state is provided.
  * @param  {Phaser.State}
  * @return {[type]}       [description]
  */
-function init(state) {
+function init(_state) {
 
-	game = state.game;
-	player = state.player;
-	raid = state.raid;
+    game = _state.game;
+    player = _state.player;
+    raid = _state.raid;
+    state = _state;
 
-	var api = {
-		"getGroupMembers": getGroupMembers,
-		"localPlayer": localPlayer,
-		"setTarget": setTarget,
-		"Frame": _frame2.default,
-		"UnitFrame": _unit_frame2.default,
-		"StatusIcon": _status_icon2.default,
-		"StatusBar": _status_bar2.default
+    console.log(state);
 
-	};
+    var api = {
+        "getGroupMembers": getGroupMembers,
+        "localPlayer": localPlayer,
+        "setTarget": setTarget,
+        "newFrame": newFrame,
+        "newUnitFrame": newUnitFrame,
+        "StatusIcon": _status_icon2.default,
+        "newStatusBar": newStatusBar,
+        "events": state.events // TODO: Better way
 
-	api.freeze; // Might aswell freeze the object cause it should never change
+    };
 
-	return api;
+    api.freeze; // Might aswell freeze the object cause it should never change.
+
+    return api;
 }
 });
 
 ;require.register("src/gameObjects/addon_api/frame", function(exports, require, module) {
-'use strict';
+"use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -656,12 +726,7 @@ var Frame = (function (_Phaser$Graphics) {
 
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Frame).call(this, game));
 
-        if (parent === 'UIParent') {
-            var UIParent = _G.MAINSTATE.UIParent; //quick fix, fix later
-            UIParent.addChild(_this);
-        } else {
-            parent.addChild(_this);
-        }
+        parent.addChild(_this);
 
         _this._width = 200;
         _this._height = 100;
@@ -670,13 +735,13 @@ var Frame = (function (_Phaser$Graphics) {
     }
 
     _createClass(Frame, [{
-        key: 'setSize',
+        key: "setSize",
         value: function setSize(width, height) {
             this._width = width;
             this._height = height;
         }
     }, {
-        key: 'setPos',
+        key: "setPos",
         value: function setPos(x, y) {
             this.x = x;
             this.y = y;
@@ -953,7 +1018,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var UnitFrame = (function (_Frame) {
     _inherits(UnitFrame, _Frame);
 
-    function UnitFrame(parent, unit, width, height) {
+    function UnitFrame(parent, unit, width, height, _events) {
         _classCallCheck(this, UnitFrame);
 
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnitFrame).call(this, parent));
@@ -961,6 +1026,7 @@ var UnitFrame = (function (_Frame) {
         if (width) _this._width = width;
         if (height) _this._height = height;
 
+        _this.events = _events;
         _this.unit = unit;
         _this.config = {
             powerBarEnabled: false,
@@ -977,11 +1043,8 @@ var UnitFrame = (function (_Frame) {
     _createClass(UnitFrame, [{
         key: "_init",
         value: function _init() {
-            var _this2 = this;
-
             // Clear all displayObjects from the Frame
             this.removeChildren();
-            this.events.destroy();
 
             this._initHealthBar();
 
@@ -994,27 +1057,22 @@ var UnitFrame = (function (_Frame) {
                 this.addChild(this.dragonTexture);
             }
 
-            this.inputEnabled = true;
-            this.events.onInputDown.add(function () {
-                setTarget(_this2.unit);
-            });
-
             this._initEventListeners();
         }
     }, {
         key: "_initEventListeners",
         value: function _initEventListeners() {
-            var _this3 = this;
+            var _this2 = this;
 
             //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
-            MAINSTATE.events.UNIT_HEALTH_CHANGE.add(function (unit) {
-                return _this3._onUnitHealthChanged(unit);
+            this.events.UNIT_HEALTH_CHANGE.add(function (unit) {
+                return _this2._onUnitHealthChanged(unit);
             });
-            MAINSTATE.events.UNIT_DEATH.add(function (unit) {
-                return _this3._onUnitDeath(unit);
+            this.events.UNIT_DEATH.add(function (unit) {
+                return _this2._onUnitDeath(unit);
             });
-            if (this.config.powerBarEnabled) MAINSTATE.events.MANA_CHANGE.add(function (unit) {
-                return _this3._onUnitManaChanged(unit);
+            if (this.config.powerBarEnabled) this.events.MANA_CHANGE.add(function (unit) {
+                return _this2._onUnitManaChanged(unit);
             });
         }
     }, {
@@ -1644,9 +1702,8 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var EventManager =
+var EventManager = // ### TODO ###
 
-// ### TODO ###
 function EventManager() {
     _classCallCheck(this, EventManager);
 
@@ -1986,6 +2043,8 @@ var _data = require("./data");
 
 var data = _interopRequireWildcard(_data);
 
+var _util = require("../util");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -1993,10 +2052,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Raid = (function () {
-    function Raid(eventManager) {
+    function Raid(state) {
         _classCallCheck(this, Raid);
 
-        this.events = eventManager;
+        this.events = state.events;
         this.players = [];
         this.raidSize = null;
     }
@@ -2014,11 +2073,10 @@ var Raid = (function () {
     }, {
         key: "generateTestPlayers",
         value: function generateTestPlayers() {
-            var game = _G.MAINSTATE.game;
             var numberOfTanks, numberOfHealers, numberOfDps;
             var validTankClasses = [0, 1, 5, 9, 10];
             var validHealerClasses = [1, 4, 6, 9, 10];
-            console.log(e.raid_size.GROUP);
+
             if (this.raidSize == e.raid_size.GROUP) {
                 numberOfTanks = 1;
                 numberOfHealers = 0;
@@ -2038,8 +2096,8 @@ var Raid = (function () {
             }
 
             while (numberOfTanks--) {
-                var classs = validTankClasses[game.rnd.integerInRange(0, validTankClasses.length - 1)],
-                    race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+                var classs = validTankClasses[_util.rng.integerInRange(0, validTankClasses.length - 1)],
+                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                     level = 100,
                     name = data.generatePlayerName();
 
@@ -2048,8 +2106,8 @@ var Raid = (function () {
             }
 
             while (numberOfHealers--) {
-                var classs = validHealerClasses[game.rnd.integerInRange(0, validHealerClasses.length - 1)],
-                    race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+                var classs = validHealerClasses[_util.rng.integerInRange(0, validHealerClasses.length - 1)],
+                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                     level = 100,
                     name = data.generatePlayerName();
 
@@ -2058,8 +2116,8 @@ var Raid = (function () {
             }
 
             while (numberOfDps--) {
-                var classs = game.rnd.integerInRange(e.player_class.MIN, e.player_class.MAX),
-                    race = game.rnd.integerInRange(e.player_race.MIN, e.player_race.MAX),
+                var classs = _util.rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
+                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                     level = 100,
                     name = data.generatePlayerName();
 
@@ -2103,7 +2161,6 @@ var Raid = (function () {
         value: function startTestDamage() {
             var tank = this.players[0];
             var offTank = this.players[1];
-            var game = _G.MAINSTATE.game;
 
             // --- Create some random damage for testing purposes ----
             var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
@@ -2116,11 +2173,12 @@ var Raid = (function () {
             var spike = setInterval(bossSpike.bind(this), 8000);
 
             function gain_mana() {
-                _G.MAINSTATE.player.gain_resource(1600);
+                var player = this.players[this.players.length - 1];
+                player.gain_resource(1600);
             }
 
             function bossSpike() {
-                var massiveBlow = game.rnd.between(330000, 340900);
+                var massiveBlow = _util.rng.between(330000, 340900);
 
                 tank.recive_damage({
                     amount: massiveBlow
@@ -2131,7 +2189,7 @@ var Raid = (function () {
             }
 
             function bossSwing() {
-                var bossSwing = game.rnd.between(70000, 90900);
+                var bossSwing = _util.rng.between(70000, 90900);
                 var bossSwingCriticalHit = Math.random();
 
                 // 20% chance to critt. Experimental.
@@ -2154,19 +2212,19 @@ var Raid = (function () {
             }
 
             function raidDamage() {
-                var i = game.rnd.between(0, this.players.length - 1);
+                var i = _util.rng.between(0, this.players.length - 1);
                 for (; i < this.players.length; i++) {
                     var player = this.players[i];
                     player.recive_damage({
-                        amount: game.rnd.between(85555, 168900)
+                        amount: _util.rng.between(85555, 168900)
                     });
                 }
             }
 
             function singelTargetDamage() {
-                var random = game.rnd.between(2, this.players.length - 1);
+                var random = _util.rng.between(2, this.players.length - 1);
                 this.players[random].recive_damage({
-                    amount: game.rnd.between(100000, 150000)
+                    amount: _util.rng.between(100000, 150000)
                 });
             }
 
@@ -2176,7 +2234,7 @@ var Raid = (function () {
 
                 for (var i = 0; i < this.players.length; i++) {
                     var player = this.players[i];
-                    var incomingHeal = player.getCurrentHealth() + game.rnd.between(80000, 120000);
+                    var incomingHeal = player.getCurrentHealth() + _util.rng.between(80000, 120000);
                     var criticalHeal = Math.random();
 
                     // 20% chance to critt. Experimental.
@@ -2188,7 +2246,7 @@ var Raid = (function () {
 
             function applyAbsorb() {
                 //this.player.setAbsorb(game.rnd.between(115, 88900));
-                tank.setHealth(tank.getCurrentHealth() + game.rnd.between(10000, 38900));
+                tank.setHealth(tank.getCurrentHealth() + _util.rng.between(10000, 38900));
             }
 
             // Legge inn AI shields på raidmembers.
@@ -2372,13 +2430,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Phaser is imported globally in the html file
 
-window._G = {}; // we use this to contain "global vars"
 window.onload = function () {
 
     /**
     * Force WEBGL since Canvas doesnt support textures / blendmodes which we use heavily.
     * Automatically starts the boot state aka. application entry point
-    * Note: No need to save this var since all the states have access to it anyway
+    * Note: Maybe there is no need to have game global since all the states have access to it anyway?
     */
     window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, _boot2.default);
 };
@@ -2455,6 +2512,10 @@ var _timers = require("../addons/timers");
 
 var _timers2 = _interopRequireDefault(_timers);
 
+var _unit_frames = require("../addons/unit_frames");
+
+var _unit_frames2 = _interopRequireDefault(_unit_frames);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2512,7 +2573,7 @@ var Boot = (function () {
             // Register addons to the game
             game.addons.add("Cast Bar 0.1", _castbar2.default);
             game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-            //game.addons.add("Unit Frames 0.1", unitFrames);
+            game.addons.add("Unit Frames 0.1", _unit_frames2.default);
             game.addons.add("Debug", _debug2.default);
             game.addons.add("BossTimers", _timers2.default);
 
@@ -2623,9 +2684,7 @@ var Play = (function () {
     _createClass(Play, [{
         key: "create",
         value: function create() {
-            window.MAINSTATE = this;
-            _G.MAINSTATE = this; // ## Temporary: making this state accesible globally ##
-            console.log(e.stat_e.AGILITY);
+
             // Start the world fade-in effect
             this.world.alpha = 0;
             this.add.tween(this.world).to({ alpha: 1 }, 4000, Phaser.Easing.Cubic.InOut, true);
@@ -2637,7 +2696,7 @@ var Play = (function () {
             this.UIParent = this.add.group(this.world);
 
             this.events = new _eventManager2.default();
-            this.raid = new _raid2.default(this.events);
+            this.raid = new _raid2.default(this);
 
             // Set raid size
             this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);
@@ -2689,105 +2748,25 @@ var Play = (function () {
 exports.default = Play;
 });
 
-;require.register("src/util/enum", function(exports, require, module) {
+;require.register("src/util", function(exports, require, module) {
 'use strict';
-
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.printPrettyError = printPrettyError;
+var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).toString()]);
 
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+/**
+ * Prints a formatted error with stacktrace to the console.
+ * @param  {[type]} errorReason [description]
+ * @param  {[type]} error       [description]
+ * @return {void}             
+ */
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function Enum() {
-  var _this = this;
-
-  if (!(this instanceof Enum)) {
-    var _args = [];
-    for (var key in arguments) {
-      _args.push(arguments[key]);
-    }
-    return new (Function.prototype.bind.apply(Enum, [null].concat(_toConsumableArray(_args))))();
-  }
-
-  var args = this.deepCopy(Array.prototype.slice.call(arguments));
-  if (Object.prototype.toString.call(args) === '[object Object]') {
-    args = this.valuesInObj(args);
-  }
-
-  args.forEach(function (prams) {
-    _this[prams] = Symbol(prams);
-  });
+function printPrettyError(errorReason, error) {
+  console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
 }
-
-Enum.prototype = {
-  constructor: Enum,
-  deepCopy: function deepCopy(target) {
-    var result = undefined;
-    var type = Object.prototype.toString.call(target);
-    var getValue = function getValue(value) {
-      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-        return undefined.deepCopy(value);
-      }
-      return value;
-    };
-    switch (type) {
-      case '[object Object]':
-        result = {};
-        for (var key in target) {
-          result[key] = getValue(target[key]);
-        }
-        break;
-      case '[object Array]':
-        result = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = target.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _step$value = _slicedToArray(_step.value, 2);
-
-            var key = _step$value[0];
-            var value = _step$value[1];
-
-            result[key] = getValue(value);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        break;
-      default:
-        result = null;
-    }
-    return result;
-  },
-  /* Untill Node 5.3.0, Object.values still not supported */
-  valuesInObj: function valuesInObj(object) {
-    var results = [];
-    for (var key in object) {
-      results.push(object[key]);
-    }
-    return results;
-  }
-};
-
-exports.default = Enum;
 });
 
 ;
