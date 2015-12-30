@@ -9,9 +9,6 @@ export default class Player {
 
         // --- Basic unit data ------------
         this.level = 100;
-        this.name;
-        this.classId;
-        this.race;
         this.isEnemy = false;
 
         // ----Players current target--------------
@@ -21,11 +18,9 @@ export default class Player {
         this.instance = null; // reference to the raid group the players are in ?
 
         // --- Players spells ---------------------
-        this.spells;
-        this.buffs;
+        this.spells = null;
+        this.buffs = null;
 
-        // --- Reference to the event manager --- //
-        this.events;
 
         this.gear_stats = {
             stamina: 7105,
@@ -177,7 +172,7 @@ export default class Player {
         return false;
     }
 
-    resistance(dmg){
+    resistance(dmg) {
         return 0;
     }
 

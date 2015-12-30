@@ -13,12 +13,12 @@
     //this.raidFrame.input.enableDrag();
 
     { // Anonymous namespace, since we dont want to pollute this function scope
-        var MAX_GROUPS = 5;
-        var MAX_PLAYERS_PER_GROUP = 5;
-        var playersInRaid = $.getGroupMembers();
+        let MAX_GROUPS = 5;
+        let MAX_PLAYERS_PER_GROUP = 5;
+        let playersInRaid = $.getGroupMembers();
 
-        for (var g = 0; g < MAX_GROUPS; g++) {
-            for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
+        for (let g = 0; g < MAX_GROUPS; g++) {
+            for (let p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
                 let unit = playersInRaid[(g * 5) + p];
                 if (!unit) break;
 

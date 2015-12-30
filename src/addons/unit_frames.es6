@@ -20,8 +20,8 @@ export default function UnitFrames($) {
             amount: 5250
         })
     }, 1200);
+    
     var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50);
     bossFrame.setPos(1200, 500);
 
 }
-

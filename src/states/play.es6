@@ -36,9 +36,7 @@ export default class Play {
         // Start the boss/healing simulator
         this.raid.startTestDamage();
 
-        // Testing cooldown frames
-        //var test = new StatusIcon(this, 5, 500, 500);
-        //var test2 = new StatusIcon(this, 2, 555, 500);
+
     }
 
     update() {

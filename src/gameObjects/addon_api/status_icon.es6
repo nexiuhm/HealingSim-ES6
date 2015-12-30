@@ -1,46 +1,41 @@
-/* ## TODO ## fix fix */
-export default class StatusIcon {
+import Frame from "./frame";
+export default class StatusIcon extends Frame {
 
 
 
-    constructor(state, spellid, x, y) {
-
-        this.playState = state;
+    constructor(parent, spellid, events) {
+        super(parent); 
         this.spellid = spellid;
+        this.events = events;
 
-        this.container = this.playState.add.group();
-        this.container.x = x;
-        this.container.y = y;
-        this.w = 50;
-        this.h = 50;
-
-        this.angle = {
+        this.cooldownOverlayAngle = {
             current: 0
         };
 
         // Spell icon
-        var spellIcon = this.playState.add.image(0, 0, "icon_" + spellid);
-        spellIcon.width = this.w;
-        spellIcon.height = this.h;
+        this.spellIcon =  new Phaser.Image(game,0, 0, "icon_" + spellid);
+        this.spellIcon.width = 50;
+        this.spellIcon.height = 50;
 
         // Alpha mask for cooldown overlay
-        var mask = this.playState.add.graphics(this.container.x, this.container.y);
+        var mask = new Phaser.Graphics(game,0, 0);
         mask.beginFill(0xFFFFFF);
-        mask.drawRect(0, 0, this.w, this.h);
+        mask.drawRect(0, 0, 50, 50);
+        mask.endFill();
 
         // Cooldown overlay arc init
-        this.cd_overlay = this.playState.add.graphics(0, 0);
+        this.cd_overlay = new Phaser.Graphics(game, 0, 0);
         this.cd_overlay.alpha = 0.8;
         this.cd_overlay.mask = mask;
         this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
 
         // adding displayObjects to the parent container
-        this.container.add(spellIcon);
-        this.container.add(this.cd_overlay);
+        this.addChild(this.spellIcon);
+        this.addChild(this.cd_overlay);
 
         // listen to cooldown start event
-        this.playState.events.ON_COOLDOWN_START.add((e) => this._onCooldownStart(e));
-        this.playState.events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
+        this.events.ON_COOLDOWN_START.add((e) => this._onCooldownStart(e));
+        this.events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
     }
 
     _onCooldownStart(event) {
@@ -50,11 +45,12 @@ export default class StatusIcon {
             return;
         // Create a timer that updates a variable locally.
         this.cd_overlay.alpha = 0.8;
-        this.animTween = game.add.tween(this.angle).to({
+        this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
             current: 270
         }, event.cooldownLenght, undefined, true);
         // Hook the update cooldown arc to the main loop
-        this.playState.events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
+        this.events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
+        console.log("imhere")
 
     }
 
@@ -65,16 +61,17 @@ export default class StatusIcon {
         // #TODO## Remove hook from game loop
         this.cd_overlay.alpha = 0;
         this.animTween.stop();
-        this.angle.current = 0;
+        this.cooldownOverlayAngle.current = 0;
         this.cd_overlay.clear();
 
     }
 
     _updateCooldownArc() {
+                console.log("imhere")
 
         this.cd_overlay.clear();
         this.cd_overlay.beginFill(0x323232);
-        this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.angle.current), true);
+        this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.cooldownOverlayAngle.current), true);
         this.cd_overlay.endFill();
         // clear
         // redraw based on new values

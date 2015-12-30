@@ -166,6 +166,20 @@
   connect();
 })();
 /* jshint ignore:end */
+;require.register("src/addons/action_bar_addon", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = ActionBar;
+function ActionBar($) {
+
+    var test = $.newStatusIcon("UIParent", 2);
+    //test.setPos(300,300); ## hmm: The mask doesnt move with the displayObject it's assigned to :(
+}
+});
+
 ;require.register("src/addons/castbar", function(exports, require, module) {
 "use strict";
 
@@ -225,6 +239,13 @@ function CastFrame($) {
         cast_bar.setValue(0, 0);
     }
 }
+});
+
+;require.register("src/addons/console", function(exports, require, module) {
+/* ## TODO ## Make a console where we can print debug information & type commands = */
+
+/** Addons can register console commands with registerConsoleCommand("COMMAND" callback) blabla? */
+"use strict";
 });
 
 ;require.register("src/addons/debug", function(exports, require, module) {
@@ -325,6 +346,19 @@ function RaidFrame($) {
 }
 });
 
+;require.register("src/addons/spell_effects", function(exports, require, module) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+//* Future goal: This frame will listen for spells being used by the player and play cool animations based on that spell. Maybe even play spell sounds?
+// https://cloudkidstudio.github.io/PixiParticlesEditor/# Could create a particle effect for each spell.
+
+var SpellEffectAddon = function SpellEffectAddon() {
+  _classCallCheck(this, SpellEffectAddon);
+};
+});
+
 ;require.register("src/addons/timers", function(exports, require, module) {
 "use strict";
 
@@ -413,6 +447,7 @@ function UnitFrames($) {
             amount: 5250
         });
     }, 1200);
+
     var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50);
     bossFrame.setPos(1200, 500);
 }
@@ -424,13 +459,58 @@ function UnitFrames($) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-//import Enum from "./util/enum";
+exports.raid_size = exports.player_race = exports.player_level = exports.player_class = exports.combat_rating_e = exports.race_e = exports.class_e = exports.stat_e = undefined;
 
-var stat_e = { "STRENGHT": 0, "AGILITY": 1, "STAMINA": 2, "INTELLECT": 3, "SPIRIT": 4 };
-var class_e = { "WARRIOR": 0, "PALADIN": 1, "HUNTER": 2, "ROGUE": 3, "PRIEST": 4, "DEATHKNIGHT": 5, "SHAMAN": 6, "MAGE": 7, "WARLOCK": 8, "MONK": 9, "DRUID": 10 };
-var race_e = { "RACE_NONE": 0, "RACE_BEAST": 1, "RACE_DRAGONKIN": 2, "RACE_GIANT": 3, "RACE_HUMANOID": 4, "RACE_DEMON": 5, "RACE_ELEMENTAL": 6, "RACE_NIGHT_ELF": 7, "RACE_HUMAN": 8, "RACE_GNOME": 9, "RACE_DWARF": 10, "RACE_DRAENEI": 11, "RACE_WORGEN": 12, "RACE_ORC": 13, "RACE_TROLL": 14, "RACE_UNDEAD": 15, "RACE_BLOOD_ELF": 16, "RACE_TAUREN": 17, "RACE_GOBLIN": 18, "RACE_PANDAREN": 19, "RACE_PANDAREN_ALLIANCE": 20, "RACE_PANDAREN_HORDE": 21, "RACE_MAX": 22, "RACE_UNKNOWN": 23 };
+var _util = require("./util");
 
-var combat_rating_e = {
+var stat_e = (0, _util.freezeObject)({
+    "STRENGHT": 0,
+    "AGILITY": 1,
+    "STAMINA": 2,
+    "INTELLECT": 3,
+    "SPIRIT": 4
+});
+var class_e = (0, _util.freezeObject)({
+    "WARRIOR": 0,
+    "PALADIN": 1,
+    "HUNTER": 2,
+    "ROGUE": 3,
+    "PRIEST": 4,
+    "DEATHKNIGHT": 5,
+    "SHAMAN": 6,
+    "MAGE": 7,
+    "WARLOCK": 8,
+    "MONK": 9,
+    "DRUID": 10
+});
+var race_e = (0, _util.freezeObject)({
+    "RACE_NONE": 0,
+    "RACE_BEAST": 1,
+    "RACE_DRAGONKIN": 2,
+    "RACE_GIANT": 3,
+    "RACE_HUMANOID": 4,
+    "RACE_DEMON": 5,
+    "RACE_ELEMENTAL": 6,
+    "RACE_NIGHT_ELF": 7,
+    "RACE_HUMAN": 8,
+    "RACE_GNOME": 9,
+    "RACE_DWARF": 10,
+    "RACE_DRAENEI": 11,
+    "RACE_WORGEN": 12,
+    "RACE_ORC": 13,
+    "RACE_TROLL": 14,
+    "RACE_UNDEAD": 15,
+    "RACE_BLOOD_ELF": 16,
+    "RACE_TAUREN": 17,
+    "RACE_GOBLIN": 18,
+    "RACE_PANDAREN": 19,
+    "RACE_PANDAREN_ALLIANCE": 20,
+    "RACE_PANDAREN_HORDE": 21,
+    "RACE_MAX": 22,
+    "RACE_UNKNOWN": 23
+});
+
+var combat_rating_e = (0, _util.freezeObject)({
     "RATING_MOD_DODGE": 0,
     "RATING_MOD_PARRY": 1,
     "RATING_MOD_HIT_MELEE": 2,
@@ -453,15 +533,28 @@ var combat_rating_e = {
     "RATING_MOD_VERS_DAMAGE": 19,
     "RATING_MOD_VERS_HEAL": 20,
     "RATING_MOD_VERS_MITIG": 21
-};
+});
 
 //const player_role = Enum("TANK", "HEALER", "DAMAGE");
 
-var player_class = { "MIN": 0, "MAX": 10 };
-var player_level = { "MIN": 1, "MAX": 100 };
-var player_race = { "MIN": 7, "MAX": 21 };
+var player_class = (0, _util.freezeObject)({
+    "MIN": 0,
+    "MAX": 10
+});
+var player_level = (0, _util.freezeObject)({
+    "MIN": 1,
+    "MAX": 100
+});
+var player_race = (0, _util.freezeObject)({
+    "MIN": 7,
+    "MAX": 21
+});
 
-var raid_size = { "TENMAN": 10, "GROUP": 5, "TWENTYFIVEMAN": 25 };
+var raid_size = (0, _util.freezeObject)({
+    "TENMAN": 10,
+    "GROUP": 5,
+    "TWENTYFIVEMAN": 25
+});
 
 exports.stat_e = stat_e;
 exports.class_e = class_e;
@@ -478,11 +571,7 @@ require.register("src/gameObjects/addonManager", function(exports, require, modu
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Addon manager class - To keep things consistant it works a lot like how Phaser deals with states.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * An addon is basicly a subroutine that displays graphical information to the screen and modifies -
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * this information as a reaction to events the game creates
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -497,6 +586,12 @@ var _util = require("../util");
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Addon manager class - To keep things consistant it works a lot like how Phaser deals with states.
+ * An addon is basicly a subroutine that displays graphical information to the screen and modifies -
+ * this information as a reaction to events the game creates
+ */
 
 var AddonManager = (function () {
     function AddonManager() {
@@ -660,7 +755,7 @@ function newUnitFrame(parent, unit, width, height) {
     if (parent === "UIParent") {
         parent = state.UIParent ? state.UIParent : state.world;
     }
-    console.log(state.events);
+
     return new _unit_frame2.default(parent, unit, width, height, state.events);
 }
 
@@ -669,6 +764,13 @@ function newStatusBar(parent, width, height) {
         parent = state.UIParent ? state.UIParent : state.world;
     }
     return new _status_bar2.default(parent, width, height);
+}
+
+function newStatusIcon(parent, spellid) {
+    if (parent === "UIParent") {
+        parent = state.UIParent ? state.UIParent : state.world;
+    }
+    return new _status_icon2.default(parent, spellid, state.events);
 }
 
 /**
@@ -683,15 +785,13 @@ function init(_state) {
     raid = _state.raid;
     state = _state;
 
-    console.log(state);
-
     var api = {
         "getGroupMembers": getGroupMembers,
         "localPlayer": localPlayer,
         "setTarget": setTarget,
         "newFrame": newFrame,
         "newUnitFrame": newUnitFrame,
-        "StatusIcon": _status_icon2.default,
+        "newStatusIcon": newStatusIcon,
         "newStatusBar": newStatusBar,
         "events": state.events // TODO: Better way
 
@@ -885,56 +985,62 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _frame = require("./frame");
+
+var _frame2 = _interopRequireDefault(_frame);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/* ## TODO ## fix fix */
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var StatusIcon = (function () {
-    function StatusIcon(state, spellid, x, y) {
-        var _this = this;
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var StatusIcon = (function (_Frame) {
+    _inherits(StatusIcon, _Frame);
+
+    function StatusIcon(parent, spellid, events) {
         _classCallCheck(this, StatusIcon);
 
-        this.playState = state;
-        this.spellid = spellid;
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusIcon).call(this, parent));
 
-        this.container = this.playState.add.group();
-        this.container.x = x;
-        this.container.y = y;
-        this.w = 50;
-        this.h = 50;
+        _this.spellid = spellid;
+        _this.events = events;
 
-        this.angle = {
+        _this.cooldownOverlayAngle = {
             current: 0
         };
 
         // Spell icon
-        var spellIcon = this.playState.add.image(0, 0, "icon_" + spellid);
-        spellIcon.width = this.w;
-        spellIcon.height = this.h;
+        _this.spellIcon = new Phaser.Image(game, 0, 0, "icon_" + spellid);
+        _this.spellIcon.width = 50;
+        _this.spellIcon.height = 50;
 
         // Alpha mask for cooldown overlay
-        var mask = this.playState.add.graphics(this.container.x, this.container.y);
+        var mask = new Phaser.Graphics(game, 0, 0);
         mask.beginFill(0xFFFFFF);
-        mask.drawRect(0, 0, this.w, this.h);
+        mask.drawRect(0, 0, 50, 50);
+        mask.endFill();
 
         // Cooldown overlay arc init
-        this.cd_overlay = this.playState.add.graphics(0, 0);
-        this.cd_overlay.alpha = 0.8;
-        this.cd_overlay.mask = mask;
-        this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
+        _this.cd_overlay = new Phaser.Graphics(game, 0, 0);
+        _this.cd_overlay.alpha = 0.8;
+        _this.cd_overlay.mask = mask;
+        _this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
 
         // adding displayObjects to the parent container
-        this.container.add(spellIcon);
-        this.container.add(this.cd_overlay);
+        _this.addChild(_this.spellIcon);
+        _this.addChild(_this.cd_overlay);
 
         // listen to cooldown start event
-        this.playState.events.ON_COOLDOWN_START.add(function (e) {
+        _this.events.ON_COOLDOWN_START.add(function (e) {
             return _this._onCooldownStart(e);
         });
-        this.playState.events.ON_COOLDOWN_ENDED.add(function (e) {
+        _this.events.ON_COOLDOWN_ENDED.add(function (e) {
             return _this._onCooldownEnded(e);
         });
+        return _this;
     }
 
     _createClass(StatusIcon, [{
@@ -946,13 +1052,14 @@ var StatusIcon = (function () {
             if (event.spellid != this.spellid) return;
             // Create a timer that updates a variable locally.
             this.cd_overlay.alpha = 0.8;
-            this.animTween = game.add.tween(this.angle).to({
+            this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
                 current: 270
             }, event.cooldownLenght, undefined, true);
             // Hook the update cooldown arc to the main loop
-            this.playState.events.GAME_LOOP_UPDATE.add(function () {
+            this.events.GAME_LOOP_UPDATE.add(function () {
                 return _this2._updateCooldownArc();
             });
+            console.log("imhere");
         }
     }, {
         key: "_onCooldownEnded",
@@ -962,16 +1069,17 @@ var StatusIcon = (function () {
             // #TODO## Remove hook from game loop
             this.cd_overlay.alpha = 0;
             this.animTween.stop();
-            this.angle.current = 0;
+            this.cooldownOverlayAngle.current = 0;
             this.cd_overlay.clear();
         }
     }, {
         key: "_updateCooldownArc",
         value: function _updateCooldownArc() {
+            console.log("imhere");
 
             this.cd_overlay.clear();
             this.cd_overlay.beginFill(0x323232);
-            this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.angle.current), true);
+            this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.cooldownOverlayAngle.current), true);
             this.cd_overlay.endFill();
             // clear
             // redraw based on new values
@@ -979,7 +1087,7 @@ var StatusIcon = (function () {
     }]);
 
     return StatusIcon;
-})();
+})(_frame2.default);
 
 exports.default = StatusIcon;
 });
@@ -1752,9 +1860,6 @@ var Player = (function () {
 
         // --- Basic unit data ------------
         this.level = 100;
-        this.name;
-        this.classId;
-        this.race;
         this.isEnemy = false;
 
         // ----Players current target--------------
@@ -1764,11 +1869,8 @@ var Player = (function () {
         this.instance = null; // reference to the raid group the players are in ?
 
         // --- Players spells ---------------------
-        this.spells;
-        this.buffs;
-
-        // --- Reference to the event manager --- //
-        this.events;
+        this.spells = null;
+        this.buffs = null;
 
         this.gear_stats = {
             stamina: 7105,
@@ -2482,7 +2584,7 @@ var PhaserCustomGame = (function (_Phaser$Game) {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); /* The Boot state configures the Phaser this.game engine and loads assets */
 
-// Import addons
+// Import addons ### Todo, Is it possible to import this dynamically ? I.e create a json file with paths etc
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -2515,6 +2617,10 @@ var _timers2 = _interopRequireDefault(_timers);
 var _unit_frames = require("../addons/unit_frames");
 
 var _unit_frames2 = _interopRequireDefault(_unit_frames);
+
+var _action_bar_addon = require("../addons/action_bar_addon");
+
+var _action_bar_addon2 = _interopRequireDefault(_action_bar_addon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2576,6 +2682,7 @@ var Boot = (function () {
             game.addons.add("Unit Frames 0.1", _unit_frames2.default);
             game.addons.add("Debug", _debug2.default);
             game.addons.add("BossTimers", _timers2.default);
+            game.addons.add("Action Bar", _action_bar_addon2.default);
 
             // Setup the keyboard for the this.game.
             this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
@@ -2711,10 +2818,6 @@ var Play = (function () {
 
             // Start the boss/healing simulator
             this.raid.startTestDamage();
-
-            // Testing cooldown frames
-            //var test = new StatusIcon(this, 5, 500, 500);
-            //var test2 = new StatusIcon(this, 2, 555, 500);
         }
     }, {
         key: "update",
@@ -2755,6 +2858,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.printPrettyError = printPrettyError;
+exports.freezeObject = freezeObject;
 var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).toString()]);
 
 /**
@@ -2766,6 +2870,17 @@ var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.rando
 
 function printPrettyError(errorReason, error) {
   console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
+}
+
+/**
+ * Freeze an object so that no changes can be made to it
+ * @param  {Object} objectToFreeze [description]
+ * @return {Object}                [description]
+ */
+
+function freezeObject(objectToFreeze) {
+  var frozenObject = Object.freeze(objectToFreeze);
+  return frozenObject;
 }
 });
 

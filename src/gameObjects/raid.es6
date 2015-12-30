@@ -2,7 +2,10 @@
 import Player from "./player";
 import Priest from "./class_modules/priest";
 import * as data from "./data";
-import {rng} from "../util";
+import {
+    rng
+}
+from "../util";
 
 export default class Raid {
 
@@ -43,7 +46,6 @@ export default class Raid {
             numberOfHealers = 5;
             numberOfDps = 17;
         }
-
 
 
         while (numberOfTanks--) {
@@ -123,7 +125,7 @@ export default class Raid {
         var spike = setInterval(bossSpike.bind(this), 8000);
 
         function gain_mana() {
-            var player = this.players[this.players.length-1];
+            var player = this.players[this.players.length - 1];
             player.gain_resource(1600);
         }
 

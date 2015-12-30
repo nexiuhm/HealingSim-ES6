@@ -27,19 +27,27 @@ function newFrame(parent) {
 }
 
 function newUnitFrame(parent, unit, width, height) {
-	 if (parent === "UIParent") {
+    if (parent === "UIParent") {
         parent = state.UIParent ? state.UIParent : state.world;
     }
-    console.log(state.events);
-    return new UnitFrame(parent, unit, width, height, state.events)
+
+    return new UnitFrame(parent, unit, width, height, state.events);
 
 }
 
 function newStatusBar(parent, width, height) {
-	 if (parent === "UIParent") {
+    if (parent === "UIParent") {
         parent = state.UIParent ? state.UIParent : state.world;
     }
-    return new StatusBar(parent, width, height)
+    return new StatusBar(parent, width, height);
+
+}
+
+function newStatusIcon(parent, spellid) {
+    if (parent === "UIParent") {
+        parent = state.UIParent ? state.UIParent : state.world;
+    }
+    return new StatusIcon(parent,spellid,state.events);
 
 }
 
@@ -55,15 +63,13 @@ export function init(_state) {
     raid = _state.raid;
     state = _state;
 
-    console.log(state);
-
     let api = {
         "getGroupMembers": getGroupMembers,
         "localPlayer": localPlayer,
         "setTarget": setTarget,
         "newFrame": newFrame,
         "newUnitFrame": newUnitFrame,
-        "StatusIcon": StatusIcon,
+        "newStatusIcon": newStatusIcon,
         "newStatusBar": newStatusBar,
         "events": state.events // TODO: Better way
 
@@ -72,8 +78,5 @@ export function init(_state) {
     api.freeze; // Might aswell freeze the object cause it should never change.
 
     return api;
-
-
-
 
 }

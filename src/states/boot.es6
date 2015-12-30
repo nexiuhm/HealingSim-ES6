@@ -2,12 +2,14 @@
 import menuState from "./menu";
 import playState from "./play";
 
-// Import addons
+// Import addons ### Todo, Is it possible to import this dynamically ? I.e create a json file with paths etc
 import castFrame from "../addons/castbar";
 import raidFrames from "../addons/raid_frame";
 import debugAddon from "../addons/debug";
 import bossTimers from "../addons/timers";
 import unitFrames from "../addons/unit_frames";
+import actionBar from "../addons/action_bar_addon";
+
 // addons
 
 
@@ -52,6 +54,8 @@ export default class Boot {
         game.addons.add("Unit Frames 0.1", unitFrames);
         game.addons.add("Debug", debugAddon);
         game.addons.add("BossTimers", bossTimers);
+        game.addons.add("Action Bar", actionBar);
+
 
 
         // Setup the keyboard for the this.game.

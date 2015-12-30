@@ -1,3 +1,4 @@
+
 export var rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).toString()]);
 
 
@@ -15,4 +16,15 @@ export function printPrettyError(errorReason, error) {
         'color: #ffffff; background: #450f78;',
         'color: #450f78; ',
         'color: #ce0000;');
+}
+
+/**
+ * Freeze an object so that no changes can be made to it
+ * @param  {Object} objectToFreeze [description]
+ * @return {Object}                [description]
+ */
+
+export function freezeObject(objectToFreeze) {
+		let frozenObject = Object.freeze(objectToFreeze);
+		return frozenObject;
 }
