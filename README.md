@@ -26,3 +26,6 @@ brunch w --server
 ```
 - Whenever you make changes to the files it will automatically compile and refresh the browser window :)
 
+![js is shiny](http://i.imgur.com/z8N8i12.gif)
+
+
