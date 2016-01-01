@@ -320,16 +320,28 @@ function RaidFrame($) {
         var playersInRaid = $.getGroupMembers();
 
         for (var g = 0; g < MAX_GROUPS; g++) {
-            for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
+            var _loop = function _loop(p) {
                 var unit = playersInRaid[g * 5 + p];
-                if (!unit) break;
+                if (!unit) return "break";
 
-                var _unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
-                if (unit === $.localPlayer()) _unitFrame.togglePowerBar();
+                var unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
+                if (unit === $.localPlayer()) {
+                    unitFrame.togglePowerBar();
+                }
+                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
 
-                _unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+                unitFrame.inputEnabled = true;
+                unitFrame.events.onInputDown.add(function () {
+                    $.localPlayer().setTarget(unitFrame.unit);
+                });
 
-                unitFrames.push(_unitFrame);
+                unitFrames.push(unitFrame);
+            };
+
+            for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
+                var _ret = _loop(p);
+
+                if (_ret === "break") break;
             }
         }
     } // -- END --
@@ -427,20 +439,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function UnitFrames($) {
 
-    // Local player
+    /**
+     * Players unit frame
+     */
     var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50);
     playerFrame.togglePowerBar();
     playerFrame.setPos(500, 800);
-    //playerFrame.input.enableDrag();
+    playerFrame.inputEnabled = true;
+    playerFrame.events.onInputDown.add(function () {
+        $.localPlayer().setTarget(playerFrame.unit);
+    }); //playerFrame.input.enableDrag();
 
-    // Target
+    /**
+     * Target's unit frame
+     */
     var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50);
     targetFrame.setPos(1000, 800);
     $.events.TARGET_CHANGE_EVENT.add(function () {
-        return targetFrame.setUnit(localPlayer().target);
+        targetFrame.setUnit($.localPlayer().target);
     });
 
-    // Boss
+    /**
+     * Boss test frame
+     */
+
     var testBoss = new _player2.default(4, 4, 100, "Ragnaros", $.events, true);
     setInterval(function () {
         testBoss.recive_damage({
@@ -735,7 +757,12 @@ var game = undefined,
     state = undefined;
 
 function setTarget(unit) {
-    player.setTarget(unit);
+    try {
+        player.setTarget(unit);
+    } catch (e) {
+
+        console.log(e.stack);
+    }
 }
 
 function getGroupMembers() {
@@ -797,7 +824,6 @@ function init(_state) {
         "newStatusIcon": newStatusIcon,
         "newStatusBar": newStatusBar,
         "events": state.events // TODO: Better way
-
     };
 
     api.freeze; // Might aswell freeze the object cause it should never change.
@@ -1134,7 +1160,7 @@ var UnitFrame = (function (_Frame) {
         if (width) _this._width = width;
         if (height) _this._height = height;
 
-        _this.events = _events;
+        _this.gameEvents = _events;
         _this.unit = unit;
         _this.config = {
             powerBarEnabled: false,
@@ -1165,6 +1191,7 @@ var UnitFrame = (function (_Frame) {
                 this.addChild(this.dragonTexture);
             }
 
+            //this.inputEnabled = true;
             this._initEventListeners();
         }
     }, {
@@ -1173,13 +1200,13 @@ var UnitFrame = (function (_Frame) {
             var _this2 = this;
 
             //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
-            this.events.UNIT_HEALTH_CHANGE.add(function (unit) {
+            this.gameEvents.UNIT_HEALTH_CHANGE.add(function (unit) {
                 return _this2._onUnitHealthChanged(unit);
             });
-            this.events.UNIT_DEATH.add(function (unit) {
+            this.gameEvents.UNIT_DEATH.add(function (unit) {
                 return _this2._onUnitDeath(unit);
             });
-            if (this.config.powerBarEnabled) this.events.MANA_CHANGE.add(function (unit) {
+            if (this.config.powerBarEnabled) this.gameEvents.MANA_CHANGE.add(function (unit) {
                 return _this2._onUnitManaChanged(unit);
             });
         }

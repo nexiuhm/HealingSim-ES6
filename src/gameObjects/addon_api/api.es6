@@ -7,7 +7,13 @@ import StatusIcon from "./status_icon";
 let game, player, raid, state;
 
 function setTarget(unit) {
-    player.setTarget(unit);
+    try {
+        player.setTarget(unit);
+    } catch (e) {
+
+        console.log(e.stack);
+
+    }
 }
 
 function getGroupMembers() {
@@ -47,7 +53,7 @@ function newStatusIcon(parent, spellid) {
     if (parent === "UIParent") {
         parent = state.UIParent ? state.UIParent : state.world;
     }
-    return new StatusIcon(parent,spellid,state.events);
+    return new StatusIcon(parent, spellid, state.events);
 
 }
 
@@ -72,7 +78,6 @@ export function init(_state) {
         "newStatusIcon": newStatusIcon,
         "newStatusBar": newStatusBar,
         "events": state.events // TODO: Better way
-
     };
 
     api.freeze; // Might aswell freeze the object cause it should never change.

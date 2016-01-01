@@ -2,18 +2,26 @@
 
 export default function UnitFrames($) {
 
-    // Local player
+    /**
+     * Players unit frame
+     */
     var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50);
     playerFrame.togglePowerBar();
     playerFrame.setPos(500, 800);
-    //playerFrame.input.enableDrag();
+    playerFrame.inputEnabled = true;
+    playerFrame.events.onInputDown.add(() => { $.localPlayer().setTarget(playerFrame.unit) });    //playerFrame.input.enableDrag();
 
-    // Target
+    /**
+     * Target's unit frame
+     */
     var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50);
     targetFrame.setPos(1000, 800);
-    $.events.TARGET_CHANGE_EVENT.add(() => targetFrame.setUnit(localPlayer().target));
+    $.events.TARGET_CHANGE_EVENT.add(() => {targetFrame.setUnit($.localPlayer().target)});
 
-    // Boss
+    /**
+     * Boss test frame
+     */
+    
     var testBoss = new Player(4, 4, 100, "Ragnaros", $.events, true);
     setInterval(function() {
         testBoss.recive_damage({

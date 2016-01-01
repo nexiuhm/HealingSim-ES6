@@ -8,7 +8,7 @@ export default class UnitFrame extends Frame {
         if (width) this._width = width;
         if (height) this._height = height;
 
-        this.events = _events;
+        this.gameEvents = _events;
         this.unit = unit;
         this.config = {
             powerBarEnabled: false,
@@ -36,16 +36,16 @@ export default class UnitFrame extends Frame {
             this.addChild(this.dragonTexture);
         }
 
-
+        //this.inputEnabled = true;
         this._initEventListeners();
     }
 
     _initEventListeners() {
         //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
-        this.events.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
-        this.events.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
+        this.gameEvents.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
+        this.gameEvents.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
         if (this.config.powerBarEnabled)
-            this.events.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
+            this.gameEvents.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
 
     }
 

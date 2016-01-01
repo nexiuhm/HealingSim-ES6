@@ -23,10 +23,13 @@
                 if (!unit) break;
 
                 let unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
-                if (unit === $.localPlayer())
+                if (unit === $.localPlayer()){
                     unitFrame.togglePowerBar();
+                }
+                                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
 
-                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+                unitFrame.inputEnabled = true;
+                unitFrame.events.onInputDown.add(() => { $.localPlayer().setTarget(unitFrame.unit) }); 
 
                 unitFrames.push(unitFrame);
             }
