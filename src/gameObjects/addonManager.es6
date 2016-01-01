@@ -1,5 +1,5 @@
 ﻿import * as api from "./addon_api/api";
-import {printPrettyError}from "../util";
+import {printPrettyError} from "../util";
 
 /**
  * Addon manager class - To keep things consistant it works a lot like how Phaser deals with states.
@@ -26,7 +26,7 @@ export default class AddonManager {
         else
             this._addons[addonKey].enabled = false;
     }
-    
+
     enableAddon(addonKey) {
         if (!this._addons.has(addonKey))
             return;
@@ -36,7 +36,7 @@ export default class AddonManager {
 
     getListOfAddons() {
         var addonList = [];
-        for (var addon of this._addons) {
+        for (var [_, addon] of this._addons) {
             addonList.push([addon.name, addon.enabled]);
         }
         return addonList;

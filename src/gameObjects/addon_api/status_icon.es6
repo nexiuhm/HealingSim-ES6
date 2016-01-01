@@ -4,7 +4,7 @@ export default class StatusIcon extends Frame {
 
 
     constructor(parent, spellid, events) {
-        super(parent); 
+        super(parent);
         this.spellid = spellid;
         this.events = events;
 
@@ -13,12 +13,12 @@ export default class StatusIcon extends Frame {
         };
 
         // Spell icon
-        this.spellIcon =  new Phaser.Image(game,0, 0, "icon_" + spellid);
+        this.spellIcon = new Phaser.Image(game, 0, 0, "icon_" + spellid);
         this.spellIcon.width = 50;
         this.spellIcon.height = 50;
 
         // Alpha mask for cooldown overlay
-        var mask = new Phaser.Graphics(game,0, 0);
+        var mask = new Phaser.Graphics(game, 0, 0);
         mask.beginFill(0xFFFFFF);
         mask.drawRect(0, 0, 50, 50);
         mask.endFill();
@@ -50,11 +50,11 @@ export default class StatusIcon extends Frame {
         }, event.cooldownLenght, undefined, true);
         // Hook the update cooldown arc to the main loop
         this.events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
-        console.log("imhere")
 
     }
 
     _onCooldownEnded(event) {
+
         if (event.spellid != this.spellid)
             return;
         //this.hook.remove();
@@ -67,7 +67,6 @@ export default class StatusIcon extends Frame {
     }
 
     _updateCooldownArc() {
-                console.log("imhere")
 
         this.cd_overlay.clear();
         this.cd_overlay.beginFill(0x323232);

@@ -394,9 +394,9 @@ function BigWigs($) {
     } // -- END --
     /* ## Todo ## make this kind of functionalty so addons can hook some script to the game loop.
            
-    timer.setScript("OnLoop", function () {          
+    setScript("OnLoop", function () {          
                 
-    if (bar.timeLeft < config.emphasizedTime)
+    if (timer.timeLeft < config.emphasizedTime)
                     
              // move bar to BigTimerFrame
         
@@ -405,7 +405,7 @@ function BigWigs($) {
     //## Called when a timerbar is removed or added.
 
     function rearrangeBars() {
-        // loop through all "timers" and rearrange to anchor.
+        // loop through all "timers" and rearranges them.
 
     };
 }
@@ -629,7 +629,10 @@ var AddonManager = (function () {
 
             try {
                 for (var _iterator = this._addons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var addon = _step.value;
+                    var _step$value = _slicedToArray(_step.value, 2);
+
+                    var _ = _step$value[0];
+                    var addon = _step$value[1];
 
                     addonList.push([addon.name, addon.enabled]);
                 }
@@ -827,10 +830,8 @@ var Frame = (function (_Phaser$Graphics) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Frame).call(this, game));
 
         parent.addChild(_this);
-
         _this._width = 200;
         _this._height = 100;
-
         return _this;
     }
 
@@ -1059,11 +1060,11 @@ var StatusIcon = (function (_Frame) {
             this.events.GAME_LOOP_UPDATE.add(function () {
                 return _this2._updateCooldownArc();
             });
-            console.log("imhere");
         }
     }, {
         key: "_onCooldownEnded",
         value: function _onCooldownEnded(event) {
+
             if (event.spellid != this.spellid) return;
             //this.hook.remove();
             // #TODO## Remove hook from game loop
@@ -1075,7 +1076,6 @@ var StatusIcon = (function (_Frame) {
     }, {
         key: "_updateCooldownArc",
         value: function _updateCooldownArc() {
-            console.log("imhere");
 
             this.cd_overlay.clear();
             this.cd_overlay.beginFill(0x323232);
@@ -1810,7 +1810,7 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var EventManager = // ### TODO ###
+var EventManager = // ### TODO: Give the event system more features. Maybe addons should be able to listen for events form specific players? ###
 
 function EventManager() {
     _classCallCheck(this, EventManager);
@@ -2582,12 +2582,15 @@ var PhaserCustomGame = (function (_Phaser$Game) {
 ;require.register("src/states/boot", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); /* The Boot state configures the Phaser this.game engine and loads assets */
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-// Import addons ### Todo, Is it possible to import this dynamically ? I.e create a json file with paths etc
+/**
+ * TODO: Import addons dynamically. This can't be done with the import statement since its only used for static analysis. Check out System.Import()
+ * Low priority
+ */
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+        value: true
 });
 
 var _menu = require("./menu");
@@ -2626,72 +2629,74 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// addons
+/**
+ * We use the Boot state to configure Phaser and load assets
+ */
 
 var Boot = (function () {
-    function Boot() {
-        _classCallCheck(this, Boot);
-    }
-
-    _createClass(Boot, [{
-        key: "preload",
-
-        // Load assets
-        value: function preload() {
-            this.game.load.video('win', './assets/video/win.mp4');
-            this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
-            this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
-            this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
-            this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
-            this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
-            this.game.load.image("elite", "./assets/textures/elite_texture.png");
-            this.game.load.image("bg", "./assets/play_state_background.png");
-            this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
-            this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
-            this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
+        function Boot() {
+                _classCallCheck(this, Boot);
         }
-    }, {
-        key: "onWindowResize",
-        value: function onWindowResize(data) {
-            this.game.canvas.height = window.innerHeight;
-            this.game.canvas.width = window.innerWidth;
-        }
-    }, {
-        key: "create",
-        value: function create() {
-            var _this = this;
 
-            console.log(this.game);
-            // Set scalemode for the this.game.
-            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-            this.game.scale.onSizeChange.add(function (data) {
-                return _this.onWindowResize(data);
-            });
+        _createClass(Boot, [{
+                key: "preload",
+                value: function preload() {
+                        this.game.load.video('win', './assets/video/win.mp4');
+                        this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
+                        this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
+                        this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
+                        this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
+                        this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
+                        this.game.load.image("elite", "./assets/textures/elite_texture.png");
+                        this.game.load.image("bg", "./assets/play_state_background.png");
+                        this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
+                        this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
+                        this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
+                }
+        }, {
+                key: "onWindowResize",
+                value: function onWindowResize(data) {
+                        this.game.canvas.height = window.innerHeight;
+                        this.game.canvas.width = window.innerWidth;
+                }
+        }, {
+                key: "create",
+                value: function create() {
+                        var _this = this;
 
-            // Phaser config
-            this.game.time.advancedTiming = true;
-            this.game.tweens.frameBased = true;
+                        var isThisDev = true;
 
-            // Register games-states
-            this.game.state.add("MainMenu", _menu2.default);
-            this.game.state.add("Play", _play2.default);
+                        // Set scalemode for the this.game.
+                        this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+                        this.game.scale.onSizeChange.add(function (data) {
+                                return _this.onWindowResize(data);
+                        });
 
-            // Register addons to the game
-            game.addons.add("Cast Bar 0.1", _castbar2.default);
-            game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-            game.addons.add("Unit Frames 0.1", _unit_frames2.default);
-            game.addons.add("Debug", _debug2.default);
-            game.addons.add("BossTimers", _timers2.default);
-            game.addons.add("Action Bar", _action_bar_addon2.default);
+                        // Phaser config
+                        this.game.time.advancedTiming = true;
+                        this.game.tweens.frameBased = true;
 
-            // Setup the keyboard for the this.game.
-            this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
-            // Start the post-boot state
-            this.game.state.start("Play"); // Go directly to playstate when developing
-        }
-    }]);
+                        // Register games-states
+                        this.game.state.add("MainMenu", _menu2.default);
+                        this.game.state.add("Play", _play2.default);
 
-    return Boot;
+                        // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
+                        game.addons.add("Cast Bar 0.1", _castbar2.default);
+                        game.addons.add("Raid Frames 0.1", _raid_frame2.default);
+                        game.addons.add("Unit Frames 0.1", _unit_frames2.default);
+                        game.addons.add("Debug", _debug2.default);
+                        game.addons.add("BossTimers", _timers2.default);
+                        game.addons.add("Action Bar", _action_bar_addon2.default);
+
+                        // Setup the keyboard for the this.game.
+                        this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
+
+                        // Start the post-boot state
+                        this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+                }
+        }]);
+
+        return Boot;
 })();
 
 exports.default = Boot;
@@ -2716,31 +2721,29 @@ var MainMenu = (function () {
     _createClass(MainMenu, [{
         key: "create",
 
-        // Show HTML form on screen.
-        // - Options to select player, difficulty,--
-        // Validate/Process form input
+        /**
+         * TODO: Create menu so that the player can select Class, boss etc.
+         */
 
         value: function create() {
             this.add.image(0, 0, "MenuScreenBackground");
             this.add.image(0, 0, "MenuScreenText").blendMode = PIXI.blendModes.ADD;
-            //this.printAddonList();
+            this.printAddonList();
         }
     }, {
         key: "printAddonList",
         value: function printAddonList() {
-            var addonList = game.addons.getListOfAddons();
+            var addonList = this.game.addons.getListOfAddons();
             var lineHeight = 15;
-            var headerText = this.add.bitmapText(0, 0, game.defaultFont, "### REGISTRED ADDONS ###", 14);
+            var headerText = this.game.add.bitmapText(0, 0, "myriad", "### REGISTRED ADDONS ###", 14);
             headerText.tint = 0xFF00FF;
             for (var i = 0; i < addonList.length; i++) {
-                this.add.bitmapText(0, lineHeight * i + lineHeight, game.defaultFont, "## Addon Name: " + addonList[i][0] + "  ## Enabled : " + addonList[i][1], 14);
+                this.add.bitmapText(0, lineHeight * i + lineHeight, "myriad", "## Addon Name: " + addonList[i][0] + "  ## Enabled : " + addonList[i][1], 14);
             }
         }
     }, {
         key: "handleKeyBoardInput",
         value: function handleKeyBoardInput(keyCode) {
-            console.log("startingds main");
-
             // On any input, the game is started
             this.game.state.start("Play");
         }
@@ -2863,8 +2866,8 @@ var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.rando
 
 /**
  * Prints a formatted error with stacktrace to the console.
- * @param  {[type]} errorReason [description]
- * @param  {[type]} error       [description]
+ * @param  {String} errorReason Summary of  error occured
+ * @param  {Object} error       A javascript error object
  * @return {void}             
  */
 
@@ -2873,9 +2876,9 @@ function printPrettyError(errorReason, error) {
 }
 
 /**
- * Freeze an object so that no changes can be made to it
- * @param  {Object} objectToFreeze [description]
- * @return {Object}                [description]
+ * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+ * @param  {Object} objectToFreeze The object to be frozen
+ * @return {Object}                Frozen object
  */
 
 function freezeObject(objectToFreeze) {

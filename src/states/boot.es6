@@ -1,8 +1,10 @@
-/* The Boot state configures the Phaser this.game engine and loads assets */
 import menuState from "./menu";
 import playState from "./play";
 
-// Import addons ### Todo, Is it possible to import this dynamically ? I.e create a json file with paths etc
+/**
+ * TODO: Import addons dynamically. This can't be done with the import statement since its only used for static analysis. Check out System.Import()
+ * Low priority
+ */
 import castFrame from "../addons/castbar";
 import raidFrames from "../addons/raid_frame";
 import debugAddon from "../addons/debug";
@@ -10,11 +12,12 @@ import bossTimers from "../addons/timers";
 import unitFrames from "../addons/unit_frames";
 import actionBar from "../addons/action_bar_addon";
 
-// addons
-
+/**
+ * We use the Boot state to configure Phaser and load assets
+ */
 
 export default class Boot {
-    // Load assets
+
     preload() {
         this.game.load.video('win', './assets/video/win.mp4');
         this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
@@ -27,6 +30,7 @@ export default class Boot {
         this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
         this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
         this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
+
     }
 
     onWindowResize(data) {
@@ -35,7 +39,9 @@ export default class Boot {
     }
 
     create() {
-        console.log(this.game);
+
+        var isThisDev = true;
+
         // Set scalemode for the this.game.
         this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         this.game.scale.onSizeChange.add((data) => this.onWindowResize(data));
@@ -48,7 +54,7 @@ export default class Boot {
         this.game.state.add("MainMenu", menuState);
         this.game.state.add("Play", playState);
 
-        // Register addons to the game
+        // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
         game.addons.add("Cast Bar 0.1", castFrame);
         game.addons.add("Raid Frames 0.1", raidFrames);
         game.addons.add("Unit Frames 0.1", unitFrames);
@@ -56,12 +62,14 @@ export default class Boot {
         game.addons.add("BossTimers", bossTimers);
         game.addons.add("Action Bar", actionBar);
 
-
-
         // Setup the keyboard for the this.game.
         this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
+        
         // Start the post-boot state
-        this.game.state.start("Play"); // Go directly to playstate when developing
+        this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+
+
+
 
     }
 

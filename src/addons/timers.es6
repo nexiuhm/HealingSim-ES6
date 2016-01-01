@@ -28,9 +28,9 @@
     } // -- END --
     /* ## Todo ## make this kind of functionalty so addons can hook some script to the game loop.
            
-    timer.setScript("OnLoop", function () {          
+    setScript("OnLoop", function () {          
                 
-    if (bar.timeLeft < config.emphasizedTime)
+    if (timer.timeLeft < config.emphasizedTime)
                     
              // move bar to BigTimerFrame
         
@@ -39,7 +39,7 @@
     //## Called when a timerbar is removed or added.
 
     function rearrangeBars() {
-        // loop through all "timers" and rearrange to anchor.
+        // loop through all "timers" and rearranges them.
 
     };
 

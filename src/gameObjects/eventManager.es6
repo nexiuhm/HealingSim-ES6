@@ -1,4 +1,4 @@
-﻿export default class EventManager { // ### TODO ### 
+﻿export default class EventManager { // ### TODO: Give the event system more features. Maybe addons should be able to listen for events form specific players? ### 
 
     constructor() {
         this.GAME_LOOP_UPDATE = new Phaser.Signal();

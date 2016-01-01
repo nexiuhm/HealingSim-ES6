@@ -4,8 +4,8 @@ export var rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).to
 
 /**
  * Prints a formatted error with stacktrace to the console.
- * @param  {[type]} errorReason [description]
- * @param  {[type]} error       [description]
+ * @param  {String} errorReason Summary of  error occured
+ * @param  {Object} error       A javascript error object
  * @return {void}             
  */
 
@@ -19,9 +19,9 @@ export function printPrettyError(errorReason, error) {
 }
 
 /**
- * Freeze an object so that no changes can be made to it
- * @param  {Object} objectToFreeze [description]
- * @return {Object}                [description]
+ * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+ * @param  {Object} objectToFreeze The object to be frozen
+ * @return {Object}                Frozen object
  */
 
 export function freezeObject(objectToFreeze) {
