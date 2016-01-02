@@ -1,12 +1,14 @@
 {
-  "name": "brunch-es6-phaserjs",
-  "description": "",
+  "name": "Healing Game ( for lack of a better name ) ",
+  "description": "Healing simulator based on the popular video-game 'World Of Warcraft'. Written in Javascript/ES6",
   "main": "",
   "authors": [
-    "Florent <olivaud.florent@gmail.com>"
+    "Florent <olivaud.florent@gmail.com>",
+    "Alf <alf.hammerseth@gmail.com>",
+    "Erlend <erlend.halvorsen@gmail.com>"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/folivaud/brunch-es6-phaserjs",
+  "homepage": "https://github.com/nexiuhm/HealingSim-ES6",
   "moduleType": [],
   "private": true,
   "ignore": [

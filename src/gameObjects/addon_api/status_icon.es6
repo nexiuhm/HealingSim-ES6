@@ -13,6 +13,7 @@ export default class StatusIcon extends Frame {
         this.spellid = spellid;
         this.events = events;
 
+        // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
         this.cooldownOverlayAngle = {
             current: 0
         };

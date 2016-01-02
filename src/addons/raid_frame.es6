@@ -1,4 +1,10 @@
-﻿export default function RaidFrame($) {
+﻿/**
+ * Raid frame addon
+ * Creates unit-frames based on how many players are in the raid/group.
+ */
+
+
+export default function RaidFrame($) {
 
     var unitFrames = [];
     var config = {
@@ -7,10 +13,9 @@
         unitFrameHeight: 40
     };
 
-    var raidFrame = $.newFrame("UIParent");
-    raidFrame.setPos(800,400);
-    //this.raidFrame.inputEnabled = true;
-    //this.raidFrame.input.enableDrag();
+    var raidFrame = $.newFrame("UIParent")
+        .setPos(800, 400);
+
 
     { // Anonymous namespace, since we dont want to pollute this function scope
         let MAX_GROUPS = 5;
@@ -22,23 +27,34 @@
                 let unit = playersInRaid[(g * 5) + p];
                 if (!unit) break;
 
-                let unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
-                if (unit === $.localPlayer()){
-                    unitFrame.togglePowerBar();
-                }
-                                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+                /**
+                 * Create and configure the unit frame
+                 */
+
+                let unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight)
+                    .setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
 
                 unitFrame.inputEnabled = true;
-                unitFrame.events.onInputDown.add(() => { $.localPlayer().setTarget(unitFrame.unit) }); 
 
+                if (unit === $.localPlayer()) {
+                    unitFrame.togglePowerBar();
+                }
+                unitFrame.events.onInputDown.add(() => {
+                    $.localPlayer().setTarget(unitFrame.unit)
+                });
+
+                // add to the array
                 unitFrames.push(unitFrame);
             }
         }
     } // -- END --
 
-    /* Position parent frame base on how big the raid got */
+    /* TODO: Position parent frame base on how big the raid got */
 
-    /* Spawn effect */
+    /**
+     * The animation that is fired when the raid has been created
+     */
+
     for (var player = 0; player < unitFrames.length; player++) {
         var unitFrame = unitFrames[player];
         game.add.tween(unitFrame).to({

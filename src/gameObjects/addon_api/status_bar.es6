@@ -66,6 +66,7 @@ export default class StatusBar extends Frame {
 
     setColor(color) {
         this._bar.tint = color;
+        return this;
 
     }
 
@@ -74,6 +75,7 @@ export default class StatusBar extends Frame {
         this._minValue = min;
         this._currentValue = current;
         this._updateBarWidth();
+        return this;
     }
 
     setTexture() {
@@ -83,6 +85,8 @@ export default class StatusBar extends Frame {
     setMaxValue(newMaxValue) {
         this._maxValue = newMaxValue;
         this._updateBarWidth();
+
+        return this;
     }
 
     setValue(newValue, duration) {
@@ -98,6 +102,8 @@ export default class StatusBar extends Frame {
             this._animationDuration = duration;
 
         this._updateBarWidth();
+
+        return this;
 
     }
 }

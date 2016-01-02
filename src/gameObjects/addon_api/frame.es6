@@ -14,11 +14,18 @@ export default class Frame extends Phaser.Graphics {
     setSize(width, height) {
         this._width = width;
         this._height = height;
+        return this;
     };
 
     setPos(x, y) {
         this.x = x;
         this.y = y;
+        return this;
     };
+
+    setAlpha(number){
+        this.alpha = number;
+        return this;
+    }
 
 }

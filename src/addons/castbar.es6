@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  * Addon creating and managing the player's castbar.
  */
 
@@ -11,18 +10,18 @@ export default function CastFrame($) {
         width: 300,
         height: 30
     };
-    
+
     var castingUnit = $.localPlayer();
 
 
     // Frame
-    var castingFrame = new $.newFrame("UIParent");
-    castingFrame.setPos(500 - config.width / 2, 500 - config.height / 2);
-    castingFrame.alpha = 0;
+    var castingFrame = new $.newFrame("UIParent")
+        .setPos(500 - config.width / 2, 500 - config.height / 2)
+        .setAlpha(0);
 
     // Status bar
     var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height)
-    cast_bar.setValues(0, 1, 0);
+        .setValues(0, 1, 0);
 
     // Status text #todo#
     var spell_name = new Phaser.BitmapText(game, config.width / 2, config.height / 2, "myriad", "", 12);
@@ -36,22 +35,21 @@ export default function CastFrame($) {
 
     function onUnitStartCast(castTime, spellName) {
 
-        castingFrame.alpha = 1;
-        cast_bar.setValue(0, 0);
-        cast_bar.setColor(config.castingColor);
-        spell_name.text = spellName + ' ' + (castTime / 1000).toFixed(2) + "s";
-        cast_bar.setValue(1, castTime);
+        castingFrame.setAlpha(1);
+        spell_name.setText(spellName + ' ' + (castTime / 1000).toFixed(2) + "s");
+
+        cast_bar.setValue(0, 0)
+            .setColor(config.castingColor)
+            .setValue(1, castTime);
 
     }
 
 
     function onUnitFinishCast() {
 
-        cast_bar.setColor(config.castSuccessColor);
-        cast_bar.setValue(0, 0);
+        cast_bar.setColor(config.castSuccessColor)
+            .setValue(0, 0);
 
     }
 
 }
-
-

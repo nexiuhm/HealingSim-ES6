@@ -111,11 +111,13 @@ export default class UnitFrame extends Frame {
     togglePowerBar() {
         this.config.powerBarEnabled = this.config.powerBarEnabled ? false : true;
         this._init();
+        return this;
     }
 
     setUnit(unit) {
         this.unit = unit;
         this._init();
+        return this;
     }
 
 }

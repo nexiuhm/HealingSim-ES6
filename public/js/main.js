@@ -187,10 +187,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = CastFrame;
-
 /**
- * Addon creating and managing the player's castbar.
- */
+* Addon creating and managing the player's castbar.
+*/
 
 function CastFrame($) {
 
@@ -204,13 +203,10 @@ function CastFrame($) {
     var castingUnit = $.localPlayer();
 
     // Frame
-    var castingFrame = new $.newFrame("UIParent");
-    castingFrame.setPos(500 - config.width / 2, 500 - config.height / 2);
-    castingFrame.alpha = 0;
+    var castingFrame = new $.newFrame("UIParent").setPos(500 - config.width / 2, 500 - config.height / 2).setAlpha(0);
 
     // Status bar
-    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height);
-    cast_bar.setValues(0, 1, 0);
+    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height).setValues(0, 1, 0);
 
     // Status text #todo#
     var spell_name = new Phaser.BitmapText(game, config.width / 2, config.height / 2, "myriad", "", 12);
@@ -227,17 +223,15 @@ function CastFrame($) {
 
     function onUnitStartCast(castTime, spellName) {
 
-        castingFrame.alpha = 1;
-        cast_bar.setValue(0, 0);
-        cast_bar.setColor(config.castingColor);
-        spell_name.text = spellName + ' ' + (castTime / 1000).toFixed(2) + "s";
-        cast_bar.setValue(1, castTime);
+        castingFrame.setAlpha(1);
+        spell_name.setText(spellName + ' ' + (castTime / 1000).toFixed(2) + "s");
+
+        cast_bar.setValue(0, 0).setColor(config.castingColor).setValue(1, castTime);
     }
 
     function onUnitFinishCast() {
 
-        cast_bar.setColor(config.castSuccessColor);
-        cast_bar.setValue(0, 0);
+        cast_bar.setColor(config.castSuccessColor).setValue(0, 0);
     }
 }
 });
@@ -306,6 +300,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = RaidFrame;
+/**
+* Raid frame addon
+* Creates unit-frames based on how many players are in the raid/group.
+*/
+
 function RaidFrame($) {
 
     var unitFrames = [];
@@ -315,10 +314,7 @@ function RaidFrame($) {
         unitFrameHeight: 40
     };
 
-    var raidFrame = $.newFrame("UIParent");
-    raidFrame.setPos(800, 400);
-    //this.raidFrame.inputEnabled = true;
-    //this.raidFrame.input.enableDrag();
+    var raidFrame = $.newFrame("UIParent").setPos(800, 400);
 
     {
         // Anonymous namespace, since we dont want to pollute this function scope
@@ -331,17 +327,22 @@ function RaidFrame($) {
                 var unit = playersInRaid[g * 5 + p];
                 if (!unit) return "break";
 
-                var unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight);
+                /**
+                 * Create and configure the unit frame
+                 */
+
+                var unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight).setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+
+                unitFrame.inputEnabled = true;
+
                 if (unit === $.localPlayer()) {
                     unitFrame.togglePowerBar();
                 }
-                unitFrame.setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
-
-                unitFrame.inputEnabled = true;
                 unitFrame.events.onInputDown.add(function () {
                     $.localPlayer().setTarget(unitFrame.unit);
                 });
 
+                // add to the array
                 unitFrames.push(unitFrame);
             };
 
@@ -353,9 +354,12 @@ function RaidFrame($) {
         }
     } // -- END --
 
-    /* Position parent frame base on how big the raid got */
+    /* TODO: Position parent frame base on how big the raid got */
 
-    /* Spawn effect */
+    /**
+     * The animation that is fired when the raid has been created
+     */
+
     for (var player = 0; player < unitFrames.length; player++) {
         var unitFrame = unitFrames[player];
         game.add.tween(unitFrame).to({
@@ -396,24 +400,20 @@ function BigWigs($) {
         time: 30000
     };
 
-    var timers = [];
+    var _timers = [];
     // Container for timers
-    var timerFrame = new $.newFrame("UIParent");
-    timerFrame.setPos(1200, 900);
+    var timerFrame = new $.newFrame("UIParent").setPos(1200, 900);
 
     /*    Create test timer, when timers are finished they will either be removed or respawn  */
     {
         // -- SCOPE / ANONYMOUS NAMESPACE?--
 
-        var timer = new $.newStatusBar(timerFrame, 200, 25);
-        timer.setValues(0, 1, 0);
-        timer.setValue(0, 30000);
-        timer.setColor(0xFF5E14);
+        var timer = new $.newStatusBar(timerFrame, 200, 25).setValues(0, 1, 0).setValue(0, 30000).setColor(0xFF5E14);
 
         var ability_name = new Phaser.BitmapText(game, 5, 5, "myriad", timerTestData.ability, 14);
         timer.addChild(ability_name);
 
-        timers.push(timer);
+        _timers.push(timer);
     } // -- END --
     /* ## Todo ## make this kind of functionalty so addons can hook some script to the game loop.
            
@@ -456,9 +456,8 @@ function UnitFrames($) {
     /**
      * Players unit frame
      */
-    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50);
-    playerFrame.togglePowerBar();
-    playerFrame.setPos(500, 800);
+    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50).togglePowerBar().setPos(500, 800);
+
     playerFrame.inputEnabled = true;
     playerFrame.events.onInputDown.add(function () {
         $.localPlayer().setTarget(playerFrame.unit);
@@ -467,8 +466,8 @@ function UnitFrames($) {
     /**
      * Target's unit frame
      */
-    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50);
-    targetFrame.setPos(1000, 800);
+    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50).setPos(1000, 800);
+
     $.events.TARGET_CHANGE_EVENT.add(function () {
         targetFrame.setUnit($.localPlayer().target);
     });
@@ -484,8 +483,7 @@ function UnitFrames($) {
         });
     }, 1200);
 
-    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50);
-    bossFrame.setPos(1200, 500);
+    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50).setPos(1200, 500);
 }
 });
 
@@ -884,12 +882,20 @@ var Frame = (function (_Phaser$Graphics) {
         value: function setSize(width, height) {
             this._width = width;
             this._height = height;
+            return this;
         }
     }, {
         key: "setPos",
         value: function setPos(x, y) {
             this.x = x;
             this.y = y;
+            return this;
+        }
+    }, {
+        key: "setAlpha",
+        value: function setAlpha(number) {
+            this.alpha = number;
+            return this;
         }
     }]);
 
@@ -989,6 +995,7 @@ var StatusBar = (function (_Frame) {
         key: "setColor",
         value: function setColor(color) {
             this._bar.tint = color;
+            return this;
         }
     }, {
         key: "setValues",
@@ -997,6 +1004,7 @@ var StatusBar = (function (_Frame) {
             this._minValue = min;
             this._currentValue = current;
             this._updateBarWidth();
+            return this;
         }
     }, {
         key: "setTexture",
@@ -1008,6 +1016,8 @@ var StatusBar = (function (_Frame) {
         value: function setMaxValue(newMaxValue) {
             this._maxValue = newMaxValue;
             this._updateBarWidth();
+
+            return this;
         }
     }, {
         key: "setValue",
@@ -1016,6 +1026,8 @@ var StatusBar = (function (_Frame) {
             if (duration) this._animationDuration = duration;else if (duration === 0) this._animationDuration = duration;
 
             this._updateBarWidth();
+
+            return this;
         }
     }]);
 
@@ -1062,6 +1074,7 @@ var StatusIcon = (function (_Frame) {
         _this.spellid = spellid;
         _this.events = events;
 
+        // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
         _this.cooldownOverlayAngle = {
             current: 0
         };
@@ -1308,12 +1321,14 @@ var UnitFrame = (function (_Frame) {
         value: function togglePowerBar() {
             this.config.powerBarEnabled = this.config.powerBarEnabled ? false : true;
             this._init();
+            return this;
         }
     }, {
         key: "setUnit",
         value: function setUnit(unit) {
             this.unit = unit;
             this._init();
+            return this;
         }
     }]);
 

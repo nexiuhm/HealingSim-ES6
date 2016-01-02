@@ -8,9 +8,10 @@ export default function UnitFrames($) {
     /**
      * Players unit frame
      */
-    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50);
-    playerFrame.togglePowerBar();
-    playerFrame.setPos(500, 800);
+    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50)
+                    .togglePowerBar()
+                    .setPos(500, 800);
+
     playerFrame.inputEnabled = true;
     playerFrame.events.onInputDown.add(() => {
         $.localPlayer().setTarget(playerFrame.unit)
@@ -19,8 +20,9 @@ export default function UnitFrames($) {
     /**
      * Target's unit frame
      */
-    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50);
-    targetFrame.setPos(1000, 800);
+    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50)
+                    .setPos(1000, 800);
+
     $.events.TARGET_CHANGE_EVENT.add(() => {
         targetFrame.setUnit($.localPlayer().target)
     });
@@ -36,7 +38,7 @@ export default function UnitFrames($) {
         })
     }, 1200);
 
-    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50);
-    bossFrame.setPos(1200, 500);
+    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50)
+                    .setPos(1200, 500);
 
 }
