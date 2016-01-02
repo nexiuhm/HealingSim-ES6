@@ -1,3 +1,7 @@
+/**
+ * A frame is just a container for displayObjects. Its used as the base for our Status bar, etc.
+ */
+
 export default class Frame extends Phaser.Graphics {
 
     constructor(parent) {

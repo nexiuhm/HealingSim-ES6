@@ -1,5 +1,10 @@
 import Frame from "./frame";
 
+
+/**
+ * A status bar is used to show the progress or change of something. Like a timer or a health bar
+ */
+
 export default class StatusBar extends Frame {
 
 

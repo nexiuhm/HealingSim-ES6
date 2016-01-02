@@ -1,4 +1,8 @@
-﻿export default function BigWigs($) {
+﻿/**
+ * Addon showing timers for important events. 
+ */
+
+export default function BigWigs($) {
     var timerTestData = {
         ability: "Heavy Aoe",
         repeats: true,

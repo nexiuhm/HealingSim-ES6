@@ -1,3 +1,4 @@
+
 export default class MainMenu {
     /**
      * TODO: Create menu so that the player can select Class, boss etc.

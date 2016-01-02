@@ -188,10 +188,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = CastFrame;
 
-// $ = the api we inject into addowns from addonManager
+/**
+ * Addon creating and managing the player's castbar.
+ */
 
 function CastFrame($) {
-    // quick dirty fix
 
     var config = {
         castSuccessColor: 0x00FF96,
@@ -255,6 +256,12 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = Debug;
+/**
+ * Temporary addon for development.
+ * Using phasers debug class to draw info on the screen.
+ * Note: this is a very costly operation, and should never be used outside of dev.
+ */
+
 function Debug($) {
     var player = $.localPlayer();
     $.events.GAME_LOOP_RENDER.add(function () {
@@ -378,6 +385,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = BigWigs;
+/**
+* Addon showing timers for important events. 
+*/
+
 function BigWigs($) {
     var timerTestData = {
         ability: "Heavy Aoe",
@@ -437,6 +448,9 @@ var _player2 = _interopRequireDefault(_player);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Addon creating the basic unit frames needed.
+ */
 function UnitFrames($) {
 
     /**
@@ -805,8 +819,8 @@ function newStatusIcon(parent, spellid) {
 
 /**
  * Inits the addon api. Returns an object containing api functions based on which state is provided.
- * @param  {Phaser.State}
- * @return {[type]}       [description]
+ * @param  {Phaser.State} The phaser game state 
+ * @return {Object}	Addon api functions
  */
 function init(_state) {
 
@@ -846,6 +860,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * A frame is just a container for displayObjects. Its used as the base for our Status bar, etc.
+ */
 
 var Frame = (function (_Phaser$Graphics) {
     _inherits(Frame, _Phaser$Graphics);
@@ -901,6 +919,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * A status bar is used to show the progress or change of something. Like a timer or a health bar
+ */
 
 var StatusBar = (function (_Frame) {
     _inherits(StatusBar, _Frame);
@@ -1023,6 +1045,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * A status icon is a square box with a clock overlay.
+ * Similarly to the statusbar its supposed to represent the duration or change of some value.
+ */
 
 var StatusIcon = (function (_Frame) {
     _inherits(StatusIcon, _Frame);
@@ -1881,6 +1908,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/** 
+ *  TODO: This class is really messy atm, need to find better ways.
+ */
+
 var Player = (function () {
     function Player(_class, race, level, name, events, isEnemy) {
         _classCallCheck(this, Player);
@@ -2138,6 +2169,22 @@ var Player = (function () {
         value: function total_haste() {
             // 1.5 = 150% haste and so on
             return this.stats.haste;
+        }
+    }, {
+        key: "findMostInjuredPlayers",
+        value: function findMostInjuredPlayers(players) {
+
+            var playersInRange = this.instance.getPlayerList();
+            var lowestPlayers = playersInRange.sort(function sortByDamageTakenAscending(player, otherPlayer) {
+                if (player.getHealthPercent() < otherPlayer.getHealthPercent()) {
+                    return -1;
+                } else if (player.getHealthPercent() > otherPlayer.getHealthPercent()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            return lowestPlayers.slice(0, players);
         }
     }]);
 

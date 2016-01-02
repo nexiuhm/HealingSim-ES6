@@ -1,8 +1,9 @@
 ﻿
-                    // $ = the api we inject into addowns from addonManager
+/**
+ * Addon creating and managing the player's castbar.
+ */
 
 export default function CastFrame($) {
-    // quick dirty fix
 
     var config = {
         castSuccessColor: 0x00FF96,
@@ -10,7 +11,7 @@ export default function CastFrame($) {
         width: 300,
         height: 30
     };
-
+    
     var castingUnit = $.localPlayer();
 
 

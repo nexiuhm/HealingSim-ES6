@@ -59,8 +59,8 @@ function newStatusIcon(parent, spellid) {
 
 /**
  * Inits the addon api. Returns an object containing api functions based on which state is provided.
- * @param  {Phaser.State}
- * @return {[type]}       [description]
+ * @param  {Phaser.State} The phaser game state 
+ * @return {Object}	Addon api functions
  */
 export function init(_state) {
 

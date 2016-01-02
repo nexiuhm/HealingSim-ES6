@@ -1,4 +1,9 @@
 import Frame from "./frame";
+
+/**
+ * A status icon is a square box with a clock overlay.
+ * Similarly to the statusbar its supposed to represent the duration or change of some value.
+ */
 export default class StatusIcon extends Frame {
 
 

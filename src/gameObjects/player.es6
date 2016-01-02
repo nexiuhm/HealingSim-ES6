@@ -1,6 +1,10 @@
-﻿import * as data from "./data";
+import * as data from "./data";
 import * as e from "../enums";
 
+
+/** 
+ *  TODO: This class is really messy atm, need to find better ways.
+ */
 export default class Player {
 
 
@@ -255,5 +259,23 @@ export default class Player {
     total_haste() {
         // 1.5 = 150% haste and so on
         return this.stats.haste;
+    }
+
+
+    findMostInjuredPlayers(players) {
+
+        var playersInRange = this.instance.getPlayerList();
+        var lowestPlayers = playersInRange.sort(
+            function sortByDamageTakenAscending(player, otherPlayer) {
+                if (player.getHealthPercent() < otherPlayer.getHealthPercent()) {
+                    return -1;
+                } else if (player.getHealthPercent() > otherPlayer.getHealthPercent()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        );
+        return lowestPlayers.slice(0, players);
     }
 }

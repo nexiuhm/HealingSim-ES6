@@ -1,7 +1,13 @@
-﻿export default function Debug($) {
+/**
+ * Temporary addon for development.
+ * Using phasers debug class to draw info on the screen.
+ * Note: this is a very costly operation, and should never be used outside of dev.
+ */
+
+export default function Debug($) {
     var player = $.localPlayer();
     $.events.GAME_LOOP_RENDER.add(() => onRenderGame());
-
+    
     function onRenderGame() {
         game.debug.text(game.time.fps + " FPS", 20, 20, '#00FF96');
         game.debug.text("v. " + game.gameVersion, 20, 40, '#00FF96');
