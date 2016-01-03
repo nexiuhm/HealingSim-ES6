@@ -31,6 +31,9 @@ brunch w --server
 
 ### TODO in no particular order
 - Finish the menu state with the ability to select boss & class ( unavaible classes greyed out )
+- Raid needs to contain actual logical groups ( right now every player is just trown into a single array ), this makes it impossible to target specific groups for damage or healing.
+- Split data.ts into multiple files, there are alot of unrelated data there. ( could be slit into spell_data, scale_data etc..)
+- End the game when the player either wins or loose ( go to the game over state )
 - Refactor or just completely rewrite the player class before we add more features. I'm thinking a base class "Entity" which both Player & Boss can extend.
 
 ##### The entity class have these different components
@@ -49,5 +52,14 @@ brunch w --server
       - APPLY_PERODIC_HEAL   ( tick callback ( if the tick needs to be recalculated every time ) 
       - APPLY_PERODIC_DAMAGE  
       - APPLY_MOD_STAT ( modifies a stat, usually temporary ) f.ex reduces damage taken by 20%
+      
+      
+##### First release goals for now:
+ 
+- A demo boss,
+- Auras working, and can be picked up by the UI to display correct icons. ( if someone has Power Word: shield on them, it should show )
+- Priest (discipline) working ok,
+- Menu screen ( even if most of the options are unavaible ) 
+- Game over screen
 
 
