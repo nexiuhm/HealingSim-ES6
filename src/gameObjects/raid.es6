@@ -2,10 +2,11 @@
 import Player from "./player";
 import Priest from "./class_modules/priest";
 import * as data from "./data";
-import {
-    rng
-}
-from "../util";
+import {rng} from "../util";
+
+/**
+ * Class that manages the group and player creation.
+ */
 
 export default class Raid {
 
@@ -25,9 +26,9 @@ export default class Raid {
     }
 
     generateTestPlayers() {
-        var numberOfTanks, numberOfHealers, numberOfDps;
-        var validTankClasses = [0, 1, 5, 9, 10];
-        var validHealerClasses = [1, 4, 6, 9, 10];
+        let numberOfTanks, numberOfHealers, numberOfDps;
+        let validTankClasses = [0, 1, 5, 9, 10];
+        let validHealerClasses = [1, 4, 6, 9, 10];
 
         if (this.raidSize == e.raid_size.GROUP) {
             numberOfTanks = 1;
@@ -49,32 +50,32 @@ export default class Raid {
 
 
         while (numberOfTanks--) {
-            var classs = validTankClasses[rng.integerInRange(0, validTankClasses.length - 1)],
+            let classs = validTankClasses[rng.integerInRange(0, validTankClasses.length - 1)],
                 race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
-            var unit = this.createUnit(classs, race, level, name);
+            let unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
 
         while (numberOfHealers--) {
-            var classs = validHealerClasses[rng.integerInRange(0, validHealerClasses.length - 1)],
+            let classs = validHealerClasses[rng.integerInRange(0, validHealerClasses.length - 1)],
                 race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
-            var unit = this.createUnit(classs, race, level, name);
+            let unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
 
         while (numberOfDps--) {
-            var classs = rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
+            let classs = rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
                 race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
                 level = 100,
                 name = data.generatePlayerName();
 
-            var unit = this.createUnit(classs, race, level, name);
+            let unit = this.createUnit(classs, race, level, name);
             this.addPlayer(unit);
         }
     }
@@ -110,27 +111,31 @@ export default class Raid {
 
     }
 
+    /**
+     * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
+     */
+    
     startTestDamage() {
-        var tank = this.players[0];
-        var offTank = this.players[1];
+        let tank = this.players[0];
+        let offTank = this.players[1];
 
         // --- Create some random damage for testing purposes ----
-        var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
-        //var bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
-        var tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
-        var bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
-        var raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
-        var raidAIHealing = setInterval(raidHealing.bind(this), 4000);
-        var manaRegenYolo = setInterval(gain_mana.bind(this), 1200);
-        var spike = setInterval(bossSpike.bind(this), 8000);
+        let bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
+        //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
+        let tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
+        let bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
+        let raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
+        let raidAIHealing = setInterval(raidHealing.bind(this), 4000);
+        let manaRegenYolo = setInterval(gain_mana.bind(this), 1200);
+        let spike = setInterval(bossSpike.bind(this), 8000);
 
         function gain_mana() {
-            var player = this.players[this.players.length - 1];
+            let player = this.players[this.players.length - 1];
             player.gain_resource(1600);
         }
 
         function bossSpike() {
-            var massiveBlow = rng.between(330000, 340900);
+            let massiveBlow = rng.between(330000, 340900);
 
             tank.recive_damage({
                 amount: massiveBlow
@@ -142,8 +147,8 @@ export default class Raid {
         }
 
         function bossSwing() {
-            var bossSwing = rng.between(70000, 90900);
-            var bossSwingCriticalHit = Math.random();
+            let bossSwing = rng.between(70000, 90900);
+            let bossSwingCriticalHit = Math.random();
 
             // 20% chance to critt. Experimental.
             if (bossSwingCriticalHit < 0.85)
@@ -158,8 +163,8 @@ export default class Raid {
         }
 
         function bossAoEDamage() {
-            for (var i = 0; i < this.players.length - 1; i++) {
-                var player = this.players[i]
+            for (let i = 0; i < this.players.length - 1; i++) {
+                let player = this.players[i]
                 player.recive_damage({
                     amount: 170000
                 });
@@ -167,9 +172,9 @@ export default class Raid {
         }
 
         function raidDamage() {
-            var i = rng.between(0, this.players.length - 1);
+            let i = rng.between(0, this.players.length - 1);
             for (; i < this.players.length; i++) {
-                var player = this.players[i];
+                let player = this.players[i];
                 player.recive_damage({
                     amount: rng.between(85555, 168900)
                 });
@@ -177,7 +182,7 @@ export default class Raid {
         }
 
         function singelTargetDamage() {
-            var random = rng.between(2, this.players.length - 1);
+            let random = rng.between(2, this.players.length - 1);
             this.players[random].recive_damage({
                 amount: rng.between(100000, 150000)
             });
@@ -187,10 +192,10 @@ export default class Raid {
 
         function raidHealing() {
 
-            for (var i = 0; i < this.players.length; i++) {
-                var player = this.players[i];
-                var incomingHeal = player.getCurrentHealth() + rng.between(80000, 120000);
-                var criticalHeal = Math.random();
+            for (let i = 0; i < this.players.length; i++) {
+                let player = this.players[i];
+                let incomingHeal = player.getCurrentHealth() + rng.between(80000, 120000);
+                let criticalHeal = Math.random();
 
                 // 20% chance to critt. Experimental.
                 if (criticalHeal < 0.8)

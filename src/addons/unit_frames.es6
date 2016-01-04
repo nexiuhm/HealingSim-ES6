@@ -8,7 +8,7 @@ export default function UnitFrames($) {
     /**
      * Players unit frame
      */
-    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50)
+    let playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50)
                     .togglePowerBar()
                     .setPos(500, 800);
 
@@ -20,7 +20,7 @@ export default function UnitFrames($) {
     /**
      * Target's unit frame
      */
-    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50)
+    let targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50)
                     .setPos(1000, 800);
 
     $.events.TARGET_CHANGE_EVENT.add(() => {
@@ -31,14 +31,14 @@ export default function UnitFrames($) {
      * Boss test frame
      */
 
-    var testBoss = new Player(4, 4, 100, "Ragnaros", $.events, true);
+    let testBoss = new Player(4, 4, 100, "Ragnaros", $.events, true);
     setInterval(function() {
         testBoss.recive_damage({
             amount: 5250
         })
     }, 1200);
 
-    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50)
+    let bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50)
                     .setPos(1200, 500);
 
 }

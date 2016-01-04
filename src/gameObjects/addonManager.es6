@@ -35,8 +35,8 @@ export default class AddonManager {
     }
 
     getListOfAddons() {
-        var addonList = [];
-        for (var [_, addon] of this._addons) {
+        let addonList = [];
+        for (let [_, addon] of this._addons) {
             addonList.push([addon.name, addon.enabled]);
         }
         return addonList;

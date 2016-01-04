@@ -35,7 +35,7 @@ class PhaserCustomGame extends Phaser.Game {
      */
     sendKeyBoardInputToCurrentState(keyPressData) {
         
-        var currentState = this.state.getCurrentState();
+        let currentState = this.state.getCurrentState();
         if (!currentState.handleKeyBoardInput)
             return;
         else

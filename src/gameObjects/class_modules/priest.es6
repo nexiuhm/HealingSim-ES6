@@ -27,7 +27,7 @@ class flash_of_light extends SpellBase {
     }
 
     cast_time() {
-        var ct = super.cast_time();
+        let ct = super.cast_time();
 
         //#### Cast time incresed by 200% if Shaman has Tidal Waves buff #### //
         if (this.target.hasAura("tidal_waves")) {
@@ -39,7 +39,7 @@ class flash_of_light extends SpellBase {
     execute() {
         super.execute();
         //this.target.consumeAura("tidal_waves", 1); 
-        var crit = game.rnd.between(1, 2);
+        let crit = game.rnd.between(1, 2);
         this.target.setHealth(this.target.getCurrentHealth() + 130000 * crit);
     }
 }
@@ -84,7 +84,7 @@ class clarity_of_will extends SpellBase {
 
     execute() {
         super.execute();
-        var crit = game.rnd.between(1, 2);
+        let crit = game.rnd.between(1, 2);
         this.target.setAbsorb(120000 * crit);
     }
 

@@ -46,9 +46,9 @@ export default class Play {
     handleKeyBoardInput(key) {
         // ## TODO ## : Find a better way to deal with this, maybe just send the input to the addons, and let the addons/ui decide what to do with it.
 
-        var keybindings = data.getKeyBindings();
-        for (var binding in keybindings) {
-            var keybinding = keybindings[binding];
+        let keybindings = data.getKeyBindings();
+        for (let binding in keybindings) {
+            let keybinding = keybindings[binding];
             if (keybinding.key == key) {
                 if (keybinding.spell)
                     this.player.cast_spell(keybinding.spell);

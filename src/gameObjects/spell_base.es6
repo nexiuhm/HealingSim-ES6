@@ -1,4 +1,4 @@
-﻿//* Base spell class that all spells extends upon //
+//* Base spell class that all spells extends upon //
 
 export default class SpellBase {
     //### Spell data ###
@@ -24,11 +24,11 @@ export default class SpellBase {
         this.onCooldown = false;
 
         //Storage for timers ( Phaser.Timer )
-        var current_cast, current_cooldown;
+        let current_cast, current_cooldown;
     }
 
     use() {
-       
+
         // Save the target beeing casted on
         this.target = this.player.target;
 
@@ -46,34 +46,37 @@ export default class SpellBase {
     }
 
     execute() {
-   
+
         this.consumeResource();
 
         if (this.hasCooldown)
             this.start_cooldown();
-           
+
     }
 
     start_casting() {
         this.player.isCasting = true;
         // ### TODO: Need to be able to handle channeled spells ###
-        var ct = this.cast_time();
+        let ct = this.cast_time();
         this.current_cast = game.time.events.add(ct, () => this.cast_finished());
 
         // Send a signal/event that a spell is starting its cast.
         this.player.events.UNIT_STARTS_SPELLCAST.dispatch(ct, this.name);
     }
-    
+
     start_cooldown() {
         this.onCooldown = true;
         // Get the cooldown
-        var cd = this.cooldown();
+        let cd = this.cooldown();
         // Start the timer with callback
         this.current_cooldown = game.time.events.add(cd, () => this.onCooldownReady());
-        this.player.events.ON_COOLDOWN_START.dispatch({ cooldownLenght: cd, spellid:this.spellid });
+        this.player.events.ON_COOLDOWN_START.dispatch({
+            cooldownLenght: cd,
+            spellid: this.spellid
+        });
     }
 
-   can_use(){
+    can_use() {
         if (this.onCooldown) {
             return false;
         }
@@ -87,7 +90,7 @@ export default class SpellBase {
     }
 
     cast_time() {
-        return this.base_casttime * (1-(this.player.total_haste()/100));
+        return this.base_casttime * (1 - (this.player.total_haste() / 100));
     }
 
     cancel_cast() {
@@ -102,13 +105,15 @@ export default class SpellBase {
 
     onCooldownReady() {
         this.onCooldown = false;
-        this.player.events.ON_COOLDOWN_ENDED.dispatch({ spellid: this.spellid });
+        this.player.events.ON_COOLDOWN_ENDED.dispatch({
+            spellid: this.spellid
+        });
     }
 
     cooldown() {
         return this.base_cooldown;
     }
-    
+
     cost() {
         return this.powerCost;
     }

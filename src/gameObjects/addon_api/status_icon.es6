@@ -24,7 +24,7 @@ export default class StatusIcon extends Frame {
         this.spellIcon.height = 50;
 
         // Alpha mask for cooldown overlay
-        var mask = new Phaser.Graphics(game, 0, 0);
+        let mask = new Phaser.Graphics(game, 0, 0);
         mask.beginFill(0xFFFFFF);
         mask.drawRect(0, 0, 50, 50);
         mask.endFill();
@@ -35,7 +35,10 @@ export default class StatusIcon extends Frame {
         this.cd_overlay.mask = mask;
         this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
 
+
+
         // adding displayObjects to the parent container
+        this.addChild(mask);
         this.addChild(this.spellIcon);
         this.addChild(this.cd_overlay);
 
@@ -49,7 +52,7 @@ export default class StatusIcon extends Frame {
         // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
         if (event.spellid != this.spellid)
             return;
-        // Create a timer that updates a variable locally.
+        // Create a timer that updates a letiable locally.
         this.cd_overlay.alpha = 0.8;
         this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
             current: 270

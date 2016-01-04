@@ -50,7 +50,7 @@ export default class StatusBar extends Frame {
      * @private
      */
     _updateBarWidth() {
-        var barWidthInPixels = Math.round((this._currentValue / this._maxValue) * this._width);
+        let barWidthInPixels = Math.round((this._currentValue / this._maxValue) * this._width);
         if (barWidthInPixels <= 0) // something bad happens if it goes to 0
             barWidthInPixels = 1;
 

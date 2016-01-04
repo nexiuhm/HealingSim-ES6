@@ -108,8 +108,8 @@ export default class Player {
     }
 
     getSpellList() {
-        var spellList = [];
-        for (var spell in this.spells)
+        let spellList = [];
+        for (let spell in this.spells)
             spellList.push(spell);
 
         return spellList;
@@ -128,7 +128,7 @@ export default class Player {
     recive_damage(dmg) {
         if (!this.alive)
             return;
-        var avoided_damage = false;
+        let avoided_damage = false;
 
 
         //--- Avoidance ---------------------------------------
@@ -162,7 +162,7 @@ export default class Player {
         // ## Find spell ####
         if (!this.spells[spellName])
             return;
-        var spell = this.spells[spellName];
+        let spell = this.spells[spellName];
 
         // ##################
         if (this.isCasting)
@@ -264,8 +264,8 @@ export default class Player {
 
     findMostInjuredPlayers(players) {
 
-        var playersInRange = this.instance.getPlayerList();
-        var lowestPlayers = playersInRange.sort(
+        let playersInRange = this.instance.getPlayerList();
+        let lowestPlayers = playersInRange.sort(
             function sortByDamageTakenAscending(player, otherPlayer) {
                 if (player.getHealthPercent() < otherPlayer.getHealthPercent()) {
                     return -1;

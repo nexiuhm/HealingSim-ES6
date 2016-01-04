@@ -92,7 +92,7 @@ export default class UnitFrame extends Frame {
 
         this.powerBar.setValue(this.unit.getMana());
 
-        var mana_pct = (this.unit.getMana() / this.unit.getMaxMana()) * 100;
+        let mana_pct = (this.unit.getMana() / this.unit.getMaxMana()) * 100;
         this.manaPercentText.setText(mana_pct.toFixed(1) + "%");
     }
 

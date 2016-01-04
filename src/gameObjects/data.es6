@@ -1,11 +1,11 @@
-﻿// ## TODO ## import character data from armory
+// ## TODO ## import character data from armory
 function getArmoryData(name, realm) {
     //validate realm <- Check out regular expressions for this
     //validate name
-    var blizz_api_url = "https://eu.api.battle.net";
-    var api_key = 'fhmzgc7qd2ypwdg87t2j8nuv6pxcbftb'; // risky to have it here ? :p
+    let blizz_api_url = "https://eu.api.battle.net";
+    let api_key = 'fhmzgc7qd2ypwdg87t2j8nuv6pxcbftb'; // risky to have it here ? :p
 
-    //  var data = $.getJSON(blizz_api_url + '/wow/character/' + realm + '/' + name + '?fields=stats&locale=en_GB&apikey=' + api_key);
+    //  let data = $.getJSON(blizz_api_url + '/wow/character/' + realm + '/' + name + '?fields=stats&locale=en_GB&apikey=' + api_key);
 }
 
 export function classBaseStats(_class, level, stat) {
@@ -26,6 +26,7 @@ export function getHpPerStamina(level) {
 export function getCombatRating(rating, level) {
     return (1 / combat_rating_multipliers[rating][level - 1]);
 }
+
 export function getManaByClass(_class, level) {
     return mana_by_class[_class + 1][level - 1];
 }
@@ -35,36 +36,21 @@ export function getSpellData(spell) {
 }
 
 export function getClassColor(classId) {
-    var classColors = [0xC79C6E, 0xF58CBA, 0xABD473, 0xFFF569, 0xFFFFFF, 0xC41F3B, 0x0070DE, 0x69CCF0, 0x9482C9, 0x00FF96, 0xFF7D0A]
+    let classColors = [0xC79C6E, 0xF58CBA, 0xABD473, 0xFFF569, 0xFFFFFF, 0xC41F3B, 0x0070DE, 0x69CCF0, 0x9482C9, 0x00FF96, 0xFF7D0A]
     return classColors[classId] || classColors[1];
 }
 
 export function generatePlayerName() {
-    var nameList = "Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu"
-    var nameArray = nameList.split(",")
-    var random_index = game.rnd.between(0, nameArray.length-1);
+    let nameList = "Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu"
+    let nameArray = nameList.split(",")
+    let random_index = game.rnd.between(0, nameArray.length - 1);
     return nameArray[random_index];
 }
 
 // Needed for some spells. ## Todo: fix this function since its been moved from player
-export function findMostInjuredPlayers(players) {
 
-    var playersInRange = this.instance.getPlayerList();
-    var lowestPlayers = playersInRange.sort(
-        function sortByDamageTakenAscending(player, otherPlayer) {
-            if (player.getHealthPercent() < otherPlayer.getHealthPercent()) {
-                return -1;
-            } else if (player.getHealthPercent() > otherPlayer.getHealthPercent()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    );
-    return lowestPlayers.slice(0, players);
-}
 
-var keybindings = { // keybinding         // spellbidning
+let keybindings = { // keybinding         // spellbidning
     ACTION_BUTTON_1: {
         key: '1',
         spell: 'flash_of_light'
@@ -83,7 +69,7 @@ var keybindings = { // keybinding         // spellbidning
     }
 };
 
-var spelldata = {
+let spelldata = {
 
     flash_of_light: {
         casttime: 1500,
@@ -146,7 +132,7 @@ var spelldata = {
 
 };
 
-var combat_rating_multipliers = [
+let combat_rating_multipliers = [
     // Dodge rating multipliers
     [
         0.796153187751770, 0.796153068542480, 0.796153068542480, 0.796153068542480, 0.796152949333191,
@@ -724,7 +710,7 @@ var combat_rating_multipliers = [
         25.000000000000000, 25.000000000000000, 25.000000000000000, 25.000000000000000, 25.000000000000000,
     ],
 ];
-var hp_per_stamina = [
+let hp_per_stamina = [
     14.000000000000000, 14.000000000000000, 15.000000000000000, 16.000000000000000, 17.000000000000000,
     18.000000000000000, 18.000000000000000, 18.000000000000000, 18.000000000000000, 18.000000000000000,
     18.000000000000000, 18.000000000000000, 18.000000000000000, 18.000000000000000, 18.000000000000000,
@@ -750,7 +736,7 @@ var hp_per_stamina = [
 ];
 
 
-var mana_by_class = [
+let mana_by_class = [
     [
         0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000,
         0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000,
@@ -1040,7 +1026,7 @@ var mana_by_class = [
     ],
 ];
 
-var class_base_stats_by_level = [
+let class_base_stats_by_level = [
     [ // No Class
         //    Str     Agi     Sta     Int     Spi
         [0, 0, 0, 0, 0],
@@ -2280,7 +2266,7 @@ var class_base_stats_by_level = [
 ];
 
 //  Racial Base Stats(Str Agi Sta Int Spi)
-var race_base_stats = [
+let race_base_stats = [
     // Str Agi Sta Int Spi
     [0, 0, 0, 0, 0], // No Race
     [0, 0, 0, 0, 0], // Human

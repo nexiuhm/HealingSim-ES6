@@ -3,15 +3,15 @@
  */
 
 export default function BigWigs($) {
-    var timerTestData = {
+    let timerTestData = {
         ability: "Heavy Aoe",
         repeats: true,
         time: 30000
     };
 
-    var _timers = [];
+    let _timers = [];
     // Container for timers
-    var timerFrame = new $.newFrame("UIParent")
+    let timerFrame = new $.newFrame("UIParent")
         .setPos(1200, 900);
 
 

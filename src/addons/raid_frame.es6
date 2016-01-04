@@ -6,14 +6,14 @@
 
 export default function RaidFrame($) {
 
-    var unitFrames = [];
-    var config = {
+    let unitFrames = [];
+    let config = {
         spacing: 2,
         unitFrameWidth: 90,
         unitFrameHeight: 40
     };
 
-    var raidFrame = $.newFrame("UIParent")
+    let raidFrame = $.newFrame("UIParent")
         .setPos(800, 400);
 
 
@@ -55,8 +55,8 @@ export default function RaidFrame($) {
      * The animation that is fired when the raid has been created
      */
 
-    for (var player = 0; player < unitFrames.length; player++) {
-        var unitFrame = unitFrames[player];
+    for (let player = 0; player < unitFrames.length; player++) {
+        let unitFrame = unitFrames[player];
         game.add.tween(unitFrame).to({
             y: -800
         }, 1550 + (player * 10), Phaser.Easing.Elastic.Out, true, undefined, undefined, true);

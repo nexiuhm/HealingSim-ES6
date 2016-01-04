@@ -7,13 +7,7 @@ import StatusIcon from "./status_icon";
 let game, player, raid, state;
 
 function setTarget(unit) {
-    try {
         player.setTarget(unit);
-    } catch (e) {
-
-        console.log(e.stack);
-
-    }
 }
 
 function getGroupMembers() {
@@ -59,6 +53,11 @@ function newStatusIcon(parent, spellid) {
 
 /**
  * Inits the addon api. Returns an object containing api functions based on which state is provided.
+ * 
+ * ##Fun fact##: This is actually called a "factory" or "compositon" in js programming. When you return a object with functions like here.
+ * It's actually favoured over classes by many Javascript developers since it much more flexible, and you can achive true privacy (whatever you dont return is essentialy private)
+ * The downside is that classes are faster, especially in the case of google's V8 javascript intreperter.
+ * 
  * @param  {Phaser.State} The phaser game state 
  * @return {Object}	Addon api functions
  */

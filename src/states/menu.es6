@@ -11,11 +11,11 @@ export default class MainMenu {
     }
 
     printAddonList() {
-        var addonList = this.game.addons.getListOfAddons();
-        var lineHeight = 15;
-        var headerText = this.game.add.bitmapText(0, 0, "myriad", "### REGISTRED ADDONS ###", 14);
+        let addonList = this.game.addons.getListOfAddons();
+        let lineHeight = 15;
+        let headerText = this.game.add.bitmapText(0, 0, "myriad", "### REGISTRED ADDONS ###", 14);
         headerText.tint = 0xFF00FF;
-        for (var i = 0; i < addonList.length; i++) {
+        for (let i = 0; i < addonList.length; i++) {
             this.add.bitmapText(0, lineHeight * i + lineHeight, "myriad", "## Addon Name: " + addonList[i][0] + "  ## Enabled : " + addonList[i][1], 14);
         }
     }

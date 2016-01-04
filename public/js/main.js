@@ -173,10 +173,14 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = ActionBar;
+/**
+* Addon displaying the players spells & listens for input to execute the spells. (todo)
+*/
+
 function ActionBar($) {
 
-    var test = $.newStatusIcon("UIParent", 2);
-    //test.setPos(300,300); ## hmm: The mask doesnt move with the displayObject it's assigned to :(
+    var testSpellIcon1 = $.newStatusIcon("UIParent", 2).setPos(300, 300);
+    var testSpellIcon2 = $.newStatusIcon("UIParent", 5).setPos(300, 350);
 }
 });
 
@@ -214,8 +218,8 @@ function CastFrame($) {
     cast_bar.addChild(spell_name);
 
     // Listen to player events ## todo ## remove global MAINSTATE
-    $.events.UNIT_STARTS_SPELLCAST.add(function (s, t) {
-        return onUnitStartCast(s, t);
+    $.events.UNIT_STARTS_SPELLCAST.add(function (castTime, spellName) {
+        return onUnitStartCast(castTime, spellName);
     });
     $.events.UNIT_FINISH_SPELLCAST.add(function () {
         return onUnitFinishCast();
@@ -265,6 +269,7 @@ function Debug($) {
     function onRenderGame() {
         game.debug.text(game.time.fps + " FPS", 20, 20, '#00FF96');
         game.debug.text("v. " + game.gameVersion, 20, 40, '#00FF96');
+        /*
         if (player.target) {
             game.debug.text("#### UNIT TARGET INFO ########## ", 20, 60, '#00FF96');
             game.debug.text("#### Name: " + player.target.name, 20, 80, '#00FF96');
@@ -274,8 +279,7 @@ function Debug($) {
             game.debug.text("#### Haste_percent: " + player.target.total_haste() + ' %', 20, 160, '#00FF96');
             game.debug.text("#### Absorb: " + player.stats.absorb, 20, 180, '#00FF96');
         }
-
-        game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
+          game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
         game.debug.text("window.innerHeight: " + window.innerHeight, 20, 220, '#00FF96');
         //game.debug.text("World CenterX: " + game.world.centerX, 20, 360, '#00FF96');
         //game.debug.text("World CenterY: " + game.world.centerY, 20, 380, '#00FF96');
@@ -288,7 +292,7 @@ function Debug($) {
         //game.debug.text("World CenterX: " + game.world.centerX, 20, 360, '#00FF96');
         //game.debug.text("World CenterY: " + game.world.centerY, 20, 380, '#00FF96');
         game.debug.text("Mouse X: " + game.input.x, 20, 400, '#00FF96');
-        game.debug.text("Mouse Y: " + game.input.y, 20, 420, '#00FF96');
+        game.debug.text("Mouse Y: " + game.input.y, 20, 420, '#00FF96');*/
     }
 }
 });
@@ -361,8 +365,8 @@ function RaidFrame($) {
      */
 
     for (var player = 0; player < unitFrames.length; player++) {
-        var unitFrame = unitFrames[player];
-        game.add.tween(unitFrame).to({
+        var _unitFrame = unitFrames[player];
+        game.add.tween(_unitFrame).to({
             y: -800
         }, 1550 + player * 10, Phaser.Easing.Elastic.Out, true, undefined, undefined, true);
     }
@@ -769,12 +773,7 @@ var game = undefined,
     state = undefined;
 
 function setTarget(unit) {
-    try {
-        player.setTarget(unit);
-    } catch (e) {
-
-        console.log(e.stack);
-    }
+    player.setTarget(unit);
 }
 
 function getGroupMembers() {
@@ -817,6 +816,11 @@ function newStatusIcon(parent, spellid) {
 
 /**
  * Inits the addon api. Returns an object containing api functions based on which state is provided.
+ * 
+ * ##Fun fact##: This is actually called a "factory" or "compositon" in js programming. When you return a object with functions like here.
+ * It's actually favoured over classes by many Javascript developers since it much more flexible, and you can achive true privacy (whatever you dont return is essentialy private)
+ * The downside is that classes are faster, especially in the case of google's V8 javascript intreperter.
+ * 
  * @param  {Phaser.State} The phaser game state 
  * @return {Object}	Addon api functions
  */
@@ -1097,6 +1101,7 @@ var StatusIcon = (function (_Frame) {
         _this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
 
         // adding displayObjects to the parent container
+        _this.addChild(mask);
         _this.addChild(_this.spellIcon);
         _this.addChild(_this.cd_overlay);
 
@@ -1117,7 +1122,7 @@ var StatusIcon = (function (_Frame) {
 
             // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
             if (event.spellid != this.spellid) return;
-            // Create a timer that updates a variable locally.
+            // Create a timer that updates a letiable locally.
             this.cd_overlay.alpha = 0.8;
             this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
                 current: 270
@@ -1532,13 +1537,13 @@ var clarity_of_will = (function (_SpellBase4) {
 });
 
 ;require.register("src/gameObjects/data", function(exports, require, module) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:true});exports.classBaseStats=classBaseStats;exports.getKeyBindings=getKeyBindings;exports.raceBaseStats=raceBaseStats;exports.getHpPerStamina=getHpPerStamina;exports.getCombatRating=getCombatRating;exports.getManaByClass=getManaByClass;exports.getSpellData=getSpellData;exports.getClassColor=getClassColor;exports.generatePlayerName=generatePlayerName;exports.findMostInjuredPlayers=findMostInjuredPlayers; // ## TODO ## import character data from armory
+"use strict";Object.defineProperty(exports,"__esModule",{value:true});exports.classBaseStats=classBaseStats;exports.getKeyBindings=getKeyBindings;exports.raceBaseStats=raceBaseStats;exports.getHpPerStamina=getHpPerStamina;exports.getCombatRating=getCombatRating;exports.getManaByClass=getManaByClass;exports.getSpellData=getSpellData;exports.getClassColor=getClassColor;exports.generatePlayerName=generatePlayerName; // ## TODO ## import character data from armory
 function getArmoryData(name,realm){ //validate realm <- Check out regular expressions for this
 //validate name
 var blizz_api_url="https://eu.api.battle.net";var api_key='fhmzgc7qd2ypwdg87t2j8nuv6pxcbftb'; // risky to have it here ? :p
-//  var data = $.getJSON(blizz_api_url + '/wow/character/' + realm + '/' + name + '?fields=stats&locale=en_GB&apikey=' + api_key);
+//  let data = $.getJSON(blizz_api_url + '/wow/character/' + realm + '/' + name + '?fields=stats&locale=en_GB&apikey=' + api_key);
 }function classBaseStats(_class,level,stat){return class_base_stats_by_level[_class+1][level-1][stat];}function getKeyBindings(){return keybindings;}function raceBaseStats(race,stat){return race_base_stats[race][stat];}function getHpPerStamina(level){return hp_per_stamina[level-1];}function getCombatRating(rating,level){return 1/combat_rating_multipliers[rating][level-1];}function getManaByClass(_class,level){return mana_by_class[_class+1][level-1];} /* Future goal:  grab spelldata from simcraft files.  */function getSpellData(spell){return spelldata[spell];}function getClassColor(classId){var classColors=[0xC79C6E,0xF58CBA,0xABD473,0xFFF569,0xFFFFFF,0xC41F3B,0x0070DE,0x69CCF0,0x9482C9,0x00FF96,0xFF7D0A];return classColors[classId]||classColors[1];}function generatePlayerName(){var nameList="Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu";var nameArray=nameList.split(",");var random_index=game.rnd.between(0,nameArray.length-1);return nameArray[random_index];} // Needed for some spells. ## Todo: fix this function since its been moved from player
-function findMostInjuredPlayers(players){var playersInRange=this.instance.getPlayerList();var lowestPlayers=playersInRange.sort(function sortByDamageTakenAscending(player,otherPlayer){if(player.getHealthPercent()<otherPlayer.getHealthPercent()){return -1;}else if(player.getHealthPercent()>otherPlayer.getHealthPercent()){return 1;}else {return 0;}});return lowestPlayers.slice(0,players);}var keybindings={ // keybinding         // spellbidning
+var keybindings={ // keybinding         // spellbidning
 ACTION_BUTTON_1:{key:'1',spell:'flash_of_light'},ACTION_BUTTON_2:{key:'2',spell:'power_word_shield'},ACTION_BUTTON_3:{key:'3',spell:'clarity_of_will'},ACTION_BUTTON_4:{key:'4',spell:'power_infusion'}};var spelldata={flash_of_light:{casttime:1500,resource_cost:6700,resource_type:"mana",cooldown:0,name:'Flash Of Light',id:1},power_infusion:{casttime:0,resource_cost:5000,resource_type:"mana",cooldown:30000,name:'Power Infusion',id:2},healing_surge:{casttime:1500,resource_cost:10000,resource_type:"mana",cooldown:0,name:'Flash Of Light',id:3},chain_heal:{casttime:1620,resource_cost:10,resource_type:"mana",cooldown:0,name:'Chain Heal',id:4},power_word_shield:{casttime:0,resource_cost:4400,resource_type:"mana",cooldown:6000,name:'Power Word Shield',id:5},clarity_of_will:{casttime:2500,resource_cost:3300,resource_type:"mana",cooldown:0,name:'Clarity Of Will',id:6}};var combat_rating_multipliers=[ // Dodge rating multipliers
 [0.796153187751770,0.796153068542480,0.796153068542480,0.796153068542480,0.796152949333191,0.796153128147125,0.796153068542480,0.796153008937836,0.796153008937836,0.796153128147125,1.194230556488037,1.592308163642883,1.990383744239807,2.388461112976074,2.786539077758789,3.184616804122925,3.582691907882690,3.980769872665405,4.378847599029541,4.776922702789307,5.175000190734863,5.573077678680420,5.971153259277344,6.369230747222900,6.767308712005615,7.165383338928223,7.563461780548096,7.961538791656494,8.359617233276367,8.757692337036133,9.155768394470215,9.553846359252930,9.951925277709961,10.350001335144043,10.748077392578125,11.146153450012207,11.544231414794922,11.942307472229004,12.340383529663086,12.738462448120117,13.136537551879883,13.534616470336914,13.932692527770996,14.330768585205078,14.728846549987793,15.126925468444824,15.524999618530273,15.923077583312988,16.321155548095703,16.719230651855469,17.117309570312500,17.515386581420898,17.913461685180664,18.311538696289062,18.709617614746094,19.107692718505859,19.505769729614258,19.903848648071289,20.301923751831055,20.700000762939453,20.924497604370117,21.198993682861328,21.473491668701172,21.747989654541016,22.022485733032227,22.296983718872070,22.571481704711914,22.845977783203125,23.120475769042969,23.394973754882812,23.669469833374023,23.943967819213867,24.218465805053711,24.492961883544922,24.767459869384766,25.041955947875977,25.316453933715820,25.590951919555664,25.865447998046875,26.139945983886719,27.206882476806641,28.273818969726562,28.807287216186523,28.807287216186523,29.340755462646484,30.407691955566406,31.474628448486328,32.541564941406250,33.608501434326172,34.000000000000000,40.000000000000000,47.000000000000000,56.000000000000000,65.000000000000000,75.000000000000000,89.000000000000000,103.000000000000000,121.000000000000000,140.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000], // Parry rating multipliers
 [0.796153187751770,0.796153068542480,0.796153068542480,0.796153068542480,0.796152949333191,0.796153128147125,0.796153068542480,0.796153008937836,0.796153008937836,0.796153128147125,1.194230556488037,1.592308163642883,1.990383744239807,2.388461112976074,2.786539077758789,3.184616804122925,3.582691907882690,3.980769872665405,4.378847599029541,4.776922702789307,5.175000190734863,5.573077678680420,5.971153259277344,6.369230747222900,6.767308712005615,7.165383338928223,7.563461780548096,7.961538791656494,8.359617233276367,8.757692337036133,9.155768394470215,9.553846359252930,9.951925277709961,10.350001335144043,10.748077392578125,11.146153450012207,11.544231414794922,11.942307472229004,12.340383529663086,12.738462448120117,13.136537551879883,13.534616470336914,13.932692527770996,14.330768585205078,14.728846549987793,15.126925468444824,15.524999618530273,15.923077583312988,16.321155548095703,16.719230651855469,17.117309570312500,17.515386581420898,17.913461685180664,18.311538696289062,18.709617614746094,19.107692718505859,19.505769729614258,19.903848648071289,20.301923751831055,20.700000762939453,20.924497604370117,21.198993682861328,21.473491668701172,21.747989654541016,22.022485733032227,22.296983718872070,22.571481704711914,22.845977783203125,23.120475769042969,23.394973754882812,23.669469833374023,23.943967819213867,24.218465805053711,24.492961883544922,24.767459869384766,25.041955947875977,25.316453933715820,25.590951919555664,25.865447998046875,26.139945983886719,27.206882476806641,28.273818969726562,28.807287216186523,28.807287216186523,29.340755462646484,30.407691955566406,31.474628448486328,32.541564941406250,33.608501434326172,34.000000000000000,40.000000000000000,47.000000000000000,56.000000000000000,65.000000000000000,75.000000000000000,89.000000000000000,103.000000000000000,121.000000000000000,140.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000,162.000000000000000], // Block rating multipliers
@@ -2242,6 +2247,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Class that manages the group and player creation.
+ */
+
 var Raid = (function () {
     function Raid(state) {
         _classCallCheck(this, Raid);
@@ -2264,7 +2273,9 @@ var Raid = (function () {
     }, {
         key: "generateTestPlayers",
         value: function generateTestPlayers() {
-            var numberOfTanks, numberOfHealers, numberOfDps;
+            var numberOfTanks = undefined,
+                numberOfHealers = undefined,
+                numberOfDps = undefined;
             var validTankClasses = [0, 1, 5, 9, 10];
             var validHealerClasses = [1, 4, 6, 9, 10];
 
@@ -2347,6 +2358,11 @@ var Raid = (function () {
                     break;
             }
         }
+
+        /**
+         * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
+         */
+
     }, {
         key: "startTestDamage",
         value: function startTestDamage() {
@@ -2355,7 +2371,7 @@ var Raid = (function () {
 
             // --- Create some random damage for testing purposes ----
             var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
-            //var bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
+            //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
             var tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
             var bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
             var raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
@@ -2488,7 +2504,8 @@ var SpellBase = (function () {
         this.onCooldown = false;
 
         //Storage for timers ( Phaser.Timer )
-        var current_cast, current_cooldown;
+        var current_cast = undefined,
+            current_cooldown = undefined;
     }
 
     _createClass(SpellBase, [{
@@ -2541,7 +2558,10 @@ var SpellBase = (function () {
             this.current_cooldown = game.time.events.add(cd, function () {
                 return _this2.onCooldownReady();
             });
-            this.player.events.ON_COOLDOWN_START.dispatch({ cooldownLenght: cd, spellid: this.spellid });
+            this.player.events.ON_COOLDOWN_START.dispatch({
+                cooldownLenght: cd,
+                spellid: this.spellid
+            });
         }
     }, {
         key: "can_use",
@@ -2578,7 +2598,9 @@ var SpellBase = (function () {
         key: "onCooldownReady",
         value: function onCooldownReady() {
             this.onCooldown = false;
-            this.player.events.ON_COOLDOWN_ENDED.dispatch({ spellid: this.spellid });
+            this.player.events.ON_COOLDOWN_ENDED.dispatch({
+                spellid: this.spellid
+            });
         }
     }, {
         key: "cooldown",
@@ -2773,7 +2795,7 @@ var Boot = (function () {
                         game.addons.add("Cast Bar 0.1", _castbar2.default);
                         game.addons.add("Raid Frames 0.1", _raid_frame2.default);
                         game.addons.add("Unit Frames 0.1", _unit_frames2.default);
-                        game.addons.add("Debug", _debug2.default);
+                        //game.addons.add("Debug", debugAddon);
                         game.addons.add("BossTimers", _timers2.default);
                         game.addons.add("Action Bar", _action_bar_addon2.default);
 
@@ -2947,10 +2969,11 @@ exports.default = Play;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.printPrettyError = printPrettyError;
 exports.freezeObject = freezeObject;
+exports.speedtest = speedtest;
 var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).toString()]);
 
 /**
@@ -2961,7 +2984,7 @@ var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.rando
  */
 
 function printPrettyError(errorReason, error) {
-  console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
+    console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
 }
 
 /**
@@ -2971,8 +2994,32 @@ function printPrettyError(errorReason, error) {
  */
 
 function freezeObject(objectToFreeze) {
-  var frozenObject = Object.freeze(objectToFreeze);
-  return frozenObject;
+    var frozenObject = Object.freeze(objectToFreeze);
+    return frozenObject;
+}
+
+function speedtest(config) {
+    if (typeof config !== 'Object') {
+        // error: Excepts plain object
+        return;
+    }
+
+    subRoutinesToRun = {};
+
+    for (var key in config) {
+        if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
+            subRoutinesToRun[key] = config[key];
+        }
+    }
+
+    //dbg
+    console.log(JSON.stringify(subRoutinesToRun));
+
+    function _run(iterations) {
+
+        // capture date
+
+    }
 }
 });
 
