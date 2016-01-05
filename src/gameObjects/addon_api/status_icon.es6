@@ -15,7 +15,7 @@ export default class StatusIcon extends Frame {
 
         // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
         this.cooldownOverlayAngle = {
-            current: 0
+            current: -90
         };
 
         // Spell icon
@@ -32,11 +32,9 @@ export default class StatusIcon extends Frame {
         // Cooldown overlay arc init
         this.cd_overlay = new Phaser.Graphics(game, 0, 0);
         this.cd_overlay.alpha = 0.8;
-        this.cd_overlay.mask = mask;
         this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
-
-
-
+        this.cd_overlay.mask = mask;
+      
         // adding displayObjects to the parent container
         this.addChild(mask);
         this.addChild(this.spellIcon);
@@ -70,7 +68,7 @@ export default class StatusIcon extends Frame {
         // #TODO## Remove hook from game loop
         this.cd_overlay.alpha = 0;
         this.animTween.stop();
-        this.cooldownOverlayAngle.current = 0;
+        this.cooldownOverlayAngle.current = -90;
         this.cd_overlay.clear();
 
     }
