@@ -1,6 +1,7 @@
 import Frame from "./frame";
 import StatusBar from "./status_bar";
 import * as data from "../data";
+
 export default class UnitFrame extends Frame {
 
     constructor(parent, unit, width, height, _events) {
@@ -12,6 +13,7 @@ export default class UnitFrame extends Frame {
         this.unit = unit;
         this.config = {
             powerBarEnabled: false,
+            absorbIndicatorEnabled: true,
             playerNameEnabled: true,
             enemyColor: 0xFA1A16,
             powerBarColor: 0x00D1FF
@@ -44,8 +46,14 @@ export default class UnitFrame extends Frame {
         //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
         this.gameEvents.UNIT_HEALTH_CHANGE.add((unit) => this._onUnitHealthChanged(unit));
         this.gameEvents.UNIT_DEATH.add((unit) => this._onUnitDeath(unit));
-        if (this.config.powerBarEnabled)
+
+        if (this.config.powerBarEnabled) {
             this.gameEvents.MANA_CHANGE.add((unit) => this._onUnitManaChanged(unit));
+        }
+
+        if (this.config.absorbIndicatorEnabled) {
+            this.gameEvents.UNIT_ABSORB.add((unit) => this._onUnitAbsorbChanged(unit));
+        }
 
     }
 
@@ -65,7 +73,7 @@ export default class UnitFrame extends Frame {
     _initHealthBar() {
         this.healthBar = new StatusBar(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4));
         this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId));
-        this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth());
+        this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth(),true);
 
         if (this.config.playerNameEnabled) {
             this.playerName = new Phaser.BitmapText(game, this.healthBar._width / 2, this.healthBar._height / 2, "myriad", null, 12);
@@ -74,19 +82,51 @@ export default class UnitFrame extends Frame {
             this.playerName.tint = this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId);
             this.healthBar.addChild(this.playerName);
         }
+
+        if (this.config.absorbIndicatorEnabled) {
+            this.absorbIndicator = new StatusBar(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4), true);
+            this.absorbIndicator.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentAbsorb(), true);
+            this.absorbIndicator.setColor(0x00BFFF);
+            this.absorbIndicator.setPos(this._width, 0);
+            this.absorbIndicator._bar.alpha = 0.3;
+
+        }
     }
 
+
     _onUnitHealthChanged(unit) {
-        if (unit != this.unit)
+        if (unit != this.unit) {
             return;
+        }
+
         this.healthBar.setValue(this.unit.getCurrentHealth());
+
+        if (this.config.absorbIndicatorEnabled) {
+            game.add.tween(this.absorbIndicator).to({x:this.healthBar.nextWidth},
+                200, "Linear", true);
+        }
+
+        console.log(this.healthBar._bar.width);
         /*
-        if (this.unit.healthPercent > 20) { 
-            this.healthBar.setColor(red)
+        if (this.unit.healthPercent < 20) { 
+            this.healthBar.setColor(lowHealthColor)
         } */
+    }
+
+    _onUnitAbsorbChanged(unit) {
+        if (unit != this.unit) {
+            return;
+        }
+
+        this.absorbIndicator.setValue(this.unit.getCurrentAbsorb());
+        console.log(this.unit.getCurrentAbsorb());
     }
     _onUnitMaxHealthChanged(unit) {
         this.healthBar.setMaxValue(this.unit.getMaxHealth());
+        if (this.config.absorbIndicatorEnabled) {
+            this.absorbIndicator.setMaxValue(this.unit.getMaxHealth());
+        }
+
     }
     _onUnitManaChanged(unit) {
 

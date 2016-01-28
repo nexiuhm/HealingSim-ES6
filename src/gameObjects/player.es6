@@ -187,7 +187,7 @@ export default class Player {
         // - Other stuff that needs to happen when you die.
     }
 
-    getAbsorb() {
+    getCurrentAbsorb() {
         return this.stats.absorb;
     }
 

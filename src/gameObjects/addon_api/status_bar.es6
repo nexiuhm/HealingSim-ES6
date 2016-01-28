@@ -9,7 +9,7 @@ export default class StatusBar extends Frame {
 
 
 
-    constructor(parent, width, height) {
+    constructor(parent, width, height, disableTexture = false) {
 
         super(parent);
         this.setPos(0, 0);
@@ -22,7 +22,7 @@ export default class StatusBar extends Frame {
         // The values for the bar. Default is full bar.
         this._minValue = 0;
         this._maxValue = 1;
-        this._currentValue = 1;
+        this._currentValue = 0;
 
         // Init bar
         this._bar = new Phaser.Graphics(game, 0, 0);
@@ -30,15 +30,18 @@ export default class StatusBar extends Frame {
         this._bar.drawRect(0, 0, this._width, this._height);
         this._bar.endFill();
 
-        // Works as both a texture and a background
-        this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
-        this._texture.width = this._width;
-        this._texture.height = this._height;
-        this._texture.blendMode = PIXI.blendModes.MULTIPLY;
+
 
         // Add children to parent frame
         this.addChild(this._bar);
-        this.addChild(this._texture);
+        // Works as both a texture and a background
+        if (!disableTexture) {
+            this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
+            this._texture.width = this._width;
+            this._texture.height = this._height;
+            this._texture.blendMode = PIXI.blendModes.MULTIPLY;
+            this.addChild(this._texture);
+        }
 
         this._updateBarWidth();
 
@@ -49,17 +52,23 @@ export default class StatusBar extends Frame {
      * @return {[type]} [description]
      * @private
      */
-    _updateBarWidth() {
+    _updateBarWidth(forceInstantUpdate) {
         let barWidthInPixels = Math.round((this._currentValue / this._maxValue) * this._width);
+        this.nextWidth = barWidthInPixels;
+
         if (barWidthInPixels <= 0) // something bad happens if it goes to 0
             barWidthInPixels = 1;
 
-        if (!this._animationDuration)
+        // Sometimes we want the bar to be updated without an animation delay.
+        if (forceInstantUpdate === true || this._animationDuration === 0) {
             this._bar.width = barWidthInPixels;
-        else
+            console.log("FORCE INSTANT");
+        } else {
             game.add.tween(this._bar).to({
                 width: barWidthInPixels
             }, this._animationDuration, this._animationStyle, true);
+        }
+
     }
 
     /* Public interface below */
@@ -70,11 +79,12 @@ export default class StatusBar extends Frame {
 
     }
 
-    setValues(min, max, current) {
+    setValues(min, max, current, forceInstantUpdate) {
         this._maxValue = max;
         this._minValue = min;
         this._currentValue = current;
-        this._updateBarWidth();
+        console.log(forceInstantUpdate);
+        this._updateBarWidth(forceInstantUpdate);
         return this;
     }
 

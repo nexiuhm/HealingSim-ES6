@@ -20,7 +20,7 @@ export default function CastFrame($) {
 
     // Status bar
     let cast_bar = new $.newStatusBar(castingFrame, config.width, config.height)
-        .setValues(0, 1, 0);
+        .setValues(0, 1, 0,true);
 
     // Status text #todo#
     let spell_name = new Phaser.BitmapText(game, config.width / 2, config.height / 2, "myriad", "", 12);
@@ -47,7 +47,7 @@ export default function CastFrame($) {
     function onUnitFinishCast() {
 
         cast_bar.setColor(config.castSuccessColor)
-            .setValue(0, 0);
+            .setValue(0, 0,true);
 
     }
 
