@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/nexiuhm/HealingSim-ES6.png?label=ready&title=Ready)](https://waffle.io/nexiuhm/HealingSim-ES6)
 ## Healing Simulator
 Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 using the Phaser.js library.
 
@@ -54,6 +55,17 @@ brunch w --server
       - APPLY_MOD_STAT ( modifies a stat, usually temporary ) f.ex reduces damage taken by 20%
       
       
+
+#### To give some perspective this is how the final ecosystem could work:
+
+- Player pressed '1' -> 
+- The ActionBar addon subscribes to this key
+- Action bar addon wants to cast the spell associated with this key so it calls castSpell(spellid) which is an addon API function .
+- Player object recives the call and calls the spell .cast() function.
+- SpellBase class is called by the spellobject.
+- SpellBase class creates an action/aura object which is sent to the recviving target(s) target.applyAction(actionObj) ?
+- Reciveing target handels the action object request which is f.ex to apply an aura.
+
 ##### First release goals for now:
  
 - A demo boss,
