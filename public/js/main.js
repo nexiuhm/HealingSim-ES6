@@ -210,7 +210,7 @@ function CastFrame($) {
     var castingFrame = new $.newFrame("UIParent").setPos(500 - config.width / 2, 500 - config.height / 2).setAlpha(0);
 
     // Status bar
-    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height).setValues(0, 1, 0);
+    var cast_bar = new $.newStatusBar(castingFrame, config.width, config.height).setValues(0, 1, 0, true);
 
     // Status text #todo#
     var spell_name = new Phaser.BitmapText(game, config.width / 2, config.height / 2, "myriad", "", 12);
@@ -235,7 +235,7 @@ function CastFrame($) {
 
     function onUnitFinishCast() {
 
-        cast_bar.setColor(config.castSuccessColor).setValue(0, 0);
+        cast_bar.setColor(config.castSuccessColor).setValue(0, 0, true);
     }
 }
 });
@@ -279,7 +279,7 @@ function Debug($) {
             game.debug.text("#### Haste_percent: " + player.target.total_haste() + ' %', 20, 160, '#00FF96');
             game.debug.text("#### Absorb: " + player.stats.absorb, 20, 180, '#00FF96');
         }
-          game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
+         game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
         game.debug.text("window.innerHeight: " + window.innerHeight, 20, 220, '#00FF96');
         //game.debug.text("World CenterX: " + game.world.centerX, 20, 360, '#00FF96');
         //game.debug.text("World CenterY: " + game.world.centerY, 20, 380, '#00FF96');
@@ -607,9 +607,9 @@ exports.raid_size = raid_size;
 require.register("src/gameObjects/addonManager", function(exports, require, module) {
 "use strict";
 
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -631,7 +631,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * this information as a reaction to events the game creates
  */
 
-var AddonManager = (function () {
+var AddonManager = function () {
     function AddonManager() {
         _classCallCheck(this, AddonManager);
 
@@ -736,7 +736,7 @@ var AddonManager = (function () {
     }]);
 
     return AddonManager;
-})();
+}();
 
 exports.default = AddonManager;
 });
@@ -851,7 +851,7 @@ function init(_state) {
 ;require.register("src/gameObjects/addon_api/frame", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -867,7 +867,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * A frame is just a container for displayObjects. Its used as the base for our Status bar, etc.
  */
 
-var Frame = (function (_Phaser$Graphics) {
+var Frame = function (_Phaser$Graphics) {
     _inherits(Frame, _Phaser$Graphics);
 
     function Frame(parent) {
@@ -904,7 +904,7 @@ var Frame = (function (_Phaser$Graphics) {
     }]);
 
     return Frame;
-})(Phaser.Graphics);
+}(Phaser.Graphics);
 
 exports.default = Frame;
 });
@@ -912,7 +912,7 @@ exports.default = Frame;
 ;require.register("src/gameObjects/addon_api/status_bar", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -934,10 +934,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * A status bar is used to show the progress or change of something. Like a timer or a health bar
  */
 
-var StatusBar = (function (_Frame) {
+var StatusBar = function (_Frame) {
     _inherits(StatusBar, _Frame);
 
     function StatusBar(parent, width, height) {
+        var disableTexture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
         _classCallCheck(this, StatusBar);
 
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusBar).call(this, parent));
@@ -952,7 +954,7 @@ var StatusBar = (function (_Frame) {
         // The values for the bar. Default is full bar.
         _this._minValue = 0;
         _this._maxValue = 1;
-        _this._currentValue = 1;
+        _this._currentValue = 0;
 
         // Init bar
         _this._bar = new Phaser.Graphics(game, 0, 0);
@@ -960,15 +962,16 @@ var StatusBar = (function (_Frame) {
         _this._bar.drawRect(0, 0, _this._width, _this._height);
         _this._bar.endFill();
 
-        // Works as both a texture and a background
-        _this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
-        _this._texture.width = _this._width;
-        _this._texture.height = _this._height;
-        _this._texture.blendMode = PIXI.blendModes.MULTIPLY;
-
         // Add children to parent frame
         _this.addChild(_this._bar);
-        _this.addChild(_this._texture);
+        // Works as both a texture and a background
+        if (!disableTexture) {
+            _this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
+            _this._texture.width = _this._width;
+            _this._texture.height = _this._height;
+            _this._texture.blendMode = PIXI.blendModes.MULTIPLY;
+            _this.addChild(_this._texture);
+        }
 
         _this._updateBarWidth();
 
@@ -983,14 +986,22 @@ var StatusBar = (function (_Frame) {
          * @return {[type]} [description]
          * @private
          */
-        value: function _updateBarWidth() {
+        value: function _updateBarWidth(forceInstantUpdate) {
             var barWidthInPixels = Math.round(this._currentValue / this._maxValue * this._width);
+            this.nextWidth = barWidthInPixels;
+
             if (barWidthInPixels <= 0) // something bad happens if it goes to 0
                 barWidthInPixels = 1;
 
-            if (!this._animationDuration) this._bar.width = barWidthInPixels;else game.add.tween(this._bar).to({
-                width: barWidthInPixels
-            }, this._animationDuration, this._animationStyle, true);
+            // Sometimes we want the bar to be updated without an animation delay.
+            if (forceInstantUpdate === true || this._animationDuration === 0) {
+                this._bar.width = barWidthInPixels;
+                console.log("FORCE INSTANT");
+            } else {
+                game.add.tween(this._bar).to({
+                    width: barWidthInPixels
+                }, this._animationDuration, this._animationStyle, true);
+            }
         }
 
         /* Public interface below */
@@ -1003,11 +1014,12 @@ var StatusBar = (function (_Frame) {
         }
     }, {
         key: "setValues",
-        value: function setValues(min, max, current) {
+        value: function setValues(min, max, current, forceInstantUpdate) {
             this._maxValue = max;
             this._minValue = min;
             this._currentValue = current;
-            this._updateBarWidth();
+            console.log(forceInstantUpdate);
+            this._updateBarWidth(forceInstantUpdate);
             return this;
         }
     }, {
@@ -1036,7 +1048,7 @@ var StatusBar = (function (_Frame) {
     }]);
 
     return StatusBar;
-})(_frame2.default);
+}(_frame2.default);
 
 exports.default = StatusBar;
 });
@@ -1044,7 +1056,7 @@ exports.default = StatusBar;
 ;require.register("src/gameObjects/addon_api/status_icon", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -1067,7 +1079,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * Similarly to the statusbar its supposed to represent the duration or change of some value.
  */
 
-var StatusIcon = (function (_Frame) {
+var StatusIcon = function (_Frame) {
     _inherits(StatusIcon, _Frame);
 
     function StatusIcon(parent, spellid, events) {
@@ -1080,7 +1092,7 @@ var StatusIcon = (function (_Frame) {
 
         // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
         _this.cooldownOverlayAngle = {
-            current: 0
+            current: -90
         };
 
         // Spell icon
@@ -1097,8 +1109,8 @@ var StatusIcon = (function (_Frame) {
         // Cooldown overlay arc init
         _this.cd_overlay = new Phaser.Graphics(game, 0, 0);
         _this.cd_overlay.alpha = 0.8;
-        _this.cd_overlay.mask = mask;
         _this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
+        _this.cd_overlay.mask = mask;
 
         // adding displayObjects to the parent container
         _this.addChild(mask);
@@ -1141,7 +1153,7 @@ var StatusIcon = (function (_Frame) {
             // #TODO## Remove hook from game loop
             this.cd_overlay.alpha = 0;
             this.animTween.stop();
-            this.cooldownOverlayAngle.current = 0;
+            this.cooldownOverlayAngle.current = -90;
             this.cd_overlay.clear();
         }
     }, {
@@ -1158,7 +1170,7 @@ var StatusIcon = (function (_Frame) {
     }]);
 
     return StatusIcon;
-})(_frame2.default);
+}(_frame2.default);
 
 exports.default = StatusIcon;
 });
@@ -1166,7 +1178,7 @@ exports.default = StatusIcon;
 ;require.register("src/gameObjects/addon_api/unit_frame", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -1194,7 +1206,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var UnitFrame = (function (_Frame) {
+var UnitFrame = function (_Frame) {
     _inherits(UnitFrame, _Frame);
 
     function UnitFrame(parent, unit, width, height, _events) {
@@ -1209,6 +1221,7 @@ var UnitFrame = (function (_Frame) {
         _this.unit = unit;
         _this.config = {
             powerBarEnabled: false,
+            absorbIndicatorEnabled: true,
             playerNameEnabled: true,
             enemyColor: 0xFA1A16,
             powerBarColor: 0x00D1FF
@@ -1251,9 +1264,18 @@ var UnitFrame = (function (_Frame) {
             this.gameEvents.UNIT_DEATH.add(function (unit) {
                 return _this2._onUnitDeath(unit);
             });
-            if (this.config.powerBarEnabled) this.gameEvents.MANA_CHANGE.add(function (unit) {
-                return _this2._onUnitManaChanged(unit);
-            });
+
+            if (this.config.powerBarEnabled) {
+                this.gameEvents.MANA_CHANGE.add(function (unit) {
+                    return _this2._onUnitManaChanged(unit);
+                });
+            }
+
+            if (this.config.absorbIndicatorEnabled) {
+                this.gameEvents.UNIT_ABSORB.add(function (unit) {
+                    return _this2._onUnitAbsorbChanged(unit);
+                });
+            }
         }
     }, {
         key: "_initPowerBar",
@@ -1273,7 +1295,7 @@ var UnitFrame = (function (_Frame) {
         value: function _initHealthBar() {
             this.healthBar = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4));
             this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId));
-            this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth());
+            this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth(), true);
 
             if (this.config.playerNameEnabled) {
                 this.playerName = new Phaser.BitmapText(game, this.healthBar._width / 2, this.healthBar._height / 2, "myriad", null, 12);
@@ -1282,21 +1304,51 @@ var UnitFrame = (function (_Frame) {
                 this.playerName.tint = this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId);
                 this.healthBar.addChild(this.playerName);
             }
+
+            if (this.config.absorbIndicatorEnabled) {
+                this.absorbIndicator = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4), true);
+                this.absorbIndicator.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentAbsorb(), true);
+                this.absorbIndicator.setColor(0x00BFFF);
+                this.absorbIndicator.setPos(this._width, 0);
+                this.absorbIndicator._bar.alpha = 0.3;
+            }
         }
     }, {
         key: "_onUnitHealthChanged",
         value: function _onUnitHealthChanged(unit) {
-            if (unit != this.unit) return;
+            if (unit != this.unit) {
+                return;
+            }
+
             this.healthBar.setValue(this.unit.getCurrentHealth());
+
+            if (this.config.absorbIndicatorEnabled) {
+                game.add.tween(this.absorbIndicator).to({ x: this.healthBar.nextWidth }, 200, "Linear", true);
+            }
+
+            console.log(this.healthBar._bar.width);
             /*
-            if (this.unit.healthPercent > 20) { 
-                this.healthBar.setColor(red)
+            if (this.unit.healthPercent < 20) { 
+                this.healthBar.setColor(lowHealthColor)
             } */
+        }
+    }, {
+        key: "_onUnitAbsorbChanged",
+        value: function _onUnitAbsorbChanged(unit) {
+            if (unit != this.unit) {
+                return;
+            }
+
+            this.absorbIndicator.setValue(this.unit.getCurrentAbsorb());
+            console.log(this.unit.getCurrentAbsorb());
         }
     }, {
         key: "_onUnitMaxHealthChanged",
         value: function _onUnitMaxHealthChanged(unit) {
             this.healthBar.setMaxValue(this.unit.getMaxHealth());
+            if (this.config.absorbIndicatorEnabled) {
+                this.absorbIndicator.setMaxValue(this.unit.getMaxHealth());
+            }
         }
     }, {
         key: "_onUnitManaChanged",
@@ -1338,7 +1390,7 @@ var UnitFrame = (function (_Frame) {
     }]);
 
     return UnitFrame;
-})(_frame2.default);
+}(_frame2.default);
 
 exports.default = UnitFrame;
 });
@@ -1348,7 +1400,7 @@ exports.default = UnitFrame;
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -1376,7 +1428,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Priest = (function (_Player) {
+var Priest = function (_Player) {
     _inherits(Priest, _Player);
 
     function Priest(race, level, name, eventManager) {
@@ -1401,13 +1453,13 @@ var Priest = (function (_Player) {
     }]);
 
     return Priest;
-})(_player2.default);
+}(_player2.default);
 
 // ### SPELLS #########################
 
 exports.default = Priest;
 
-var flash_of_light = (function (_SpellBase) {
+var flash_of_light = function (_SpellBase) {
     _inherits(flash_of_light, _SpellBase);
 
     function flash_of_light(player) {
@@ -1438,9 +1490,9 @@ var flash_of_light = (function (_SpellBase) {
     }]);
 
     return flash_of_light;
-})(_spell_base2.default);
+}(_spell_base2.default);
 
-var power_word_shield = (function (_SpellBase2) {
+var power_word_shield = function (_SpellBase2) {
     _inherits(power_word_shield, _SpellBase2);
 
     function power_word_shield(player) {
@@ -1466,9 +1518,9 @@ var power_word_shield = (function (_SpellBase2) {
     }]);
 
     return power_word_shield;
-})(_spell_base2.default);
+}(_spell_base2.default);
 
-var power_infusion = (function (_SpellBase3) {
+var power_infusion = function (_SpellBase3) {
     _inherits(power_infusion, _SpellBase3);
 
     function power_infusion(player) {
@@ -1486,9 +1538,9 @@ var power_infusion = (function (_SpellBase3) {
     }]);
 
     return power_infusion;
-})(_spell_base2.default);
+}(_spell_base2.default);
 
-var clarity_of_will = (function (_SpellBase4) {
+var clarity_of_will = function (_SpellBase4) {
     _inherits(clarity_of_will, _SpellBase4);
 
     function clarity_of_will(player) {
@@ -1507,7 +1559,7 @@ var clarity_of_will = (function (_SpellBase4) {
     }]);
 
     return clarity_of_will;
-})(_spell_base2.default);
+}(_spell_base2.default);
 /*
 
            
@@ -1910,7 +1962,7 @@ exports.default = EventManager;
 ;require.register("src/gameObjects/player", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -1932,7 +1984,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  TODO: This class is really messy atm, need to find better ways.
  */
 
-var Player = (function () {
+var Player = function () {
     function Player(_class, race, level, name, events, isEnemy) {
         _classCallCheck(this, Player);
 
@@ -2056,7 +2108,7 @@ var Player = (function () {
             //--- Avoidance ---------------------------------------
             /*
             if ( dmg.isAvoidable ) {
-                  if ( this.avoid() ) {
+                 if ( this.avoid() ) {
                     avoided_damage = true; // Note: Only warriors and paladins have block
                 }
             }
@@ -2107,8 +2159,8 @@ var Player = (function () {
             // - Other stuff that needs to happen when you die.
         }
     }, {
-        key: "getAbsorb",
-        value: function getAbsorb() {
+        key: "getCurrentAbsorb",
+        value: function getCurrentAbsorb() {
             return this.stats.absorb;
         }
     }, {
@@ -2209,7 +2261,7 @@ var Player = (function () {
     }]);
 
     return Player;
-})();
+}();
 
 exports.default = Player;
 });
@@ -2217,7 +2269,7 @@ exports.default = Player;
 ;require.register("src/gameObjects/raid", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -2251,7 +2303,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Class that manages the group and player creation.
  */
 
-var Raid = (function () {
+var Raid = function () {
     function Raid(state) {
         _classCallCheck(this, Raid);
 
@@ -2461,7 +2513,7 @@ var Raid = (function () {
     }]);
 
     return Raid;
-})();
+}();
 
 exports.default = Raid;
 });
@@ -2469,7 +2521,7 @@ exports.default = Raid;
 ;require.register("src/gameObjects/spell_base", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -2479,7 +2531,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 //* Base spell class that all spells extends upon //
 
-var SpellBase = (function () {
+var SpellBase = function () {
     //### Spell data ###
 
     function SpellBase(spelldata, player) {
@@ -2615,7 +2667,7 @@ var SpellBase = (function () {
     }]);
 
     return SpellBase;
-})();
+}();
 
 exports.default = SpellBase;
 });
@@ -2623,7 +2675,7 @@ exports.default = SpellBase;
 ;require.register("src/main", function(exports, require, module) {
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _boot = require('./states/boot');
 
@@ -2658,7 +2710,7 @@ window.onload = function () {
  * Adds the ability to load "addons", and a different way to handle keyboard input
  */
 
-var PhaserCustomGame = (function (_Phaser$Game) {
+var PhaserCustomGame = function (_Phaser$Game) {
     _inherits(PhaserCustomGame, _Phaser$Game);
 
     function PhaserCustomGame(width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
@@ -2687,13 +2739,13 @@ var PhaserCustomGame = (function (_Phaser$Game) {
     }]);
 
     return PhaserCustomGame;
-})(Phaser.Game);
+}(Phaser.Game);
 });
 
 ;require.register("src/states/boot", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 /**
  * TODO: Import addons dynamically. This can't be done with the import statement since its only used for static analysis. Check out System.Import()
@@ -2701,7 +2753,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
  */
 
 Object.defineProperty(exports, "__esModule", {
-        value: true
+    value: true
 });
 
 var _menu = require("./menu");
@@ -2744,71 +2796,71 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * We use the Boot state to configure Phaser and load assets
  */
 
-var Boot = (function () {
-        function Boot() {
-                _classCallCheck(this, Boot);
+var Boot = function () {
+    function Boot() {
+        _classCallCheck(this, Boot);
+    }
+
+    _createClass(Boot, [{
+        key: "preload",
+        value: function preload() {
+            this.game.load.video('win', './assets/video/win.mp4');
+            this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
+            this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
+            this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
+            this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
+            this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
+            this.game.load.image("elite", "./assets/textures/elite_texture.png");
+            this.game.load.image("bg", "./assets/play_state_background.png");
+            this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
+            this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
+            this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
         }
+    }, {
+        key: "onWindowResize",
+        value: function onWindowResize(data) {
+            this.game.canvas.height = window.innerHeight;
+            this.game.canvas.width = window.innerWidth;
+        }
+    }, {
+        key: "create",
+        value: function create() {
+            var _this = this;
 
-        _createClass(Boot, [{
-                key: "preload",
-                value: function preload() {
-                        this.game.load.video('win', './assets/video/win.mp4');
-                        this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
-                        this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
-                        this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
-                        this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
-                        this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
-                        this.game.load.image("elite", "./assets/textures/elite_texture.png");
-                        this.game.load.image("bg", "./assets/play_state_background.png");
-                        this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
-                        this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
-                        this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
-                }
-        }, {
-                key: "onWindowResize",
-                value: function onWindowResize(data) {
-                        this.game.canvas.height = window.innerHeight;
-                        this.game.canvas.width = window.innerWidth;
-                }
-        }, {
-                key: "create",
-                value: function create() {
-                        var _this = this;
+            var isThisDev = true;
 
-                        var isThisDev = true;
+            // Set scalemode for the this.game.
+            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            this.game.scale.onSizeChange.add(function (data) {
+                return _this.onWindowResize(data);
+            });
 
-                        // Set scalemode for the this.game.
-                        this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-                        this.game.scale.onSizeChange.add(function (data) {
-                                return _this.onWindowResize(data);
-                        });
+            // Phaser config
+            this.game.time.advancedTiming = true;
+            this.game.tweens.frameBased = true;
 
-                        // Phaser config
-                        this.game.time.advancedTiming = true;
-                        this.game.tweens.frameBased = true;
+            // Register games-states
+            this.game.state.add("MainMenu", _menu2.default);
+            this.game.state.add("Play", _play2.default);
 
-                        // Register games-states
-                        this.game.state.add("MainMenu", _menu2.default);
-                        this.game.state.add("Play", _play2.default);
+            // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
+            game.addons.add("Cast Bar 0.1", _castbar2.default);
+            game.addons.add("Raid Frames 0.1", _raid_frame2.default);
+            game.addons.add("Unit Frames 0.1", _unit_frames2.default);
+            //game.addons.add("Debug", debugAddon);
+            game.addons.add("BossTimers", _timers2.default);
+            game.addons.add("Action Bar", _action_bar_addon2.default);
 
-                        // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
-                        game.addons.add("Cast Bar 0.1", _castbar2.default);
-                        game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-                        game.addons.add("Unit Frames 0.1", _unit_frames2.default);
-                        //game.addons.add("Debug", debugAddon);
-                        game.addons.add("BossTimers", _timers2.default);
-                        game.addons.add("Action Bar", _action_bar_addon2.default);
+            // Setup the keyboard for the this.game.
+            this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
 
-                        // Setup the keyboard for the this.game.
-                        this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
+            // Start the post-boot state
+            this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+        }
+    }]);
 
-                        // Start the post-boot state
-                        this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
-                }
-        }]);
-
-        return Boot;
-})();
+    return Boot;
+}();
 
 exports.default = Boot;
 });
@@ -2816,7 +2868,7 @@ exports.default = Boot;
 ;require.register("src/states/menu", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -2824,7 +2876,7 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MainMenu = (function () {
+var MainMenu = function () {
     function MainMenu() {
         _classCallCheck(this, MainMenu);
     }
@@ -2861,7 +2913,7 @@ var MainMenu = (function () {
     }]);
 
     return MainMenu;
-})();
+}();
 
 exports.default = MainMenu;
 });
@@ -2869,7 +2921,7 @@ exports.default = MainMenu;
 ;require.register("src/states/play", function(exports, require, module) {
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -2897,7 +2949,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Play = (function () {
+var Play = function () {
     function Play() {
         _classCallCheck(this, Play);
     }
@@ -2960,7 +3012,7 @@ var Play = (function () {
     }]);
 
     return Play;
-})();
+}();
 
 exports.default = Play;
 });
@@ -2972,6 +3024,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.printPrettyError = printPrettyError;
+exports.arg = arg;
 exports.freezeObject = freezeObject;
 exports.speedtest = speedtest;
 var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).toString()]);
@@ -2986,6 +3039,25 @@ var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.rando
 function printPrettyError(errorReason, error) {
     console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
 }
+
+/**
+ * If you need to give arguments without passing "this"
+ * @param  {Function} f
+ * @return {Function}
+ */
+
+function arg(f) {
+    if (typeof f !== "function") throw new TypeError("Argument needs to a function");
+
+    var slice = Array.prototype.slice,
+        args = slice.call(arguments),
+        fn = f,
+        partial = function partial() {
+        return fn.apply(this, args.concat(slice.call(arguments)));
+    };
+
+    return partial;
+};
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
