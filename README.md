@@ -1,4 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/nexiuhm/HealingSim-ES6.png?label=ready&title=Ready)](https://waffle.io/nexiuhm/HealingSim-ES6)
+[![Build status](https://ci.appveyor.com/api/projects/status/uyfv4o51sumpxl73?svg=true)](https://ci.appveyor.com/project/LuckyDjuk/healingsim-es6)
+
 ## Healing Simulator
 Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 using the Phaser.js library.
 
@@ -44,21 +46,21 @@ brunch w --server
       - Action handler component?
 
 ##### Spell class needs a target component which can select targets based on a few simple rules.
-      - Chain target ( heals first your actual target then it will jump to x targets with low health after that ) 
+      - Chain target ( heals first your actual target then it will jump to x targets with low health after that )
       - Smart target ( slelects the most injured player )
       - Group target ( selects all members of your targets group ( including the target ) )
       - Raid target ( selects all raid members )
 ##### Every spell creates an action/aura object which the reciver can handle. Here are some of the basic action types:
-      - APPLY_DIRECT_DAMAGE  ( raw amount, damage school, damage source ) 
-      - APPLY_PERODIC_HEAL   ( tick callback ( if the tick needs to be recalculated every time ) 
+      - APPLY_DIRECT_DAMAGE  ( raw amount, damage school, damage source )
+      - APPLY_PERODIC_HEAL   ( tick callback ( if the tick needs to be recalculated every time )
       - APPLY_PERODIC_DAMAGE  
       - APPLY_MOD_STAT ( modifies a stat, usually temporary ) f.ex reduces damage taken by 20%
-      
-      
+
+
 
 #### To give some perspective this is how the final ecosystem could work:
 
-- Player pressed '1' -> 
+- Player pressed '1' ->
 - The ActionBar addon subscribes to this key
 - Action bar addon wants to cast the spell associated with this key so it calls castSpell(spellid) which is an addon API function .
 - Player object recives the call and calls the spell .cast() function.
@@ -67,11 +69,9 @@ brunch w --server
 - Reciveing target handels the action object request which is f.ex to apply an aura.
 
 ##### First release goals for now:
- 
+
 - A demo boss,
 - Auras working, and can be picked up by the UI to display correct icons. ( if someone has Power Word: shield on them, it should show )
 - Priest (discipline) working ok,
-- Menu screen ( even if most of the options are unavaible ) 
+- Menu screen ( even if most of the options are unavaible )
 - Game over screen
-
-
