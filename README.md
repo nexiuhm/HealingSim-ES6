@@ -1,5 +1,4 @@
 [![Stories in Ready](https://badge.waffle.io/nexiuhm/HealingSim-ES6.png?label=ready&title=Ready)](https://waffle.io/nexiuhm/HealingSim-ES6)
-[![Build status](https://ci.appveyor.com/api/projects/status/uyfv4o51sumpxl73?svg=true)](https://ci.appveyor.com/project/LuckyDjuk/healingsim-es6)
 
 ## Healing Simulator
 Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 using the Phaser.js library.
