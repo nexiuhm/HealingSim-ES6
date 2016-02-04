@@ -2,27 +2,25 @@ import * as data from "./data";
 import * as e from "../enums";
 
 
-export default class Player {
-
+class Unit {
 
     constructor(_class, race, level, name, events, isEnemy) {
 
-
-        // --- Basic unit data ------------
+        // Basic unit data
         this.level = 100;
         this.isEnemy = false;
 
-        // ----Unit current target--------------
+        // Unit current target
         this.target = this;
         this.isCasting = false;
         this.alive = true;
-        this.instance = null; // reference to the raid group the players are in ?
+        this.group = null; // reference to the raid group the players are in ?
 
-        // --- Unit spells ---------------------
+        // Unit spells
         this.spells = null;
         this.buffs = null;
 
-
+        // Retrieve from Armory, JSON, get from gear.
         this.gear_stats = {
             stamina: 7105,
             haste_rating: 1399
@@ -85,17 +83,15 @@ export default class Player {
         this.base_stats.mastery_rating = 0;
         this.base_stats.haste_rating = this.gear_stats.haste_rating;
         this.base_stats.crit_rating = 0;
-
-        // *TODO* add stats from gear in this function or somewhere else?
     }
 
     init_stats() {
 
-        // ### HEALTH ########  ------------------------------------------------------------------------------------
+        // HEALTH
         this.stats.health.value = this.stats.health.max_value = this.base_stats.stamina * data.getHpPerStamina(this.level);
-        // ### HASTE ####  -----------------------------------------------------------------------------------------
+        // HASTE
         this.stats.haste = this.base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
-        // ### MANA ##########  ------------------------------------------------------------------------------------
+        // MANA
         // Note: When you are specced as restoration, holy etc. you will get a hidden aura that increases your manapool by 400%, this is how healers get more mana.
         this.stats.mana.value = this.stats.mana.max_value = data.getManaByClass(this.classId, this.level);
     }
@@ -104,7 +100,7 @@ export default class Player {
         //returns dodge, parry, or miss?. Returns false if nothing was avoided.
     }
 
-    getSpellList() {
+    get SpellList() {
         let spellList = [];
         for (let spell in this.spells)
             spellList.push(spell);
@@ -112,16 +108,16 @@ export default class Player {
         return spellList;
     }
 
-    getMana() {
+    get Mana() {
         return this.stats.mana.value;
 
     }
 
-    getMaxMana() {
+    get MaxMana() {
         return this.stats.mana.max_value;
     }
 
-    recive_damage(dmg) {
+    recieve_damage(dmg) {
         if (!this.alive)
             return;
         let avoided_damage = false;
@@ -160,7 +156,6 @@ export default class Player {
             return;
         let spell = this.spells[spellName];
 
-        // ##################
         if (this.isCasting)
             this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
         else
@@ -179,11 +174,11 @@ export default class Player {
         this.alive = false;
     }
 
-    getCurrentAbsorb() {
+    get CurrentAbsorb() {
         return this.stats.absorb;
     }
 
-    setHealth(value) {
+    set Health(value) {
         if (!this.alive)
             return;
         if (value <= 0) {
@@ -204,22 +199,26 @@ export default class Player {
         // - Handle overhealing here? or somewhere else
     }
 
-    setAbsorb(value) {
+    set Absorb(value) {
         if (!this.alive)
             return;
         this.stats.absorb += value;
         this.events.UNIT_ABSORB.dispatch(this);
     }
 
-    getMaxHealth() {
+    get Absorb() {
+      return this.stats.absorb;
+    }
+
+    get MaHealth() {
         return this.stats.health.max_value;
     }
 
-    getCurrentHealth() {
+    get Health() {
         return this.stats.health.value;
     }
 
-    setTarget(unit) {
+    set Target(unit) {
         // Just dont bother if its the same target
         if (unit == this.target) {
             return;
@@ -228,6 +227,10 @@ export default class Player {
         // Set target & emitt event
         this.target = unit;
         this.events.TARGET_CHANGE_EVENT.dispatch();
+    }
+
+    get Target() {
+      return this.target;
     }
 
     consume_resource(amount) {
