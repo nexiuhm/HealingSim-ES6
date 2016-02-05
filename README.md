@@ -31,42 +31,6 @@ brunch w --server
 ![js is shiny](http://i.imgur.com/z8N8i12.gif)
 
 
-### TODO in no particular order
-- Finish the menu state with the ability to select boss & class ( unavaible classes greyed out )
-- Raid needs to contain actual logical groups ( right now every player is just trown into a single array ), this makes it impossible to target specific groups for damage or healing.
-- Split data.ts into multiple files, there are alot of unrelated data there. ( could be slit into spell_data, scale_data etc..)
-- End the game when the player either wins or loose ( go to the game over state )
-- Refactor or just completely rewrite the player class before we add more features. I'm thinking a base class "Entity" which both Player & Boss can extend.
-
-##### The entity class have these different components
-      - Aura/action System
-      - Stat component
-      - Spell component
-      - Action handler component?
-
-##### Spell class needs a target component which can select targets based on a few simple rules.
-      - Chain target ( heals first your actual target then it will jump to x targets with low health after that )
-      - Smart target ( slelects the most injured player )
-      - Group target ( selects all members of your targets group ( including the target ) )
-      - Raid target ( selects all raid members )
-##### Every spell creates an action/aura object which the reciver can handle. Here are some of the basic action types:
-      - APPLY_DIRECT_DAMAGE  ( raw amount, damage school, damage source )
-      - APPLY_PERODIC_HEAL   ( tick callback ( if the tick needs to be recalculated every time )
-      - APPLY_PERODIC_DAMAGE  
-      - APPLY_MOD_STAT ( modifies a stat, usually temporary ) f.ex reduces damage taken by 20%
-
-
-
-#### To give some perspective this is how the final ecosystem could work:
-
-- Player pressed '1' ->
-- The ActionBar addon subscribes to this key
-- Action bar addon wants to cast the spell associated with this key so it calls castSpell(spellid) which is an addon API function .
-- Player object recives the call and calls the spell .cast() function.
-- SpellBase class is called by the spellobject.
-- SpellBase class creates an action/aura object which is sent to the recviving target(s) target.applyAction(actionObj) ?
-- Reciveing target handels the action object request which is f.ex to apply an aura.
-
 ##### First release goals for now:
 
 - A demo boss,
