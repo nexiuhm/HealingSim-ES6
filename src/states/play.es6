@@ -6,7 +6,6 @@ import * as data from "../gameObjects/data";
 
 export default class Play {
 
-
   create() {
 
     // Start the world fade-in effect
@@ -44,7 +43,7 @@ export default class Play {
 
   update() {
     this.events.GAME_LOOP_UPDATE.dispatch();
-  };
+  }
 
   handleKeyBoardInput(key) {
     // ## TODO ## : Find a better way to deal with this, maybe just send the input to the addons, and let the addons/ui decide what to do with it.
@@ -59,7 +58,6 @@ export default class Play {
       }
     }
   }
-
 
   render() {
     this.events.GAME_LOOP_RENDER.dispatch();

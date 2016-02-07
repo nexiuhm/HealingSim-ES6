@@ -1,13 +1,10 @@
 import Frame from "./frame";
 
-
 /**
  * A status bar is used to show the progress or change of something. Like a timer or a health bar
  */
 
 export default class StatusBar extends Frame {
-
-
 
   constructor(parent, width, height, disableTexture = false) {
 
@@ -30,8 +27,6 @@ export default class StatusBar extends Frame {
     this._bar.drawRect(0, 0, this._width, this._height);
     this._bar.endFill();
 
-
-
     // Add children to parent frame
     this.addChild(this._bar);
     // Works as both a texture and a background
@@ -42,9 +37,7 @@ export default class StatusBar extends Frame {
       this._texture.blendMode = PIXI.blendModes.MULTIPLY;
       this.addChild(this._texture);
     }
-
     this._updateBarWidth();
-
   }
 
   /**
@@ -69,7 +62,6 @@ export default class StatusBar extends Frame {
         width: barWidthInPixels
       }, this._animationDuration, this._animationStyle, true);
     }
-
   }
 
   /* Public interface below */
@@ -77,7 +69,6 @@ export default class StatusBar extends Frame {
   setColor(color) {
     this._bar.tint = color;
     return this;
-
   }
 
   setValues(min, max, current, forceInstantUpdate) {
@@ -115,6 +106,5 @@ export default class StatusBar extends Frame {
     this._updateBarWidth();
 
     return this;
-
   }
 }

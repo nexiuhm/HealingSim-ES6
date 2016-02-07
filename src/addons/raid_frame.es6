@@ -16,7 +16,6 @@ export default function RaidFrame($) {
   let raidFrame = $.newFrame("UIParent")
     .setPos(800, 400);
 
-
   { // Anonymous namespace, since we dont want to pollute this function scope
     let MAX_GROUPS = 5;
     let MAX_PLAYERS_PER_GROUP = 5;

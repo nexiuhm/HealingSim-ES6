@@ -746,7 +746,7 @@ exports.default = AddonManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.init = init;
 
@@ -774,78 +774,78 @@ var game = undefined,
     state = undefined;
 
 function setTarget(unit) {
-    player.setTarget(unit);
+  player.setTarget(unit);
 }
 
 function getGroupMembers() {
-    return raid.getPlayerList();
+  return raid.getPlayerList();
 }
 
 function localPlayer() {
-    return player;
+  return player;
 }
 
 function newFrame(parent) {
-    if (parent === "UIParent") {
-        parent = state.UIParent ? state.UIParent : state.world;
-    }
+  if (parent === "UIParent") {
+    parent = state.UIParent ? state.UIParent : state.world;
+  }
 
-    return new _frame2.default(parent);
+  return new _frame2.default(parent);
 }
 
 function newUnitFrame(parent, unit, width, height) {
-    if (parent === "UIParent") {
-        parent = state.UIParent ? state.UIParent : state.world;
-    }
+  if (parent === "UIParent") {
+    parent = state.UIParent ? state.UIParent : state.world;
+  }
 
-    return new _unit_frame2.default(parent, unit, width, height, state.events);
+  return new _unit_frame2.default(parent, unit, width, height, state.events);
 }
 
 function newStatusBar(parent, width, height) {
-    if (parent === "UIParent") {
-        parent = state.UIParent ? state.UIParent : state.world;
-    }
-    return new _status_bar2.default(parent, width, height);
+  if (parent === "UIParent") {
+    parent = state.UIParent ? state.UIParent : state.world;
+  }
+  return new _status_bar2.default(parent, width, height);
 }
 
 function newStatusIcon(parent, spellid) {
-    if (parent === "UIParent") {
-        parent = state.UIParent ? state.UIParent : state.world;
-    }
-    return new _status_icon2.default(parent, spellid, state.events);
+  if (parent === "UIParent") {
+    parent = state.UIParent ? state.UIParent : state.world;
+  }
+  return new _status_icon2.default(parent, spellid, state.events);
 }
 
 /**
  * Inits the addon api. Returns an object containing api functions based on which state is provided.
- * 
+ *
  * ##Fun fact##: This is actually called a "factory" or "compositon" in js programming. When you return a object with functions like here.
  * It's actually favoured over classes by many Javascript developers since it much more flexible, and you can achive true privacy (whatever you dont return is essentialy private)
  * The downside is that classes are faster, especially in the case of google's V8 javascript intreperter.
- * 
- * @param  {Phaser.State} The phaser game state 
+ *
+ * @param  {Phaser.State} The phaser game state
  * @return {Object}	Addon api functions
  */
 function init(_state) {
 
-    game = _state.game;
-    player = _state.player;
-    raid = _state.raid;
-    state = _state;
+  game = _state.game;
+  player = _state.player;
+  raid = _state.raid;
+  state = _state;
 
-    var api = {
-        "getGroupMembers": getGroupMembers,
-        "localPlayer": localPlayer,
-        "setTarget": setTarget,
-        "newFrame": newFrame,
-        "newUnitFrame": newUnitFrame,
-        "newStatusIcon": newStatusIcon,
-        "newStatusBar": newStatusBar,
-        "events": state.events // TODO: Better way
-    };
+  var api = {
+    "getGroupMembers": getGroupMembers,
+    "localPlayer": localPlayer,
+    "setTarget": setTarget,
+    "newFrame": newFrame,
+    "newUnitFrame": newUnitFrame,
+    "newStatusIcon": newStatusIcon,
+    "newStatusBar": newStatusBar,
+    "events": state.events // TODO: Better way
+  };
 
-    api.freeze; // Might aswell freeze the object cause it should never change.
+  //api.freeze; // Might aswell freeze the object cause it should never change.
 
-    return api;
+  return api;
 }
 });
 
@@ -855,7 +855,7 @@ function init(_state) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -869,42 +869,42 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var Frame = function (_Phaser$Graphics) {
-    _inherits(Frame, _Phaser$Graphics);
+  _inherits(Frame, _Phaser$Graphics);
 
-    function Frame(parent) {
-        _classCallCheck(this, Frame);
+  function Frame(parent) {
+    _classCallCheck(this, Frame);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Frame).call(this, game));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Frame).call(this, game));
 
-        parent.addChild(_this);
-        _this._width = 200;
-        _this._height = 100;
-        return _this;
+    parent.addChild(_this);
+    _this._width = 200;
+    _this._height = 100;
+    return _this;
+  }
+
+  _createClass(Frame, [{
+    key: "setSize",
+    value: function setSize(width, height) {
+      this._width = width;
+      this._height = height;
+      return this;
     }
+  }, {
+    key: "setPos",
+    value: function setPos(x, y) {
+      this.x = x;
+      this.y = y;
+      return this;
+    }
+  }, {
+    key: "setAlpha",
+    value: function setAlpha(number) {
+      this.alpha = number;
+      return this;
+    }
+  }]);
 
-    _createClass(Frame, [{
-        key: "setSize",
-        value: function setSize(width, height) {
-            this._width = width;
-            this._height = height;
-            return this;
-        }
-    }, {
-        key: "setPos",
-        value: function setPos(x, y) {
-            this.x = x;
-            this.y = y;
-            return this;
-        }
-    }, {
-        key: "setAlpha",
-        value: function setAlpha(number) {
-            this.alpha = number;
-            return this;
-        }
-    }]);
-
-    return Frame;
+  return Frame;
 }(Phaser.Graphics);
 
 exports.default = Frame;
@@ -973,9 +973,7 @@ var StatusBar = function (_Frame) {
       _this._texture.blendMode = PIXI.blendModes.MULTIPLY;
       _this.addChild(_this._texture);
     }
-
     _this._updateBarWidth();
-
     return _this;
   }
 
@@ -1060,7 +1058,7 @@ exports.default = StatusBar;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _frame = require("./frame");
@@ -1081,96 +1079,96 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var StatusIcon = function (_Frame) {
-    _inherits(StatusIcon, _Frame);
+  _inherits(StatusIcon, _Frame);
 
-    function StatusIcon(parent, spellid, events) {
-        _classCallCheck(this, StatusIcon);
+  function StatusIcon(parent, spellid, events) {
+    _classCallCheck(this, StatusIcon);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusIcon).call(this, parent));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusIcon).call(this, parent));
 
-        _this.spellid = spellid;
-        _this.events = events;
+    _this.spellid = spellid;
+    _this.events = events;
 
-        // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
-        _this.cooldownOverlayAngle = {
-            current: -90
-        };
+    // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
+    _this.cooldownOverlayAngle = {
+      current: -90
+    };
 
-        // Spell icon
-        _this.spellIcon = new Phaser.Image(game, 0, 0, "icon_" + spellid);
-        _this.spellIcon.width = 50;
-        _this.spellIcon.height = 50;
+    // Spell icon
+    _this.spellIcon = new Phaser.Image(game, 0, 0, "icon_" + spellid);
+    _this.spellIcon.width = 50;
+    _this.spellIcon.height = 50;
 
-        // Alpha mask for cooldown overlay
-        var mask = new Phaser.Graphics(game, 0, 0);
-        mask.beginFill(0xFFFFFF);
-        mask.drawRect(0, 0, 50, 50);
-        mask.endFill();
+    // Alpha mask for cooldown overlay
+    var mask = new Phaser.Graphics(game, 0, 0);
+    mask.beginFill(0xFFFFFF);
+    mask.drawRect(0, 0, 50, 50);
+    mask.endFill();
 
-        // Cooldown overlay arc init
-        _this.cd_overlay = new Phaser.Graphics(game, 0, 0);
-        _this.cd_overlay.alpha = 0.8;
-        _this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
-        _this.cd_overlay.mask = mask;
+    // Cooldown overlay arc init
+    _this.cd_overlay = new Phaser.Graphics(game, 0, 0);
+    _this.cd_overlay.alpha = 0.8;
+    _this.cd_overlay.blendMode = PIXI.blendModes.MULTIPLY;
+    _this.cd_overlay.mask = mask;
 
-        // adding displayObjects to the parent container
-        _this.addChild(mask);
-        _this.addChild(_this.spellIcon);
-        _this.addChild(_this.cd_overlay);
+    // adding displayObjects to the parent container
+    _this.addChild(mask);
+    _this.addChild(_this.spellIcon);
+    _this.addChild(_this.cd_overlay);
 
-        // listen to cooldown start event
-        _this.events.ON_COOLDOWN_START.add(function (e) {
-            return _this._onCooldownStart(e);
-        });
-        _this.events.ON_COOLDOWN_ENDED.add(function (e) {
-            return _this._onCooldownEnded(e);
-        });
-        return _this;
+    // listen to cooldown start event
+    _this.events.ON_COOLDOWN_START.add(function (e) {
+      return _this._onCooldownStart(e);
+    });
+    _this.events.ON_COOLDOWN_ENDED.add(function (e) {
+      return _this._onCooldownEnded(e);
+    });
+    return _this;
+  }
+
+  _createClass(StatusIcon, [{
+    key: "_onCooldownStart",
+    value: function _onCooldownStart(event) {
+      var _this2 = this;
+
+      // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
+      if (event.spellid != this.spellid) return;
+      // Create a timer that updates a letiable locally.
+      this.cd_overlay.alpha = 0.8;
+      this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
+        current: 270
+      }, event.cooldownLenght, undefined, true);
+      // Hook the update cooldown arc to the main loop
+      this.events.GAME_LOOP_UPDATE.add(function () {
+        return _this2._updateCooldownArc();
+      });
     }
+  }, {
+    key: "_onCooldownEnded",
+    value: function _onCooldownEnded(event) {
 
-    _createClass(StatusIcon, [{
-        key: "_onCooldownStart",
-        value: function _onCooldownStart(event) {
-            var _this2 = this;
+      if (event.spellid != this.spellid) return;
+      //this.hook.remove();
+      // #TODO## Remove hook from game loop
+      this.cd_overlay.alpha = 0;
+      this.animTween.stop();
+      this.cooldownOverlayAngle.current = -90;
+      this.cd_overlay.clear();
+    }
+  }, {
+    key: "_updateCooldownArc",
+    value: function _updateCooldownArc() {
 
-            // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
-            if (event.spellid != this.spellid) return;
-            // Create a timer that updates a letiable locally.
-            this.cd_overlay.alpha = 0.8;
-            this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
-                current: 270
-            }, event.cooldownLenght, undefined, true);
-            // Hook the update cooldown arc to the main loop
-            this.events.GAME_LOOP_UPDATE.add(function () {
-                return _this2._updateCooldownArc();
-            });
-        }
-    }, {
-        key: "_onCooldownEnded",
-        value: function _onCooldownEnded(event) {
+      this.cd_overlay.clear();
+      this.cd_overlay.beginFill(0x323232);
+      this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.cooldownOverlayAngle.current), true);
+      this.cd_overlay.endFill();
+      // clear
+      // redraw based on new values
+    }
+  }]);
 
-            if (event.spellid != this.spellid) return;
-            //this.hook.remove();
-            // #TODO## Remove hook from game loop
-            this.cd_overlay.alpha = 0;
-            this.animTween.stop();
-            this.cooldownOverlayAngle.current = -90;
-            this.cd_overlay.clear();
-        }
-    }, {
-        key: "_updateCooldownArc",
-        value: function _updateCooldownArc() {
-
-            this.cd_overlay.clear();
-            this.cd_overlay.beginFill(0x323232);
-            this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(this.cooldownOverlayAngle.current), true);
-            this.cd_overlay.endFill();
-            // clear
-            // redraw based on new values
-        }
-    }]);
-
-    return StatusIcon;
+  return StatusIcon;
 }(_frame2.default);
 
 exports.default = StatusIcon;
@@ -1229,7 +1227,6 @@ var UnitFrame = function (_Frame) {
     };
 
     _this._init();
-
     return _this;
   }
 
@@ -2176,98 +2173,113 @@ var Raid = function () {
      */
 
   }, {
-    key: "startTestDamage",
-    value: function startTestDamage() {
+    key: "bossSpike",
+    value: function bossSpike() {
       var tank = this.players[0];
       var offTank = this.players[1];
 
+      var massiveBlow = _util.rng.between(330000, 340900);
+
+      tank.recieve_damage({
+        amount: massiveBlow
+      });
+      offTank.recieve_damage({
+        amount: massiveBlow / 2
+      });
+    }
+  }, {
+    key: "bossSwing",
+    value: function bossSwing() {
+      var tank = this.players[0];
+      var offTank = this.players[1];
+
+      var bossSwing = _util.rng.between(70000, 90900);
+      var bossSwingCriticalHit = Math.random();
+
+      // 20% chance to critt. Experimental.
+      if (bossSwingCriticalHit < 0.85) bossSwing *= 1.5;
+      tank.recieve_damage({
+        amount: bossSwing
+      });
+      offTank.recieve_damage({
+        amount: bossSwing / 2
+      });
+    }
+  }, {
+    key: "bossAoEDamage",
+    value: function bossAoEDamage() {
+      for (var i = 0; i < this.players.length - 1; i++) {
+        var player = this.players[i];
+        player.recieve_damage({
+          amount: 170000
+        });
+      }
+    }
+  }, {
+    key: "raidDamage",
+    value: function raidDamage() {
+      var i = _util.rng.between(0, this.players.length - 1);
+      for (; i < this.players.length; i++) {
+        var player = this.players[i];
+        player.recieve_damage({
+          amount: _util.rng.between(85555, 168900)
+        });
+      }
+    }
+  }, {
+    key: "singelTargetDamage",
+    value: function singelTargetDamage() {
+      var random = _util.rng.between(2, this.players.length - 1);
+      this.players[random].recieve_damage({
+        amount: _util.rng.between(100000, 150000)
+      });
+    }
+  }, {
+    key: "bossEncounterAdds",
+    value: function bossEncounterAdds() {}
+  }, {
+    key: "raidHealing",
+    value: function raidHealing() {
+
+      for (var i = 0; i < this.players.length; i++) {
+        var player = this.players[i];
+        var incomingHeal = player.getHealth() + _util.rng.between(80000, 120000);
+        var criticalHeal = Math.random();
+
+        // 20% chance to critt. Experimental.
+        if (criticalHeal < 0.8) incomingHeal *= 1.5;
+
+        player.setHealth(incomingHeal);
+      }
+    }
+  }, {
+    key: "applyAbsorb",
+    value: function applyAbsorb() {
+      var tank = this.players[0];
+      var offTank = this.players[1];
+      //this.player.setAbsorb(game.rnd.between(115, 88900));
+      tank.setHealth(tank.getHealth() + _util.rng.between(10000, 38900));
+
+      // Legge inn AI shields på raidmembers.
+    }
+  }, {
+    key: "startTestDamage",
+    value: function startTestDamage() {
+
       // --- Create some random damage for testing purposes ----
-      var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
+      var bossSwingInterval = setInterval(this.bossSwing.bind(this), 1600);
       //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
-      var tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
-      var bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
-      var raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
-      var raidAIHealing = setInterval(raidHealing.bind(this), 4000);
+      var tankSelfHealOrAbsorb = setInterval(this.applyAbsorb.bind(this), 5000);
+      var bossTimedDamage = setInterval(this.bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
+      var raidAoeDamage = setInterval(this.raidDamage.bind(this), 3000);
+      var raidAIHealing = setInterval(this.raidHealing.bind(this), 4000);
       //  let manaRegenYolo = setInterval(gainMana.bind(this), 1200);
-      var spike = setInterval(bossSpike.bind(this), 8000);
+      var spike = setInterval(this.bossSpike.bind(this), 8000);
 
       // function gainMana() {
       //   let player = this.players[this.players.length - 1];
       //   player.gain_resource(1600);
       // }
-
-      function bossSpike() {
-        var massiveBlow = _util.rng.between(330000, 340900);
-
-        tank.recieve_damage({
-          amount: massiveBlow
-        });
-        offTank.recieve_damage({
-          amount: massiveBlow / 2
-        });
-      }
-
-      function bossSwing() {
-        var bossSwing = _util.rng.between(70000, 90900);
-        var bossSwingCriticalHit = Math.random();
-
-        // 20% chance to critt. Experimental.
-        if (bossSwingCriticalHit < 0.85) bossSwing *= 1.5;
-        tank.recieve_damage({
-          amount: bossSwing
-        });
-        offTank.recieve_damage({
-          amount: bossSwing / 2
-        });
-      }
-
-      function bossAoEDamage() {
-        for (var i = 0; i < this.players.length - 1; i++) {
-          var player = this.players[i];
-          player.recieve_damage({
-            amount: 170000
-          });
-        }
-      }
-
-      function raidDamage() {
-        var i = _util.rng.between(0, this.players.length - 1);
-        for (; i < this.players.length; i++) {
-          var player = this.players[i];
-          player.recieve_damage({
-            amount: _util.rng.between(85555, 168900)
-          });
-        }
-      }
-
-      function singelTargetDamage() {
-        var random = _util.rng.between(2, this.players.length - 1);
-        this.players[random].recieve_damage({
-          amount: _util.rng.between(100000, 150000)
-        });
-      }
-
-      function bossEncounterAdds() {}
-
-      function raidHealing() {
-
-        for (var i = 0; i < this.players.length; i++) {
-          var player = this.players[i];
-          var incomingHeal = player.getHealth() + _util.rng.between(80000, 120000);
-          var criticalHeal = Math.random();
-
-          // 20% chance to critt. Experimental.
-          if (criticalHeal < 0.8) incomingHeal *= 1.5;
-
-          player.setHealth(incomingHeal);
-        }
-      }
-
-      function applyAbsorb() {
-        //this.player.setAbsorb(game.rnd.between(115, 88900));
-        tank.setHealth(tank.getHealth() + _util.rng.between(10000, 38900));
-      }
-      // Legge inn AI shields på raidmembers.
     }
   }]);
 
@@ -2779,7 +2791,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _menu = require("./menu");
@@ -2823,69 +2835,69 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Boot = function () {
-    function Boot() {
-        _classCallCheck(this, Boot);
+  function Boot() {
+    _classCallCheck(this, Boot);
+  }
+
+  _createClass(Boot, [{
+    key: "preload",
+    value: function preload() {
+      this.game.load.video('win', './assets/video/win.mp4');
+      this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
+      this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
+      this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
+      this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
+      this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
+      this.game.load.image("elite", "./assets/textures/elite_texture.png");
+      this.game.load.image("bg", "./assets/play_state_background.png");
+      this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
+      this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
+      this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
     }
+  }, {
+    key: "onWindowResize",
+    value: function onWindowResize(data) {
+      this.game.canvas.height = window.innerHeight;
+      this.game.canvas.width = window.innerWidth;
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      var _this = this;
 
-    _createClass(Boot, [{
-        key: "preload",
-        value: function preload() {
-            this.game.load.video('win', './assets/video/win.mp4');
-            this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
-            this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
-            this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
-            this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
-            this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
-            this.game.load.image("elite", "./assets/textures/elite_texture.png");
-            this.game.load.image("bg", "./assets/play_state_background.png");
-            this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
-            this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
-            this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
-        }
-    }, {
-        key: "onWindowResize",
-        value: function onWindowResize(data) {
-            this.game.canvas.height = window.innerHeight;
-            this.game.canvas.width = window.innerWidth;
-        }
-    }, {
-        key: "create",
-        value: function create() {
-            var _this = this;
+      var isThisDev = true;
 
-            var isThisDev = true;
+      // Set scalemode for the this.game.
+      this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+      this.game.scale.onSizeChange.add(function (data) {
+        return _this.onWindowResize(data);
+      });
 
-            // Set scalemode for the this.game.
-            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-            this.game.scale.onSizeChange.add(function (data) {
-                return _this.onWindowResize(data);
-            });
+      // Phaser config
+      this.game.time.advancedTiming = true;
+      this.game.tweens.frameBased = true;
 
-            // Phaser config
-            this.game.time.advancedTiming = true;
-            this.game.tweens.frameBased = true;
+      // Register games-states
+      this.game.state.add("MainMenu", _menu2.default);
+      this.game.state.add("Play", _play2.default);
 
-            // Register games-states
-            this.game.state.add("MainMenu", _menu2.default);
-            this.game.state.add("Play", _play2.default);
+      // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
+      game.addons.add("Cast Bar 0.1", _castbar2.default);
+      game.addons.add("Raid Frames 0.1", _raid_frame2.default);
+      game.addons.add("Unit Frames 0.1", _unit_frames2.default);
+      //game.addons.add("Debug", debugAddon);
+      game.addons.add("BossTimers", _timers2.default);
+      game.addons.add("Action Bar", _action_bar_addon2.default);
 
-            // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
-            game.addons.add("Cast Bar 0.1", _castbar2.default);
-            game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-            game.addons.add("Unit Frames 0.1", _unit_frames2.default);
-            //game.addons.add("Debug", debugAddon);
-            game.addons.add("BossTimers", _timers2.default);
-            game.addons.add("Action Bar", _action_bar_addon2.default);
+      // Setup the keyboard for the this.game.
+      this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
 
-            // Setup the keyboard for the this.game.
-            this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
+      // Start the post-boot state
+      this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+    }
+  }]);
 
-            // Start the post-boot state
-            this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
-        }
-    }]);
-
-    return Boot;
+  return Boot;
 }();
 
 exports.default = Boot;

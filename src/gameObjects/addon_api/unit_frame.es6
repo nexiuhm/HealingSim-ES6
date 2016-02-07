@@ -20,7 +20,6 @@ export default class UnitFrame extends Frame {
     };
 
     this._init();
-
   }
 
   _init() {
