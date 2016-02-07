@@ -5,19 +5,17 @@ export var rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).to
  * Prints a formatted error with stacktrace to the console.
  * @param  {String} errorReason Summary of  error occured
  * @param  {Object} error       A javascript error object
- * @return {void}             
+ * @return {void}
  */
 
 export function printPrettyError(errorReason, error) {
-    console.log('%c %c %c ' + errorReason + '\n%c' + error.stack,
-        'background: #9854d8',
-        'background: #6c2ca7',
-        'color: #ffffff; background: #450f78;',
-        'color: #450f78; ',
-        'color: #ce0000;');
+  console.log('%c %c %c ' + errorReason + '\n%c' + error.stack,
+    'background: #9854d8',
+    'background: #6c2ca7',
+    'color: #ffffff; background: #450f78;',
+    'color: #450f78; ',
+    'color: #ce0000;');
 }
-
-
 /**
  * If you need to give arguments without passing "this"
  * @param  {Function} f
@@ -25,19 +23,19 @@ export function printPrettyError(errorReason, error) {
  */
 
 export function arg(f) {
-    if (typeof f !== "function")
-        throw new TypeError("Argument needs to a function");
+  if (typeof f !== "function")
+    throw new TypeError("Argument needs to a function");
 
-    var slice = Array.prototype.slice,
-        args = slice.call(arguments),
-        fn = f,
-        partial = function() {
-            return fn.apply(this, args.concat(slice.call(arguments)));
+  var slice = Array.prototype.slice,
+    args = slice.call(arguments),
+    fn = f,
+    partial = function() {
+      return fn.apply(this, args.concat(slice.call(arguments)));
 
-        };
+    };
 
-    return partial;
-};
+  return partial;
+}
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
@@ -46,37 +44,34 @@ export function arg(f) {
  */
 
 export function freezeObject(objectToFreeze) {
-    let frozenObject = Object.freeze(objectToFreeze);
-    return frozenObject;
+  let frozenObject = Object.freeze(objectToFreeze);
+  return frozenObject;
 }
 
 export function speedtest(config) {
-    if (typeof config !== 'Object') {
-        // error: Excepts plain object
-        return;
-    }
+  if (typeof config !== 'Object') {
+    // error: Excepts plain object
+    return;
+  }
 
-    subRoutinesToRun = {};
+  subRoutinesToRun = {};
 
-    for (var key in config) {
-        if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
-            subRoutinesToRun[key] = config[key];
-
-        }
+  for (var key in config) {
+    if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
+      subRoutinesToRun[key] = config[key];
 
     }
 
-    //dbg
-    console.log(JSON.stringify(subRoutinesToRun));
+  }
+
+  //dbg
+  console.log(JSON.stringify(subRoutinesToRun));
 
 
 
+  function _run(iterations) {
 
+    // capture date
 
-
-    function _run(iterations) {
-
-        // capture date
-
-    }
+  }
 }

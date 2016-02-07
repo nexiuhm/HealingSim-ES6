@@ -36,13 +36,13 @@ export function getSpellData(spell) {
 }
 
 export function getClassColor(classId) {
-    let classColors = [0xC79C6E, 0xF58CBA, 0xABD473, 0xFFF569, 0xFFFFFF, 0xC41F3B, 0x0070DE, 0x69CCF0, 0x9482C9, 0x00FF96, 0xFF7D0A]
+    let classColors = [0xC79C6E, 0xF58CBA, 0xABD473, 0xFFF569, 0xFFFFFF, 0xC41F3B, 0x0070DE, 0x69CCF0, 0x9482C9, 0x00FF96, 0xFF7D0A];
     return classColors[classId] || classColors[1];
 }
 
 export function generatePlayerName() {
-    let nameList = "Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu"
-    let nameArray = nameList.split(",")
+    let nameList = "Eowiragan,Ferraseth,Umeilith,Wice,Brierid,Fedriric,Higod,Gweann,Thigovudd,Fraliwyr,Zardorin,Halrik,Qae,Gwoif,Zoican,Tjolme,Dalibwyn,Miram,Medon,Aseannor,Angleus,Seita,Sejta,Fraggoji,Verdisha,Oixte,Lazeil,Jhazrun,Kahva,Ussos,Usso,Neverknow,Sco,Treckie,Slootbag,Unpl,Smirk,Lappe,Fraggoboss,Devai,Luumu,Alzu,Altzu";
+    let nameArray = nameList.split(",");
     let random_index = game.rnd.between(0, nameArray.length - 1);
     return nameArray[random_index];
 }
@@ -517,7 +517,7 @@ let combat_rating_multipliers = [
         49.500000000000000, 57.599998474121094, 67.500000000000000, 77.400001525878906, 90.000000000000000,
         90.000000000000000, 90.000000000000000, 90.000000000000000, 90.000000000000000, 90.000000000000000,
     ],
-    // Expertise rating multipliers expertise 
+    // Expertise rating multipliers expertise
     [
         0.307691991329193, 0.307691991329193, 0.307691991329193, 0.307691991329193, 0.307691991329193,
         0.307691991329193, 0.307691991329193, 0.307691991329193, 0.307691991329193, 0.307691991329193,

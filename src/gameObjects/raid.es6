@@ -1,8 +1,12 @@
-﻿import * as e from "../enums";
+﻿
+import * as e from "../enums";
 import Player from "./player";
 import Priest from "./class_modules/priest";
 import * as data from "./data";
-import {rng} from "../util";
+import {
+  rng
+}
+from "../util";
 
 /**
  * Class that manages the group and player creation.
@@ -10,206 +14,212 @@ import {rng} from "../util";
 
 export default class Raid {
 
-    constructor(state) {
-        this.events = state.events;
-        this.players = [];
-        this.raidSize = null;
+  constructor(state) {
+    this.events = state.events;
+    this.players = [];
+    this._raidSize = null;
+  }
+
+
+  setRaidSize(size) {
+    this._raidSize = size;
+  }
+
+  getRaidSize() {
+    return this._raidSize;
+  }
+
+  getplayerList() {
+    return this.players;
+  }
+
+  generateTestPlayers() {
+    let numberOfTanks, numberOfHealers, numberOfDps;
+    let validTankClasses = [0, 1, 5, 9, 10];
+    let validHealerClasses = [1, 4, 6, 9, 10];
+
+    if (this._raidSize == e.raid_size.GROUP) {
+      numberOfTanks = 1;
+      numberOfHealers = 0;
+      numberOfDps = 3;
+    }
+
+    if (this._raidSize == e.raid_size.TENMAN) {
+      numberOfTanks = 2;
+      numberOfHealers = 2;
+      numberOfDps = 5;
+    }
+
+    if (this._raidSize == e.raid_size.TWENTYFIVEMAN) {
+      numberOfTanks = 2;
+      numberOfHealers = 5;
+      numberOfDps = 17;
     }
 
 
-    setRaidSize(size) {
-        this.raidSize = size;
+    while (numberOfTanks--) {
+      let classs = validTankClasses[rng.integerInRange(0, validTankClasses.length -
+          1)],
+        race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+        level = 100,
+        name = data.generatePlayerName();
+
+      let unit = this.createUnit(classs, race, level, name);
+      this.addPlayer(unit);
     }
 
-    getPlayerList() {
-        return this.players;
+    while (numberOfHealers--) {
+      let classs = validHealerClasses[rng.integerInRange(0,
+          validHealerClasses.length - 1)],
+        race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+        level = 100,
+        name = data.generatePlayerName();
+
+      let unit = this.createUnit(classs, race, level, name);
+      this.addPlayer(unit);
     }
 
-    generateTestPlayers() {
-        let numberOfTanks, numberOfHealers, numberOfDps;
-        let validTankClasses = [0, 1, 5, 9, 10];
-        let validHealerClasses = [1, 4, 6, 9, 10];
+    while (numberOfDps--) {
+      let classs = rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
+        race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+        level = 100,
+        name = data.generatePlayerName();
 
-        if (this.raidSize == e.raid_size.GROUP) {
-            numberOfTanks = 1;
-            numberOfHealers = 0;
-            numberOfDps = 3;
-        }
-
-        if (this.raidSize == e.raid_size.TENMAN) {
-            numberOfTanks = 2;
-            numberOfHealers = 2;
-            numberOfDps = 5;
-        }
-
-        if (this.raidSize == e.raid_size.TWENTYFIVEMAN) {
-            numberOfTanks = 2;
-            numberOfHealers = 5;
-            numberOfDps = 17;
-        }
+      let unit = this.createUnit(classs, race, level, name);
+      this.addPlayer(unit);
+    }
+  }
 
 
-        while (numberOfTanks--) {
-            let classs = validTankClasses[rng.integerInRange(0, validTankClasses.length - 1)],
-                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                level = 100,
-                name = data.generatePlayerName();
+  /**
+   * Add a player to the raidgroup
+   * @param {Object(Player)} unit
+   */
 
-            let unit = this.createUnit(classs, race, level, name);
-            this.addPlayer(unit);
-        }
+  addPlayer(unit) {
+    this.players.push(unit);
+  }
 
-        while (numberOfHealers--) {
-            let classs = validHealerClasses[rng.integerInRange(0, validHealerClasses.length - 1)],
-                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                level = 100,
-                name = data.generatePlayerName();
+  // When you create a unit you also have to pass them a reference to the event manager, so they know how to communicate events.
+  createUnit(classs, race, level, name) {
 
-            let unit = this.createUnit(classs, race, level, name);
-            this.addPlayer(unit);
-        }
+    // Check if a valid "level" is chosen;
+    if (level < e.PLAYER_LEVEL_MIN || level > e.PLAYER_LEVEL_MAX)
+      level = e.PLAYER_LEVEL_MAX;
+    else
+      level = level;
 
-        while (numberOfDps--) {
-            let classs = rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
-                race = rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                level = 100,
-                name = data.generatePlayerName();
+    switch (classs) {
+      case e.class_e.PRIEST:
+        return new Priest(race, level, name, this.events);
 
-            let unit = this.createUnit(classs, race, level, name);
-            this.addPlayer(unit);
-        }
+      default:
+        return new Player(classs, race, level, name, this.events);
     }
 
+  }
 
-    /**
-     * Add a player to the raidgroup
-     * @param {Object(Player)} unit
-     */
+  /**
+   * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
+   */
 
-    addPlayer(unit) {
-        this.players.push(unit);
-    }
+  startTestDamage() {
+    let tank = this.players[0];
+    let offTank = this.players[1];
 
-    // When you create a unit you also have to pass them a reference to the event manager, so they know how to communicate events.
-    createUnit(classs, race, level, name) {
+    // --- Create some random damage for testing purposes ----
+    let bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
+    //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
+    let tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
+    let bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
+    let raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
+    let raidAIHealing = setInterval(raidHealing.bind(this), 4000);
+    //  let manaRegenYolo = setInterval(gainMana.bind(this), 1200);
+    let spike = setInterval(bossSpike.bind(this), 8000);
 
-        // Check if a valid "level" is chosen;
-        if (level < e.PLAYER_LEVEL_MIN || level > e.PLAYER_LEVEL_MAX)
-            level = e.PLAYER_LEVEL_MAX;
-        else
-            level = level;
+    // function gainMana() {
+    //   let player = this.players[this.players.length - 1];
+    //   player.gain_resource(1600);
+    // }
 
-        switch (classs) {
-            case e.class_e.PRIEST:
-                return new Priest(race, level, name, this.events);
-                break;
+    function bossSpike() {
+      let massiveBlow = rng.between(330000, 340900);
 
-            default:
-                return new Player(classs, race, level, name, this.events);
-                break;
-        }
+      tank.recieve_damage({
+        amount: massiveBlow
+      });
+      offTank.recieve_damage({
+        amount: massiveBlow / 2
+      });
 
     }
 
-    /**
-     * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
-     */
-    
-    startTestDamage() {
-        let tank = this.players[0];
-        let offTank = this.players[1];
+    function bossSwing() {
+      let bossSwing = rng.between(70000, 90900);
+      let bossSwingCriticalHit = Math.random();
 
-        // --- Create some random damage for testing purposes ----
-        let bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
-        //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
-        let tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
-        let bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
-        let raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
-        let raidAIHealing = setInterval(raidHealing.bind(this), 4000);
-        let manaRegenYolo = setInterval(gain_mana.bind(this), 1200);
-        let spike = setInterval(bossSpike.bind(this), 8000);
+      // 20% chance to critt. Experimental.
+      if (bossSwingCriticalHit < 0.85)
+        bossSwing *= 1.5;
+      tank.recieve_damage({
+        amount: bossSwing
+      });
+      offTank.recieve_damage({
+        amount: bossSwing / 2
+      });
 
-        function gain_mana() {
-            let player = this.players[this.players.length - 1];
-            player.gain_resource(1600);
-        }
-
-        function bossSpike() {
-            let massiveBlow = rng.between(330000, 340900);
-
-            tank.recive_damage({
-                amount: massiveBlow
-            });
-            offTank.recive_damage({
-                amount: massiveBlow / 2
-            });
-
-        }
-
-        function bossSwing() {
-            let bossSwing = rng.between(70000, 90900);
-            let bossSwingCriticalHit = Math.random();
-
-            // 20% chance to critt. Experimental.
-            if (bossSwingCriticalHit < 0.85)
-                bossSwing *= 1.5;
-            tank.recive_damage({
-                amount: bossSwing
-            });
-            offTank.recive_damage({
-                amount: bossSwing / 2
-            });
-
-        }
-
-        function bossAoEDamage() {
-            for (let i = 0; i < this.players.length - 1; i++) {
-                let player = this.players[i]
-                player.recive_damage({
-                    amount: 170000
-                });
-            }
-        }
-
-        function raidDamage() {
-            let i = rng.between(0, this.players.length - 1);
-            for (; i < this.players.length; i++) {
-                let player = this.players[i];
-                player.recive_damage({
-                    amount: rng.between(85555, 168900)
-                });
-            }
-        }
-
-        function singelTargetDamage() {
-            let random = rng.between(2, this.players.length - 1);
-            this.players[random].recive_damage({
-                amount: rng.between(100000, 150000)
-            });
-        }
-
-        function bossEncounterAdds() {}
-
-        function raidHealing() {
-
-            for (let i = 0; i < this.players.length; i++) {
-                let player = this.players[i];
-                let incomingHeal = player.getCurrentHealth() + rng.between(80000, 120000);
-                let criticalHeal = Math.random();
-
-                // 20% chance to critt. Experimental.
-                if (criticalHeal < 0.8)
-                    incomingHeal *= 1.5;
-
-                player.setHealth(incomingHeal);
-            }
-        }
-
-        function applyAbsorb() {
-            //this.player.setAbsorb(game.rnd.between(115, 88900));
-            tank.setHealth(tank.getCurrentHealth() + rng.between(10000, 38900));
-        }
-
-        // Legge inn AI shields på raidmembers.
     }
+
+    function bossAoEDamage() {
+      for (let i = 0; i < this.players.length - 1; i++) {
+        let player = this.players[i];
+        player.recieve_damage({
+          amount: 170000
+        });
+      }
+    }
+
+    function raidDamage() {
+      let i = rng.between(0, this.players.length - 1);
+      for (; i < this.players.length; i++) {
+        let player = this.players[i];
+        player.recieve_damage({
+          amount: rng.between(85555, 168900)
+        });
+      }
+    }
+
+    function singelTargetDamage() {
+      let random = rng.between(2, this.players.length - 1);
+      this.players[random].recieve_damage({
+        amount: rng.between(100000, 150000)
+      });
+    }
+
+    function bossEncounterAdds() {
+
+    }
+
+    function raidHealing() {
+
+      for (let i = 0; i < this.players.length; i++) {
+        let player = this.players[i];
+        let incomingHeal = player.getHealth() + rng.between(80000,
+          120000);
+        let criticalHeal = Math.random();
+
+        // 20% chance to critt. Experimental.
+        if (criticalHeal < 0.8)
+          incomingHeal *= 1.5;
+
+        player.setHealth(incomingHeal);
+      }
+    }
+
+    function applyAbsorb() {
+      //this.player.setAbsorb(game.rnd.between(115, 88900));
+      tank.setHealth(tank.getHealth() + rng.between(10000, 38900));
+    }
+    // Legge inn AI shields på raidmembers.
+  }
 }

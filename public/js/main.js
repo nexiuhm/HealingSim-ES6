@@ -301,75 +301,76 @@ function Debug($) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = RaidFrame;
+
 /**
-* Raid frame addon
-* Creates unit-frames based on how many players are in the raid/group.
-*/
+ * Raid frame addon
+ * Creates unit-frames based on how many players are in the raid/group.
+ */
 
 function RaidFrame($) {
 
-    var unitFrames = [];
-    var config = {
-        spacing: 2,
-        unitFrameWidth: 90,
-        unitFrameHeight: 40
-    };
+  var unitFrames = [];
+  var config = {
+    spacing: 2,
+    unitFrameWidth: 90,
+    unitFrameHeight: 40
+  };
 
-    var raidFrame = $.newFrame("UIParent").setPos(800, 400);
+  var raidFrame = $.newFrame("UIParent").setPos(800, 400);
 
-    {
-        // Anonymous namespace, since we dont want to pollute this function scope
-        var MAX_GROUPS = 5;
-        var MAX_PLAYERS_PER_GROUP = 5;
-        var playersInRaid = $.getGroupMembers();
+  {
+    // Anonymous namespace, since we dont want to pollute this function scope
+    var MAX_GROUPS = 5;
+    var MAX_PLAYERS_PER_GROUP = 5;
+    var playersInRaid = $.getGroupMembers();
 
-        for (var g = 0; g < MAX_GROUPS; g++) {
-            var _loop = function _loop(p) {
-                var unit = playersInRaid[g * 5 + p];
-                if (!unit) return "break";
+    for (var g = 0; g < MAX_GROUPS; g++) {
+      var _loop = function _loop(p) {
+        var unit = playersInRaid[g * 5 + p];
+        if (!unit) return "break";
 
-                /**
-                 * Create and configure the unit frame
-                 */
+        /**
+         * Create and configure the unit frame
+         */
 
-                var unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight).setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
+        var unitFrame = $.newUnitFrame(raidFrame, unit, config.unitFrameWidth, config.unitFrameHeight).setPos(config.unitFrameWidth * g, p * (config.unitFrameHeight + config.spacing));
 
-                unitFrame.inputEnabled = true;
+        unitFrame.inputEnabled = true;
 
-                if (unit === $.localPlayer()) {
-                    unitFrame.togglePowerBar();
-                }
-                unitFrame.events.onInputDown.add(function () {
-                    $.localPlayer().setTarget(unitFrame.unit);
-                });
-
-                // add to the array
-                unitFrames.push(unitFrame);
-            };
-
-            for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
-                var _ret = _loop(p);
-
-                if (_ret === "break") break;
-            }
+        if (unit === $.localPlayer()) {
+          unitFrame.togglePowerBar();
         }
-    } // -- END --
+        unitFrame.events.onInputDown.add(function () {
+          $.localPlayer().setTarget(unitFrame.unit);
+        });
 
-    /* TODO: Position parent frame base on how big the raid got */
+        // add to the array
+        unitFrames.push(unitFrame);
+      };
 
-    /**
-     * The animation that is fired when the raid has been created
-     */
+      for (var p = 0; p < MAX_PLAYERS_PER_GROUP; p++) {
+        var _ret = _loop(p);
 
-    for (var player = 0; player < unitFrames.length; player++) {
-        var _unitFrame = unitFrames[player];
-        game.add.tween(_unitFrame).to({
-            y: -800
-        }, 1550 + player * 10, Phaser.Easing.Elastic.Out, true, undefined, undefined, true);
+        if (_ret === "break") break;
+      }
     }
+  } // -- END --
+
+  /* TODO: Position parent frame base on how big the raid got */
+
+  /**
+   * The animation that is fired when the raid has been created
+   */
+
+  for (var player = 0; player < unitFrames.length; player++) {
+    var _unitFrame = unitFrames[player];
+    game.add.tween(_unitFrame).to({
+      y: -800
+    }, 1550 + player * 10, Phaser.Easing.Elastic.Out, true, undefined, undefined, true);
+  }
 }
 });
 
@@ -442,7 +443,7 @@ function BigWigs($) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = UnitFrames;
 
@@ -457,37 +458,37 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 function UnitFrames($) {
 
-    /**
-     * Players unit frame
-     */
-    var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50).togglePowerBar().setPos(500, 800);
+  /**
+   * Players unit frame
+   */
+  var playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50).togglePowerBar().setPos(500, 800);
 
-    playerFrame.inputEnabled = true;
-    playerFrame.events.onInputDown.add(function () {
-        $.localPlayer().setTarget(playerFrame.unit);
-    }); //playerFrame.input.enableDrag();
+  playerFrame.inputEnabled = true;
+  playerFrame.events.onInputDown.add(function () {
+    $.localPlayer().setTarget(playerFrame.unit);
+  }); //playerFrame.input.enableDrag();
 
-    /**
-     * Target's unit frame
-     */
-    var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50).setPos(1000, 800);
+  /**
+   * Target's unit frame
+   */
+  var targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50).setPos(1000, 800);
 
-    $.events.TARGET_CHANGE_EVENT.add(function () {
-        targetFrame.setUnit($.localPlayer().target);
+  $.events.TARGET_CHANGE_EVENT.add(function () {
+    targetFrame.setUnit($.localPlayer().target);
+  });
+
+  /**
+   * Boss test frame
+   */
+
+  var testBoss = new _player2.default(4, 4, 100, "Ragnaros", $.events, true);
+  setInterval(function () {
+    testBoss.recieve_damage({
+      amount: 5250
     });
+  }, 1200);
 
-    /**
-     * Boss test frame
-     */
-
-    var testBoss = new _player2.default(4, 4, 100, "Ragnaros", $.events, true);
-    setInterval(function () {
-        testBoss.recive_damage({
-            amount: 5250
-        });
-    }, 1200);
-
-    var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50).setPos(1200, 500);
+  var bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50).setPos(1200, 500);
 }
 });
 
@@ -495,103 +496,103 @@ function UnitFrames($) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.raid_size = exports.player_race = exports.player_level = exports.player_class = exports.combat_rating_e = exports.race_e = exports.class_e = exports.stat_e = undefined;
 
 var _util = require("./util");
 
 var stat_e = (0, _util.freezeObject)({
-    "STRENGHT": 0,
-    "AGILITY": 1,
-    "STAMINA": 2,
-    "INTELLECT": 3,
-    "SPIRIT": 4
+  "STRENGHT": 0,
+  "AGILITY": 1,
+  "STAMINA": 2,
+  "INTELLECT": 3,
+  "SPIRIT": 4
 });
 var class_e = (0, _util.freezeObject)({
-    "WARRIOR": 0,
-    "PALADIN": 1,
-    "HUNTER": 2,
-    "ROGUE": 3,
-    "PRIEST": 4,
-    "DEATHKNIGHT": 5,
-    "SHAMAN": 6,
-    "MAGE": 7,
-    "WARLOCK": 8,
-    "MONK": 9,
-    "DRUID": 10
+  "WARRIOR": 0,
+  "PALADIN": 1,
+  "HUNTER": 2,
+  "ROGUE": 3,
+  "PRIEST": 4,
+  "DEATHKNIGHT": 5,
+  "SHAMAN": 6,
+  "MAGE": 7,
+  "WARLOCK": 8,
+  "MONK": 9,
+  "DRUID": 10
 });
 var race_e = (0, _util.freezeObject)({
-    "RACE_NONE": 0,
-    "RACE_BEAST": 1,
-    "RACE_DRAGONKIN": 2,
-    "RACE_GIANT": 3,
-    "RACE_HUMANOID": 4,
-    "RACE_DEMON": 5,
-    "RACE_ELEMENTAL": 6,
-    "RACE_NIGHT_ELF": 7,
-    "RACE_HUMAN": 8,
-    "RACE_GNOME": 9,
-    "RACE_DWARF": 10,
-    "RACE_DRAENEI": 11,
-    "RACE_WORGEN": 12,
-    "RACE_ORC": 13,
-    "RACE_TROLL": 14,
-    "RACE_UNDEAD": 15,
-    "RACE_BLOOD_ELF": 16,
-    "RACE_TAUREN": 17,
-    "RACE_GOBLIN": 18,
-    "RACE_PANDAREN": 19,
-    "RACE_PANDAREN_ALLIANCE": 20,
-    "RACE_PANDAREN_HORDE": 21,
-    "RACE_MAX": 22,
-    "RACE_UNKNOWN": 23
+  "RACE_NONE": 0,
+  "RACE_BEAST": 1,
+  "RACE_DRAGONKIN": 2,
+  "RACE_GIANT": 3,
+  "RACE_HUMANOID": 4,
+  "RACE_DEMON": 5,
+  "RACE_ELEMENTAL": 6,
+  "RACE_NIGHT_ELF": 7,
+  "RACE_HUMAN": 8,
+  "RACE_GNOME": 9,
+  "RACE_DWARF": 10,
+  "RACE_DRAENEI": 11,
+  "RACE_WORGEN": 12,
+  "RACE_ORC": 13,
+  "RACE_TROLL": 14,
+  "RACE_UNDEAD": 15,
+  "RACE_BLOOD_ELF": 16,
+  "RACE_TAUREN": 17,
+  "RACE_GOBLIN": 18,
+  "RACE_PANDAREN": 19,
+  "RACE_PANDAREN_ALLIANCE": 20,
+  "RACE_PANDAREN_HORDE": 21,
+  "RACE_MAX": 22,
+  "RACE_UNKNOWN": 23
 });
 
 var combat_rating_e = (0, _util.freezeObject)({
-    "RATING_MOD_DODGE": 0,
-    "RATING_MOD_PARRY": 1,
-    "RATING_MOD_HIT_MELEE": 2,
-    "RATING_MOD_HIT_RANGED": 3,
-    "RATING_MOD_HIT_SPELL": 4,
-    "RATING_MOD_CRIT_MELEE": 5,
-    "RATING_MOD_CRIT_RANGED": 6,
-    "RATING_MOD_CRIT_SPELL": 7,
-    "RATING_MOD_MULTISTRIKE": 8,
-    "RATING_MOD_READINESS": 9,
-    "RATING_MOD_SPEED": 10,
-    "RATING_MOD_RESILIENCE": 11,
-    "RATING_MOD_LEECH": 12,
-    "RATING_MOD_HASTE_MELEE": 13,
-    "RATING_MOD_HASTE_RANGED": 14,
-    "RATING_MOD_HASTE_SPELL": 15,
-    "RATING_MOD_EXPERTISE": 16,
-    "RATING_MOD_MASTERY": 17,
-    "RATING_MOD_PVP_POWER": 18,
-    "RATING_MOD_VERS_DAMAGE": 19,
-    "RATING_MOD_VERS_HEAL": 20,
-    "RATING_MOD_VERS_MITIG": 21
+  "RATING_MOD_DODGE": 0,
+  "RATING_MOD_PARRY": 1,
+  "RATING_MOD_HIT_MELEE": 2,
+  "RATING_MOD_HIT_RANGED": 3,
+  "RATING_MOD_HIT_SPELL": 4,
+  "RATING_MOD_CRIT_MELEE": 5,
+  "RATING_MOD_CRIT_RANGED": 6,
+  "RATING_MOD_CRIT_SPELL": 7,
+  "RATING_MOD_MULTISTRIKE": 8,
+  "RATING_MOD_READINESS": 9,
+  "RATING_MOD_SPEED": 10,
+  "RATING_MOD_RESILIENCE": 11,
+  "RATING_MOD_LEECH": 12,
+  "RATING_MOD_HASTE_MELEE": 13,
+  "RATING_MOD_HASTE_RANGED": 14,
+  "RATING_MOD_HASTE_SPELL": 15,
+  "RATING_MOD_EXPERTISE": 16,
+  "RATING_MOD_MASTERY": 17,
+  "RATING_MOD_PVP_POWER": 18,
+  "RATING_MOD_VERS_DAMAGE": 19,
+  "RATING_MOD_VERS_HEAL": 20,
+  "RATING_MOD_VERS_MITIG": 21
 });
 
 //const player_role = Enum("TANK", "HEALER", "DAMAGE");
 
 var player_class = (0, _util.freezeObject)({
-    "MIN": 0,
-    "MAX": 10
+  "MIN": 0,
+  "MAX": 10
 });
 var player_level = (0, _util.freezeObject)({
-    "MIN": 1,
-    "MAX": 100
+  "MIN": 1,
+  "MAX": 100
 });
 var player_race = (0, _util.freezeObject)({
-    "MIN": 7,
-    "MAX": 21
+  "MIN": 7,
+  "MAX": 21
 });
 
 var raid_size = (0, _util.freezeObject)({
-    "TENMAN": 10,
-    "GROUP": 5,
-    "TWENTYFIVEMAN": 25
+  "TENMAN": 10,
+  "GROUP": 5,
+  "TWENTYFIVEMAN": 25
 });
 
 exports.stat_e = stat_e;
@@ -915,7 +916,7 @@ exports.default = Frame;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _frame = require("./frame");
@@ -935,119 +936,119 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var StatusBar = function (_Frame) {
-    _inherits(StatusBar, _Frame);
+  _inherits(StatusBar, _Frame);
 
-    function StatusBar(parent, width, height) {
-        var disableTexture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+  function StatusBar(parent, width, height) {
+    var disableTexture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
-        _classCallCheck(this, StatusBar);
+    _classCallCheck(this, StatusBar);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusBar).call(this, parent));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StatusBar).call(this, parent));
 
-        _this.setPos(0, 0);
-        _this.setSize(width, height);
+    _this.setPos(0, 0);
+    _this.setSize(width, height);
 
-        // defaults. How fast the bar should react to change in values.
-        _this._animationStyle = "Linear";
-        _this._animationDuration = 200;
+    // defaults. How fast the bar should react to change in values.
+    _this._animationStyle = "Linear";
+    _this._animationDuration = 200;
 
-        // The values for the bar. Default is full bar.
-        _this._minValue = 0;
-        _this._maxValue = 1;
-        _this._currentValue = 0;
+    // The values for the bar. Default is full bar.
+    _this._minValue = 0;
+    _this._maxValue = 1;
+    _this._currentValue = 0;
 
-        // Init bar
-        _this._bar = new Phaser.Graphics(game, 0, 0);
-        _this._bar.beginFill(0xFFFFFF);
-        _this._bar.drawRect(0, 0, _this._width, _this._height);
-        _this._bar.endFill();
+    // Init bar
+    _this._bar = new Phaser.Graphics(game, 0, 0);
+    _this._bar.beginFill(0xFFFFFF);
+    _this._bar.drawRect(0, 0, _this._width, _this._height);
+    _this._bar.endFill();
 
-        // Add children to parent frame
-        _this.addChild(_this._bar);
-        // Works as both a texture and a background
-        if (!disableTexture) {
-            _this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
-            _this._texture.width = _this._width;
-            _this._texture.height = _this._height;
-            _this._texture.blendMode = PIXI.blendModes.MULTIPLY;
-            _this.addChild(_this._texture);
-        }
-
-        _this._updateBarWidth();
-
-        return _this;
+    // Add children to parent frame
+    _this.addChild(_this._bar);
+    // Works as both a texture and a background
+    if (!disableTexture) {
+      _this._texture = new Phaser.Sprite(game, 0, 0, "castbar_texture");
+      _this._texture.width = _this._width;
+      _this._texture.height = _this._height;
+      _this._texture.blendMode = PIXI.blendModes.MULTIPLY;
+      _this.addChild(_this._texture);
     }
 
-    _createClass(StatusBar, [{
-        key: "_updateBarWidth",
+    _this._updateBarWidth();
 
-        /**
-         * [_updateBarWidth description]
-         * @return {[type]} [description]
-         * @private
-         */
-        value: function _updateBarWidth(forceInstantUpdate) {
-            var barWidthInPixels = Math.round(this._currentValue / this._maxValue * this._width);
-            this.nextWidth = barWidthInPixels;
+    return _this;
+  }
 
-            if (barWidthInPixels <= 0) // something bad happens if it goes to 0
-                barWidthInPixels = 1;
+  /**
+   * [_updateBarWidth description]
+   * @return {[type]} [description]
+   * @private
+   */
 
-            // Sometimes we want the bar to be updated without an animation delay.
-            if (forceInstantUpdate === true || this._animationDuration === 0) {
-                this._bar.width = barWidthInPixels;
-                console.log("FORCE INSTANT");
-            } else {
-                game.add.tween(this._bar).to({
-                    width: barWidthInPixels
-                }, this._animationDuration, this._animationStyle, true);
-            }
-        }
+  _createClass(StatusBar, [{
+    key: "_updateBarWidth",
+    value: function _updateBarWidth(forceInstantUpdate) {
+      var barWidthInPixels = Math.round(this._currentValue / this._maxValue * this._width);
+      this.nextWidth = barWidthInPixels;
 
-        /* Public interface below */
+      if (barWidthInPixels <= 0) // something bad happens if it goes to 0
+        barWidthInPixels = 1;
 
-    }, {
-        key: "setColor",
-        value: function setColor(color) {
-            this._bar.tint = color;
-            return this;
-        }
-    }, {
-        key: "setValues",
-        value: function setValues(min, max, current, forceInstantUpdate) {
-            this._maxValue = max;
-            this._minValue = min;
-            this._currentValue = current;
-            console.log(forceInstantUpdate);
-            this._updateBarWidth(forceInstantUpdate);
-            return this;
-        }
-    }, {
-        key: "setTexture",
-        value: function setTexture() {
-            //
-        }
-    }, {
-        key: "setMaxValue",
-        value: function setMaxValue(newMaxValue) {
-            this._maxValue = newMaxValue;
-            this._updateBarWidth();
+      // Sometimes we want the bar to be updated without an animation delay.
+      if (forceInstantUpdate === true || this._animationDuration === 0) {
+        this._bar.width = barWidthInPixels;
+        console.log("FORCE INSTANT");
+      } else {
+        game.add.tween(this._bar).to({
+          width: barWidthInPixels
+        }, this._animationDuration, this._animationStyle, true);
+      }
+    }
 
-            return this;
-        }
-    }, {
-        key: "setValue",
-        value: function setValue(newValue, duration) {
-            if (newValue <= this._minValue) this._currentValue = this._minValue;else if (newValue > this._maxValue) this._currentValue = this._maxValue;else this._currentValue = newValue;
-            if (duration) this._animationDuration = duration;else if (duration === 0) this._animationDuration = duration;
+    /* Public interface below */
 
-            this._updateBarWidth();
+  }, {
+    key: "setColor",
+    value: function setColor(color) {
+      this._bar.tint = color;
+      return this;
+    }
+  }, {
+    key: "setValues",
+    value: function setValues(min, max, current, forceInstantUpdate) {
+      this._maxValue = max;
+      this._minValue = min;
+      this._currentValue = current;
+      console.log(forceInstantUpdate);
+      this._updateBarWidth(forceInstantUpdate);
+      return this;
+    }
+  }, {
+    key: "setTexture",
+    value: function setTexture() {
+      //
+    }
+  }, {
+    key: "setMaxValue",
+    value: function setMaxValue(newMaxValue) {
+      this._maxValue = newMaxValue;
+      this._updateBarWidth();
 
-            return this;
-        }
-    }]);
+      return this;
+    }
+  }, {
+    key: "setValue",
+    value: function setValue(newValue, duration) {
+      if (newValue <= this._minValue) this._currentValue = this._minValue;else if (newValue > this._maxValue) this._currentValue = this._maxValue;else this._currentValue = newValue;
+      if (duration) this._animationDuration = duration;else if (duration === 0) this._animationDuration = duration;
 
-    return StatusBar;
+      this._updateBarWidth();
+
+      return this;
+    }
+  }]);
+
+  return StatusBar;
 }(_frame2.default);
 
 exports.default = StatusBar;
@@ -1181,7 +1182,7 @@ exports.default = StatusIcon;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _frame = require("./frame");
@@ -1207,192 +1208,222 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var UnitFrame = function (_Frame) {
-    _inherits(UnitFrame, _Frame);
+  _inherits(UnitFrame, _Frame);
 
-    function UnitFrame(parent, unit, width, height, _events) {
-        _classCallCheck(this, UnitFrame);
+  function UnitFrame(parent, unit, width, height, _events) {
+    _classCallCheck(this, UnitFrame);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnitFrame).call(this, parent));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnitFrame).call(this, parent));
 
-        if (width) _this._width = width;
-        if (height) _this._height = height;
+    if (width) _this._width = width;
+    if (height) _this._height = height;
 
-        _this.gameEvents = _events;
-        _this.unit = unit;
-        _this.config = {
-            powerBarEnabled: false,
-            absorbIndicatorEnabled: true,
-            playerNameEnabled: true,
-            enemyColor: 0xFA1A16,
-            powerBarColor: 0x00D1FF
-        };
+    _this.gameEvents = _events;
+    _this.unit = unit;
+    _this.config = {
+      powerBarEnabled: false,
+      absorbIndicatorEnabled: true,
+      playerNameEnabled: true,
+      enemyColor: 0xFA1A16,
+      powerBarColor: 0x00D1FF
+    };
 
-        _this._init();
+    _this._init();
 
-        return _this;
+    return _this;
+  }
+
+  _createClass(UnitFrame, [{
+    key: "_init",
+    value: function _init() {
+      // Clear all displayObjects from the Frame
+      this.removeChildren();
+
+      this._initHealthBar();
+
+      if (this.config.powerBarEnabled) {
+        this._initPowerBar();
+      }
+
+      if (this.unit.isEnemy) {
+        this.dragonTexture = new Phaser.Sprite(game, this._width - 55, -10, "elite");
+        this.addChild(this.dragonTexture);
+      }
+
+      //this.inputEnabled = true;
+      this._initEventListeners();
+    }
+  }, {
+    key: "_initEventListeners",
+    value: function _initEventListeners() {
+      var _this2 = this;
+
+      //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
+      this.gameEvents.UNIT_HEALTH_CHANGE.add(function (unit) {
+        return _this2._onUnitHealthChanged(unit);
+      });
+      this.gameEvents.UNIT_DEATH.add(function (unit) {
+        return _this2._onUnitDeath(unit);
+      });
+
+      if (this.config.powerBarEnabled) {
+        this.gameEvents.MANA_CHANGE.add(function (unit) {
+          return _this2._onUnitManaChanged(unit);
+        });
+      }
+
+      if (this.config.absorbIndicatorEnabled) {
+        this.gameEvents.UNIT_ABSORB.add(function (unit) {
+          return _this2._onUnitAbsorbChanged(unit);
+        });
+      }
+    }
+  }, {
+    key: "_initPowerBar",
+    value: function _initPowerBar() {
+      this.powerBar = new _status_bar2.default(this, this._width, this._height / 4);
+      this.powerBar.setValues(0, this.unit.getMana(), this.unit.getMaxMana());
+      this.powerBar.setPos(0, this.healthBar._height);
+      this.powerBar.setColor(this.config.powerBarColor);
+
+      this.manaPercentText = new Phaser.BitmapText(game, this.powerBar._width / 2, this.powerBar._height / 2, "myriad", null, 11);
+      this.manaPercentText.tint = this.config.powerBarColor;
+      this.manaPercentText.anchor.set(0.5);
+      this.powerBar.addChild(this.manaPercentText);
+    }
+  }, {
+    key: "_initHealthBar",
+    value: function _initHealthBar() {
+      this.healthBar = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4));
+      this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId));
+      this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getHealth(), true);
+
+      if (this.config.playerNameEnabled) {
+        this.playerName = new Phaser.BitmapText(game, this.healthBar._width / 2, this.healthBar._height / 2, "myriad", null, 12);
+        this.playerName.setText(this.unit.name);
+        this.playerName.anchor.set(0.5);
+        this.playerName.tint = this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId);
+        this.healthBar.addChild(this.playerName);
+      }
+
+      if (this.config.absorbIndicatorEnabled) {
+        this.absorbIndicator = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4), true);
+        this.absorbIndicator.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentAbsorb(), true);
+        this.absorbIndicator.setColor(0x00BFFF);
+        this.absorbIndicator.setPos(this._width, 0);
+        this.absorbIndicator._bar.alpha = 0.3;
+      }
+    }
+  }, {
+    key: "_onUnitHealthChanged",
+    value: function _onUnitHealthChanged(unit) {
+      if (unit != this.unit) {
+        return;
+      }
+
+      this.healthBar.setValue(this.unit.getHealth());
+
+      if (this.config.absorbIndicatorEnabled) {
+        game.add.tween(this.absorbIndicator).to({
+          x: this.healthBar.nextWidth
+        }, 200, "Linear", true);
+      }
+
+      console.log(this.healthBar._bar.width);
+      /*
+      if (this.unit.healthPercent < 20) {
+          this.healthBar.setColor(lowHealthColor)
+      } */
+    }
+  }, {
+    key: "_onUnitAbsorbChanged",
+    value: function _onUnitAbsorbChanged(unit) {
+      if (unit != this.unit) {
+        return;
+      }
+
+      this.absorbIndicator.setValue(this.unit.getCurrentAbsorb());
+      console.log(this.unit.getCurrentAbsorb());
+    }
+  }, {
+    key: "_onUnitMaxHealthChanged",
+    value: function _onUnitMaxHealthChanged(unit) {
+      this.healthBar.setMaxValue(this.unit.getMaxHealth());
+      if (this.config.absorbIndicatorEnabled) {
+        this.absorbIndicator.setMaxValue(this.unit.getMaxHealth());
+      }
+    }
+  }, {
+    key: "_onUnitManaChanged",
+    value: function _onUnitManaChanged(unit) {
+
+      this.powerBar.setValue(this.unit.getMana());
+
+      var mana_pct = this.unit.getMana() / this.unit.getMaxMana() * 100;
+      this.manaPercentText.setText(mana_pct.toFixed(1) + "%");
+    }
+  }, {
+    key: "_onUnitRoleChanged",
+    value: function _onUnitRoleChanged() {
+      // set role icon
+    }
+  }, {
+    key: "_onUnitDeath",
+    value: function _onUnitDeath(unit) {
+      if (unit != this.unit) return;
+      this.healthBar.setValue(0);
     }
 
-    _createClass(UnitFrame, [{
-        key: "_init",
-        value: function _init() {
-            // Clear all displayObjects from the Frame
-            this.removeChildren();
+    /* Public interface below */
 
-            this._initHealthBar();
+  }, {
+    key: "togglePowerBar",
+    value: function togglePowerBar() {
+      this.config.powerBarEnabled = this.config.powerBarEnabled ? false : true;
+      this._init();
+      return this;
+    }
+  }, {
+    key: "setUnit",
+    value: function setUnit(unit) {
+      this.unit = unit;
+      this._init();
+      return this;
+    }
+  }]);
 
-            if (this.config.powerBarEnabled) {
-                this._initPowerBar();
-            }
-
-            if (this.unit.isEnemy) {
-                this.dragonTexture = new Phaser.Sprite(game, this._width - 55, -10, "elite");
-                this.addChild(this.dragonTexture);
-            }
-
-            //this.inputEnabled = true;
-            this._initEventListeners();
-        }
-    }, {
-        key: "_initEventListeners",
-        value: function _initEventListeners() {
-            var _this2 = this;
-
-            //onEvent("UNIT_HEALTH_CHANGE", (e) => this._onUnitHealthChanged(e));
-            this.gameEvents.UNIT_HEALTH_CHANGE.add(function (unit) {
-                return _this2._onUnitHealthChanged(unit);
-            });
-            this.gameEvents.UNIT_DEATH.add(function (unit) {
-                return _this2._onUnitDeath(unit);
-            });
-
-            if (this.config.powerBarEnabled) {
-                this.gameEvents.MANA_CHANGE.add(function (unit) {
-                    return _this2._onUnitManaChanged(unit);
-                });
-            }
-
-            if (this.config.absorbIndicatorEnabled) {
-                this.gameEvents.UNIT_ABSORB.add(function (unit) {
-                    return _this2._onUnitAbsorbChanged(unit);
-                });
-            }
-        }
-    }, {
-        key: "_initPowerBar",
-        value: function _initPowerBar() {
-            this.powerBar = new _status_bar2.default(this, this._width, this._height / 4);
-            this.powerBar.setValues(0, this.unit.getMana(), this.unit.getMaxMana());
-            this.powerBar.setPos(0, this.healthBar._height);
-            this.powerBar.setColor(this.config.powerBarColor);
-
-            this.manaPercentText = new Phaser.BitmapText(game, this.powerBar._width / 2, this.powerBar._height / 2, "myriad", null, 11);
-            this.manaPercentText.tint = this.config.powerBarColor;
-            this.manaPercentText.anchor.set(0.5);
-            this.powerBar.addChild(this.manaPercentText);
-        }
-    }, {
-        key: "_initHealthBar",
-        value: function _initHealthBar() {
-            this.healthBar = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4));
-            this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId));
-            this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentHealth(), true);
-
-            if (this.config.playerNameEnabled) {
-                this.playerName = new Phaser.BitmapText(game, this.healthBar._width / 2, this.healthBar._height / 2, "myriad", null, 12);
-                this.playerName.setText(this.unit.name);
-                this.playerName.anchor.set(0.5);
-                this.playerName.tint = this.unit.isEnemy ? this.config.enemyColor : data.getClassColor(this.unit.classId);
-                this.healthBar.addChild(this.playerName);
-            }
-
-            if (this.config.absorbIndicatorEnabled) {
-                this.absorbIndicator = new _status_bar2.default(this, this._width, this._height / 4 * (this.config.powerBarEnabled ? 3 : 4), true);
-                this.absorbIndicator.setValues(0, this.unit.getMaxHealth(), this.unit.getCurrentAbsorb(), true);
-                this.absorbIndicator.setColor(0x00BFFF);
-                this.absorbIndicator.setPos(this._width, 0);
-                this.absorbIndicator._bar.alpha = 0.3;
-            }
-        }
-    }, {
-        key: "_onUnitHealthChanged",
-        value: function _onUnitHealthChanged(unit) {
-            if (unit != this.unit) {
-                return;
-            }
-
-            this.healthBar.setValue(this.unit.getCurrentHealth());
-
-            if (this.config.absorbIndicatorEnabled) {
-                game.add.tween(this.absorbIndicator).to({ x: this.healthBar.nextWidth }, 200, "Linear", true);
-            }
-
-            console.log(this.healthBar._bar.width);
-            /*
-            if (this.unit.healthPercent < 20) { 
-                this.healthBar.setColor(lowHealthColor)
-            } */
-        }
-    }, {
-        key: "_onUnitAbsorbChanged",
-        value: function _onUnitAbsorbChanged(unit) {
-            if (unit != this.unit) {
-                return;
-            }
-
-            this.absorbIndicator.setValue(this.unit.getCurrentAbsorb());
-            console.log(this.unit.getCurrentAbsorb());
-        }
-    }, {
-        key: "_onUnitMaxHealthChanged",
-        value: function _onUnitMaxHealthChanged(unit) {
-            this.healthBar.setMaxValue(this.unit.getMaxHealth());
-            if (this.config.absorbIndicatorEnabled) {
-                this.absorbIndicator.setMaxValue(this.unit.getMaxHealth());
-            }
-        }
-    }, {
-        key: "_onUnitManaChanged",
-        value: function _onUnitManaChanged(unit) {
-
-            this.powerBar.setValue(this.unit.getMana());
-
-            var mana_pct = this.unit.getMana() / this.unit.getMaxMana() * 100;
-            this.manaPercentText.setText(mana_pct.toFixed(1) + "%");
-        }
-    }, {
-        key: "_onUnitRoleChanged",
-        value: function _onUnitRoleChanged() {
-            // set role icon
-        }
-    }, {
-        key: "_onUnitDeath",
-        value: function _onUnitDeath(unit) {
-            if (unit != this.unit) return;
-            this.healthBar.setValue(0);
-        }
-
-        /* Public interface below */
-
-    }, {
-        key: "togglePowerBar",
-        value: function togglePowerBar() {
-            this.config.powerBarEnabled = this.config.powerBarEnabled ? false : true;
-            this._init();
-            return this;
-        }
-    }, {
-        key: "setUnit",
-        value: function setUnit(unit) {
-            this.unit = unit;
-            this._init();
-            return this;
-        }
-    }]);
-
-    return UnitFrame;
+  return UnitFrame;
 }(_frame2.default);
 
 exports.default = UnitFrame;
+});
+
+;require.register("src/gameObjects/boss", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Boss = function (_Unit) {
+  _inherits(Boss, _Unit);
+
+  function Boss(_class, race, level, name, events) {
+    _classCallCheck(this, Boss);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Boss).call(this, _class, race, level, name, events));
+  }
+
+  return Boss;
+}(Unit);
+
+exports.default = Boss;
 });
 
 ;require.register("src/gameObjects/class_modules/priest", function(exports, require, module) {
@@ -1612,7 +1643,7 @@ ACTION_BUTTON_1:{key:'1',spell:'flash_of_light'},ACTION_BUTTON_2:{key:'2',spell:
 [0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.342657625675201,0.513985812664032,0.685314655303955,0.856643438339233,1.027972221374512,1.199300408363342,1.370629310607910,1.541958093643188,1.713286876678467,1.884615063667297,2.055943965911865,2.227272748947144,2.398601531982422,2.569930315017700,2.741258621215820,2.912587404251099,3.083916187286377,3.255244970321655,3.426573276519775,3.597902059555054,3.769230842590332,3.940558910369873,4.111887931823730,4.283216476440430,4.454545497894287,4.625874042510986,4.797203063964844,4.968532085418701,5.139860153198242,5.311188697814941,5.482517242431641,5.653845787048340,5.825174808502197,5.996503353118896,6.167831897735596,6.339160442352295,6.510489940643311,6.681818008422852,6.853147506713867,7.024476051330566,7.195804595947266,7.367132663726807,7.538462162017822,7.709790229797363,7.881119728088379,8.052448272705078,8.223777770996094,8.395105361938477,8.566433906555176,8.737762451171875,8.909090995788574,9.027518272399902,9.145945549011230,9.264372825622559,9.382800102233887,9.501226425170898,9.619653701782227,9.738080978393555,9.856508255004883,9.974935531616211,10.093362808227539,10.211790084838867,10.330217361450195,10.448644638061523,10.567071914672852,10.685498237609863,10.803926467895508,10.922352790832520,11.040780067443848,11.159207344055176,11.277634620666504,11.737947463989258,12.198257446289062,12.428413391113281,12.428413391113281,12.658569335937500,13.118881225585938,13.579193115234375,14.039504051208496,14.499815940856934,15.000000000000000,17.000000000000000,20.000000000000000,24.000000000000000,28.000000000000000,33.000000000000000,38.000000000000000,45.000000000000000,52.000000000000000,61.000000000000000,70.000000000000000,70.000000000000000,70.000000000000000,70.000000000000000,70.000000000000000,70.000000000000000], // Melee haste rating multipliers
 [0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.649038374423981,0.865384876728058,1.081730246543884,1.298076748847961,1.514423251152039,1.730769753456116,1.947115182876587,2.163461685180664,2.379808187484741,2.596153497695923,2.812500000000000,3.028846502304077,3.245191812515259,3.461538314819336,3.677884817123413,3.894230365753174,4.110576629638672,4.326923370361328,4.543269634246826,4.759614944458008,4.975961685180664,5.192307949066162,5.408654689788818,5.625000000000000,5.841346263885498,6.057692050933838,6.274038314819336,6.490385055541992,6.706730365753174,6.923076629638672,7.139423370361328,7.355769634246826,7.572114944458008,7.788461685180664,8.004808425903320,8.221154212951660,8.437500000000000,8.653845787048340,8.870191574096680,9.086538314819336,9.302885055541992,9.519229888916016,9.735576629638672,9.951923370361328,10.168270111083984,10.384614944458008,10.600961685180664,10.817308425903320,11.033654212951660,11.250000000000000,11.304548263549805,11.452846527099609,11.601144790649414,11.749443054199219,11.897741317749023,12.046039581298828,12.194337844848633,12.342637062072754,12.490935325622559,12.639233589172363,12.787531852722168,12.935830116271973,13.084128379821777,13.232426643371582,13.380724906921387,13.529023170471191,13.677321434020996,13.825619697570801,13.973917961120605,14.122216224670410,14.698633193969727,15.275050163269043,15.563259124755859,15.563259124755859,15.851468086242676,16.427885055541992,17.004301071166992,17.580718994140625,18.157135009765625,18.000000000000000,22.500000000000000,26.100000381469727,31.500000000000000,36.000000000000000,41.400001525878906,49.500000000000000,57.599998474121094,67.500000000000000,77.400001525878906,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000], // Ranged haste rating multipliers
 [0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.649038374423981,0.865384876728058,1.081730246543884,1.298076748847961,1.514423251152039,1.730769753456116,1.947115182876587,2.163461685180664,2.379808187484741,2.596153497695923,2.812500000000000,3.028846502304077,3.245191812515259,3.461538314819336,3.677884817123413,3.894230365753174,4.110576629638672,4.326923370361328,4.543269634246826,4.759614944458008,4.975961685180664,5.192307949066162,5.408654689788818,5.625000000000000,5.841346263885498,6.057692050933838,6.274038314819336,6.490385055541992,6.706730365753174,6.923076629638672,7.139423370361328,7.355769634246826,7.572114944458008,7.788461685180664,8.004808425903320,8.221154212951660,8.437500000000000,8.653845787048340,8.870191574096680,9.086538314819336,9.302885055541992,9.519229888916016,9.735576629638672,9.951923370361328,10.168270111083984,10.384614944458008,10.600961685180664,10.817308425903320,11.033654212951660,11.250000000000000,11.304548263549805,11.452846527099609,11.601144790649414,11.749443054199219,11.897741317749023,12.046039581298828,12.194337844848633,12.342637062072754,12.490935325622559,12.639233589172363,12.787531852722168,12.935830116271973,13.084128379821777,13.232426643371582,13.380724906921387,13.529023170471191,13.677321434020996,13.825619697570801,13.973917961120605,14.122216224670410,14.698633193969727,15.275050163269043,15.563259124755859,15.563259124755859,15.851468086242676,16.427885055541992,17.004301071166992,17.580718994140625,18.157135009765625,18.000000000000000,22.500000000000000,26.100000381469727,31.500000000000000,36.000000000000000,41.400001525878906,49.500000000000000,57.599998474121094,67.500000000000000,77.400001525878906,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000], // Spell haste rating multipliers
-[0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.649038374423981,0.865384876728058,1.081730246543884,1.298076748847961,1.514423251152039,1.730769753456116,1.947115182876587,2.163461685180664,2.379808187484741,2.596153497695923,2.812500000000000,3.028846502304077,3.245191812515259,3.461538314819336,3.677884817123413,3.894230365753174,4.110576629638672,4.326923370361328,4.543269634246826,4.759614944458008,4.975961685180664,5.192307949066162,5.408654689788818,5.625000000000000,5.841346263885498,6.057692050933838,6.274038314819336,6.490385055541992,6.706730365753174,6.923076629638672,7.139423370361328,7.355769634246826,7.572114944458008,7.788461685180664,8.004808425903320,8.221154212951660,8.437500000000000,8.653845787048340,8.870191574096680,9.086538314819336,9.302885055541992,9.519229888916016,9.735576629638672,9.951923370361328,10.168270111083984,10.384614944458008,10.600961685180664,10.817308425903320,11.033654212951660,11.250000000000000,11.304548263549805,11.452846527099609,11.601144790649414,11.749443054199219,11.897741317749023,12.046039581298828,12.194337844848633,12.342637062072754,12.490935325622559,12.639233589172363,12.787531852722168,12.935830116271973,13.084128379821777,13.232426643371582,13.380724906921387,13.529023170471191,13.677321434020996,13.825619697570801,13.973917961120605,14.122216224670410,14.698633193969727,15.275050163269043,15.563259124755859,15.563259124755859,15.851468086242676,16.427885055541992,17.004301071166992,17.580718994140625,18.157135009765625,18.000000000000000,22.500000000000000,26.100000381469727,31.500000000000000,36.000000000000000,41.400001525878906,49.500000000000000,57.599998474121094,67.500000000000000,77.400001525878906,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000], // Expertise rating multipliers expertise 
+[0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.432691872119904,0.649038374423981,0.865384876728058,1.081730246543884,1.298076748847961,1.514423251152039,1.730769753456116,1.947115182876587,2.163461685180664,2.379808187484741,2.596153497695923,2.812500000000000,3.028846502304077,3.245191812515259,3.461538314819336,3.677884817123413,3.894230365753174,4.110576629638672,4.326923370361328,4.543269634246826,4.759614944458008,4.975961685180664,5.192307949066162,5.408654689788818,5.625000000000000,5.841346263885498,6.057692050933838,6.274038314819336,6.490385055541992,6.706730365753174,6.923076629638672,7.139423370361328,7.355769634246826,7.572114944458008,7.788461685180664,8.004808425903320,8.221154212951660,8.437500000000000,8.653845787048340,8.870191574096680,9.086538314819336,9.302885055541992,9.519229888916016,9.735576629638672,9.951923370361328,10.168270111083984,10.384614944458008,10.600961685180664,10.817308425903320,11.033654212951660,11.250000000000000,11.304548263549805,11.452846527099609,11.601144790649414,11.749443054199219,11.897741317749023,12.046039581298828,12.194337844848633,12.342637062072754,12.490935325622559,12.639233589172363,12.787531852722168,12.935830116271973,13.084128379821777,13.232426643371582,13.380724906921387,13.529023170471191,13.677321434020996,13.825619697570801,13.973917961120605,14.122216224670410,14.698633193969727,15.275050163269043,15.563259124755859,15.563259124755859,15.851468086242676,16.427885055541992,17.004301071166992,17.580718994140625,18.157135009765625,18.000000000000000,22.500000000000000,26.100000381469727,31.500000000000000,36.000000000000000,41.400001525878906,49.500000000000000,57.599998474121094,67.500000000000000,77.400001525878906,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000,90.000000000000000], // Expertise rating multipliers expertise
 [0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.307691991329193,0.461537986993790,0.615384995937347,0.769231021404266,0.923076987266541,1.076923012733459,1.230769038200378,1.384614944458008,1.538462042808533,1.692307949066162,1.846153974533081,2.000000000000000,2.153846025466919,2.307692050933838,2.461539030075073,2.615385055541992,2.769231081008911,2.923077106475830,3.076922893524170,3.230768918991089,3.384614944458008,3.538461923599243,3.692307949066162,3.846153974533081,4.000000000000000,4.153845787048340,4.307692050933838,4.461537837982178,4.615385055541992,4.769230842590332,4.923077106475830,5.076922893524170,5.230769157409668,5.384614944458008,5.538462162017822,5.692306995391846,5.846154212951660,6.000000000000000,6.153845787048340,6.307693004608154,6.461537837982178,6.615385055541992,6.769230842590332,6.923077106475830,7.076922893524170,7.230769157409668,7.384614944458008,7.538462162017822,7.692306995391846,7.846154212951660,8.000000000000000,8.038789749145508,8.144246101379395,8.249703407287598,8.355159759521484,8.460616111755371,8.566072463989258,8.671529769897461,8.776986122131348,8.882442474365234,8.987898826599121,9.093356132507324,9.198812484741211,9.304268836975098,9.409725189208984,9.515182495117188,9.620638847351074,9.726095199584961,9.831551551818848,9.937008857727051,10.042465209960938,10.452362060546875,10.862257957458496,11.067206382751465,11.067206382751465,11.272154808044434,11.682051658630371,12.091947555541992,12.501844406127930,12.911741256713867,13.000000000000000,15.000000000000000,18.000000000000000,22.000000000000000,25.000000000000000,29.000000000000000,34.000000000000000,40.000000000000000,46.000000000000000,54.000000000000000,62.000000000000000,62.000000000000000,62.000000000000000,62.000000000000000,62.000000000000000,62.000000000000000], // Mastery rating multipliers
 [0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.538461983203888,0.807691991329193,1.076923012733459,1.346153974533081,1.615385055541992,1.884614944458008,2.153846025466919,2.423077106475830,2.692307949066162,2.961538076400757,3.230768918991089,3.500000000000000,3.769231081008911,4.038462162017822,4.307692050933838,4.576922893524170,4.846154212951660,5.115385055541992,5.384614944458008,5.653845787048340,5.923077106475830,6.192306995391846,6.461537837982178,6.730769157409668,7.000000000000000,7.269230842590332,7.538462162017822,7.807693004608154,8.076923370361328,8.346154212951660,8.615384101867676,8.884614944458008,9.153845787048340,9.423076629638672,9.692307472229004,9.961538314819336,10.230770111083984,10.500000000000000,10.769231796264648,11.038461685180664,11.307692527770996,11.576923370361328,11.846155166625977,12.115385055541992,12.384616851806641,12.653846740722656,12.923078536987305,13.192308425903320,13.461539268493652,13.730770111083984,14.000000000000000,14.186100006103516,14.372200012207031,14.558300018310547,14.744399070739746,14.930499076843262,15.116599082946777,15.302699089050293,15.488799095153809,15.674899101257324,15.860999107360840,16.047098159790039,16.233198165893555,16.419298171997070,16.605398178100586,16.791498184204102,16.977598190307617,17.163698196411133,17.349798202514648,17.535898208618164,17.721998214721680,18.445344924926758,19.168691635131836,19.530364990234375,19.530364990234375,19.892038345336914,20.615385055541992,21.338731765747070,22.062078475952148,22.785425186157227,23.000000000000000,27.000000000000000,32.000000000000000,38.000000000000000,44.000000000000000,51.000000000000000,60.000000000000000,70.000000000000000,82.000000000000000,95.000000000000000,110.000000000000000,110.000000000000000,110.000000000000000,110.000000000000000,110.000000000000000,110.000000000000000], // PvP Power rating multipliers
 [0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.237820714712143,0.356730639934540,0.475640982389450,0.594551324844360,0.713461697101593,0.832371652126312,0.951281964778900,1.070192337036133,1.189102649688721,1.308012604713440,1.426922917366028,1.545833349227905,1.664743661880493,1.783654093742371,1.902563929557800,2.021474361419678,2.140384674072266,2.259294986724854,2.378205060958862,2.497115373611450,2.616025686264038,2.734935522079468,2.853845834732056,2.972756385803223,3.091666698455811,3.210577011108398,3.329487323760986,3.448397636413574,3.567307710647583,3.686218023300171,3.805127859115601,3.924038410186768,4.042948722839355,4.161859035491943,4.280768871307373,4.399679183959961,4.518589973449707,4.637499809265137,4.756410598754883,4.875320911407471,4.994231224060059,5.113141059875488,5.232051849365234,5.350961685180664,5.469872474670410,5.588782310485840,5.707693099975586,5.826602935791016,5.945513248443604,6.064423561096191,6.183333396911621,6.265527248382568,6.347721576690674,6.429915428161621,6.512109756469727,6.594304084777832,6.676497936248779,6.758692264556885,6.840886116027832,6.923080444335938,7.005274295806885,7.087468624114990,7.169662475585938,7.251856803894043,7.334050655364990,7.416244983673096,7.498438835144043,7.580633163452148,7.662827491760254,7.745021343231201,7.827215671539307,8.146693229675293,8.466172218322754,8.625910758972168,8.625910758972168,8.785650253295898,9.105128288269043,9.424606323242188,9.744084358215332,10.063562393188477,10.000000000000000,12.000000000000000,14.000000000000000,17.000000000000000,19.000000000000000,23.000000000000000,27.000000000000000,31.000000000000000,36.000000000000000,42.000000000000000,49.000000000000000,49.000000000000000,49.000000000000000,49.000000000000000,49.000000000000000,49.000000000000000], // Damage Versatility rating multipliers
@@ -1931,29 +1962,28 @@ require.register("src/gameObjects/eventManager", function(exports, require, modu
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var EventManager = // ### TODO: Give the event system more features. Maybe addons should be able to listen for events form specific players? ###
-
 function EventManager() {
-    _classCallCheck(this, EventManager);
+  _classCallCheck(this, EventManager);
 
-    this.GAME_LOOP_UPDATE = new Phaser.Signal();
-    this.TARGET_CHANGE_EVENT = new Phaser.Signal();
-    this.UNIT_HEALTH_CHANGE = new Phaser.Signal();
-    this.UNIT_ABSORB = new Phaser.Signal();
-    this.UNIT_STARTS_SPELLCAST = new Phaser.Signal();
-    this.UNIT_FINISH_SPELLCAST = new Phaser.Signal();
-    this.UNIT_CANCEL_SPELLCAST = new Phaser.Signal();
-    this.UI_ERROR_MESSAGE = new Phaser.Signal();
-    this.UNIT_DEATH = new Phaser.Signal();
-    this.GAME_LOOP_RENDER = new Phaser.Signal();
-    this.ON_COOLDOWN_START = new Phaser.Signal();
-    this.ON_COOLDOWN_ENDED = new Phaser.Signal();
-    this.MANA_CHANGE = new Phaser.Signal();
+  this.GAME_LOOP_UPDATE = new Phaser.Signal();
+  this.TARGET_CHANGE_EVENT = new Phaser.Signal();
+  this.UNIT_HEALTH_CHANGE = new Phaser.Signal();
+  this.UNIT_ABSORB = new Phaser.Signal();
+  this.UNIT_STARTS_SPELLCAST = new Phaser.Signal();
+  this.UNIT_FINISH_SPELLCAST = new Phaser.Signal();
+  this.UNIT_CANCEL_SPELLCAST = new Phaser.Signal();
+  this.UI_ERROR_MESSAGE = new Phaser.Signal();
+  this.UNIT_DEATH = new Phaser.Signal();
+  this.GAME_LOOP_RENDER = new Phaser.Signal();
+  this.ON_COOLDOWN_START = new Phaser.Signal();
+  this.ON_COOLDOWN_ENDED = new Phaser.Signal();
+  this.MANA_CHANGE = new Phaser.Signal();
 };
 
 exports.default = EventManager;
@@ -1962,306 +1992,33 @@ exports.default = EventManager;
 ;require.register("src/gameObjects/player", function(exports, require, module) {
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
-var _data = require("./data");
+var _unit = require("./unit");
 
-var data = _interopRequireWildcard(_data);
+var _unit2 = _interopRequireDefault(_unit);
 
-var _enums = require("../enums");
-
-var e = _interopRequireWildcard(_enums);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/** 
- *  TODO: This class is really messy atm, need to find better ways.
- */
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var Player = function () {
-    function Player(_class, race, level, name, events, isEnemy) {
-        _classCallCheck(this, Player);
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        // --- Basic unit data ------------
-        this.level = 100;
-        this.isEnemy = false;
+var Player = function (_Unit) {
+  _inherits(Player, _Unit);
 
-        // ----Players current target--------------
-        this.target = this;
-        this.isCasting = false;
-        this.alive = true;
-        this.instance = null; // reference to the raid group the players are in ?
+  function Player(_class, race, level, name, events) {
+    _classCallCheck(this, Player);
 
-        // --- Players spells ---------------------
-        this.spells = null;
-        this.buffs = null;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, _class, race, level, name, events));
+  }
 
-        this.gear_stats = {
-            stamina: 7105,
-            haste_rating: 1399
-        };
-
-        this.base_stats = {
-            strenght: 0,
-            agility: 0,
-            stamina: 0,
-            intellect: 0,
-            spirit: 0,
-            mastery_rating: 0,
-            haste_rating: 0,
-            crit_rating: 0
-        };
-
-        this.stats = {
-            health: {
-                value: 0,
-                max_value: 0,
-                min_value: 0
-            },
-            mana: {
-                value: 0,
-                max_value: 0,
-                min_value: 0
-            },
-            absorb: 0,
-            haste: 0,
-            crit: 0,
-            spellpower: 0,
-            attackpower: 0,
-            mastery: 0.08 };
-
-        // 8% is base mastery for every class
-        this.isEnemy = isEnemy ? true : false;
-        this.events = events;
-        this.level = level;
-        this.race = race;
-        this.name = name;
-        this.classId = _class;
-
-        this.init_base_stats();
-        this.init_stats();
-    }
-
-    _createClass(Player, [{
-        key: "init_base_stats",
-        value: function init_base_stats() {
-            /* This is the stats someone would have 0 gear */
-            this.base_stats.agility = data.classBaseStats(this.classId, this.level, e.stat_e.AGILITY) + data.raceBaseStats(this.race, e.stat_e.AGILITY); // +gear
-            this.base_stats.stamina = data.classBaseStats(this.classId, this.level, e.stat_e.STAMINA) + data.raceBaseStats(this.race, e.stat_e.STAMINA) + this.gear_stats.stamina; // + gear
-            this.base_stats.intellect = data.classBaseStats(this.classId, this.level, e.stat_e.INTELLECT) + data.raceBaseStats(this.race, e.stat_e.INTELLECT); // + gear
-            this.base_stats.spirit = data.classBaseStats(this.classId, this.level, e.stat_e.SPIRIT) + data.raceBaseStats(this.race, e.stat_e.SPIRIT); // + gear
-            this.base_stats.strenght = data.classBaseStats(this.classId, this.level, e.stat_e.STRENGHT) + data.raceBaseStats(this.race, e.stat_e.STRENGHT); // + gear
-
-            this.base_stats.mastery_rating = 0;
-            this.base_stats.haste_rating = this.gear_stats.haste_rating;
-            this.base_stats.crit_rating = 0;
-
-            // *TODO* add stats from gear in this function or somewhere else?
-        }
-    }, {
-        key: "init_stats",
-        value: function init_stats() {
-
-            // ### HEALTH ########  ------------------------------------------------------------------------------------
-            this.stats.health.value = this.stats.health.max_value = this.base_stats.stamina * data.getHpPerStamina(this.level);
-            // ### HASTE ####  -----------------------------------------------------------------------------------------
-            this.stats.haste = this.base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
-            // ### MANA ##########  ------------------------------------------------------------------------------------
-            // Note: When you are specced as restoration, holy etc. you will get a hidden aura that increases your manapool by 400%, this is how healers get more mana.
-            this.stats.mana.value = this.stats.mana.max_value = data.getManaByClass(this.classId, this.level);
-        }
-    }, {
-        key: "avoid",
-        value: function avoid() {
-            //returns dodge, parry, or miss?. Returns false if nothing was avoided.
-        }
-    }, {
-        key: "getSpellList",
-        value: function getSpellList() {
-            var spellList = [];
-            for (var spell in this.spells) {
-                spellList.push(spell);
-            }return spellList;
-        }
-    }, {
-        key: "getMana",
-        value: function getMana() {
-            return this.stats.mana.value;
-        }
-    }, {
-        key: "getMaxMana",
-        value: function getMaxMana() {
-            return this.stats.mana.max_value;
-        }
-    }, {
-        key: "recive_damage",
-        value: function recive_damage(dmg) {
-            if (!this.alive) return;
-            var avoided_damage = false;
-
-            //--- Avoidance ---------------------------------------
-            /*
-            if ( dmg.isAvoidable ) {
-                 if ( this.avoid() ) {
-                    avoided_damage = true; // Note: Only warriors and paladins have block
-                }
-            }
-            */
-            //--- Resistance and absorb ---------------------------
-
-            if (!avoided_damage) {
-
-                //dmg.amount *= this.getResistancePercent('PHYSICAL');
-
-                // Full absorb
-                if (this.stats.absorb > dmg.amount) {
-                    this.setAbsorb(-dmg.amount);
-                } else {
-                    dmg.amount -= this.stats.absorb;
-                    this.setAbsorb(-this.stats.absorb);
-                    this.setHealth(this.getCurrentHealth() - dmg.amount);
-                }
-            }
-        }
-    }, {
-        key: "cast_spell",
-        value: function cast_spell(spellName) {
-
-            // ## Find spell ####
-            if (!this.spells[spellName]) return;
-            var spell = this.spells[spellName];
-
-            // ##################
-            if (this.isCasting) this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");else spell.use();
-        }
-    }, {
-        key: "hasAura",
-        value: function hasAura(aura) {
-            return false;
-        }
-    }, {
-        key: "resistance",
-        value: function resistance(dmg) {
-            return 0;
-        }
-    }, {
-        key: "die",
-        value: function die() {
-            this.alive = false;
-            //## TODO ##
-            // - Remove all auras that doesnt presist through death.
-            // - Other stuff that needs to happen when you die.
-        }
-    }, {
-        key: "getCurrentAbsorb",
-        value: function getCurrentAbsorb() {
-            return this.stats.absorb;
-        }
-    }, {
-        key: "setHealth",
-        value: function setHealth(value) {
-            if (!this.alive) return;
-            if (value <= 0) {
-                this.stats.health.value = 0;
-                this.alive = false;
-                this.events.UNIT_DEATH.dispatch(this);
-                return;
-            }
-            if (value >= this.getMaxHealth()) {
-                this.stats.health.value = this.getMaxHealth();
-            } else {
-                this.stats.health.value = value;
-            }
-
-            this.events.UNIT_HEALTH_CHANGE.dispatch(this);
-            // ## TODO ##
-            // - Make sure it doesnt exceed maximum possible health
-            // - Handle overhealing here? or somewhere else
-        }
-    }, {
-        key: "setAbsorb",
-        value: function setAbsorb(value) {
-            if (!this.alive) return;
-
-            this.stats.absorb += value;
-            this.events.UNIT_ABSORB.dispatch(this);
-
-            // ## TODO ##
-            // - Handle overhealing here? or somewhere else
-        }
-    }, {
-        key: "getMaxHealth",
-        value: function getMaxHealth() {
-            return this.stats.health.max_value;
-        }
-    }, {
-        key: "getCurrentHealth",
-        value: function getCurrentHealth() {
-            return this.stats.health.value;
-        }
-    }, {
-        key: "setTarget",
-        value: function setTarget(unit) {
-            // Just dont bother if its the same target
-            if (unit == this.target) {
-                return;
-            }
-
-            // Set target & emitt event
-            this.target = unit;
-            this.events.TARGET_CHANGE_EVENT.dispatch();
-        }
-    }, {
-        key: "consume_resource",
-        value: function consume_resource(amount) {
-            this.stats.mana.value -= amount;
-            this.events.MANA_CHANGE.dispatch(amount);
-        }
-    }, {
-        key: "gain_resource",
-        value: function gain_resource(gain) {
-            if (gain + this.getMana() >= this.getMaxMana()) {
-                this.stats.mana.value = this.getMaxMana();
-            } else {
-                this.stats.mana.value += gain;
-            }
-            this.events.MANA_CHANGE.dispatch(gain);
-        }
-
-        // ## TODO ## Calculates the total haste amount on the player. Base stats + buffs + auras
-
-    }, {
-        key: "total_haste",
-        value: function total_haste() {
-            // 1.5 = 150% haste and so on
-            return this.stats.haste;
-        }
-    }, {
-        key: "findMostInjuredPlayers",
-        value: function findMostInjuredPlayers(players) {
-
-            var playersInRange = this.instance.getPlayerList();
-            var lowestPlayers = playersInRange.sort(function sortByDamageTakenAscending(player, otherPlayer) {
-                if (player.getHealthPercent() < otherPlayer.getHealthPercent()) {
-                    return -1;
-                } else if (player.getHealthPercent() > otherPlayer.getHealthPercent()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-            return lowestPlayers.slice(0, players);
-        }
-    }]);
-
-    return Player;
-}();
+  return Player;
+}(_unit2.default);
 
 exports.default = Player;
 });
@@ -2272,7 +2029,7 @@ exports.default = Player;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _enums = require("../enums");
@@ -2304,215 +2061,217 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Raid = function () {
-    function Raid(state) {
-        _classCallCheck(this, Raid);
+  function Raid(state) {
+    _classCallCheck(this, Raid);
 
-        this.events = state.events;
-        this.players = [];
-        this.raidSize = null;
+    this.events = state.events;
+    this.players = [];
+    this._raidSize = null;
+  }
+
+  _createClass(Raid, [{
+    key: "setRaidSize",
+    value: function setRaidSize(size) {
+      this._raidSize = size;
+    }
+  }, {
+    key: "getRaidSize",
+    value: function getRaidSize() {
+      return this._raidSize;
+    }
+  }, {
+    key: "getplayerList",
+    value: function getplayerList() {
+      return this.players;
+    }
+  }, {
+    key: "generateTestPlayers",
+    value: function generateTestPlayers() {
+      var numberOfTanks = undefined,
+          numberOfHealers = undefined,
+          numberOfDps = undefined;
+      var validTankClasses = [0, 1, 5, 9, 10];
+      var validHealerClasses = [1, 4, 6, 9, 10];
+
+      if (this._raidSize == e.raid_size.GROUP) {
+        numberOfTanks = 1;
+        numberOfHealers = 0;
+        numberOfDps = 3;
+      }
+
+      if (this._raidSize == e.raid_size.TENMAN) {
+        numberOfTanks = 2;
+        numberOfHealers = 2;
+        numberOfDps = 5;
+      }
+
+      if (this._raidSize == e.raid_size.TWENTYFIVEMAN) {
+        numberOfTanks = 2;
+        numberOfHealers = 5;
+        numberOfDps = 17;
+      }
+
+      while (numberOfTanks--) {
+        var classs = validTankClasses[_util.rng.integerInRange(0, validTankClasses.length - 1)],
+            race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            level = 100,
+            name = data.generatePlayerName();
+
+        var unit = this.createUnit(classs, race, level, name);
+        this.addPlayer(unit);
+      }
+
+      while (numberOfHealers--) {
+        var classs = validHealerClasses[_util.rng.integerInRange(0, validHealerClasses.length - 1)],
+            race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            level = 100,
+            name = data.generatePlayerName();
+
+        var unit = this.createUnit(classs, race, level, name);
+        this.addPlayer(unit);
+      }
+
+      while (numberOfDps--) {
+        var classs = _util.rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
+            race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
+            level = 100,
+            name = data.generatePlayerName();
+
+        var unit = this.createUnit(classs, race, level, name);
+        this.addPlayer(unit);
+      }
     }
 
-    _createClass(Raid, [{
-        key: "setRaidSize",
-        value: function setRaidSize(size) {
-            this.raidSize = size;
+    /**
+     * Add a player to the raidgroup
+     * @param {Object(Player)} unit
+     */
+
+  }, {
+    key: "addPlayer",
+    value: function addPlayer(unit) {
+      this.players.push(unit);
+    }
+
+    // When you create a unit you also have to pass them a reference to the event manager, so they know how to communicate events.
+
+  }, {
+    key: "createUnit",
+    value: function createUnit(classs, race, level, name) {
+
+      // Check if a valid "level" is chosen;
+      if (level < e.PLAYER_LEVEL_MIN || level > e.PLAYER_LEVEL_MAX) level = e.PLAYER_LEVEL_MAX;else level = level;
+
+      switch (classs) {
+        case e.class_e.PRIEST:
+          return new _priest2.default(race, level, name, this.events);
+
+        default:
+          return new _player2.default(classs, race, level, name, this.events);
+      }
+    }
+
+    /**
+     * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
+     */
+
+  }, {
+    key: "startTestDamage",
+    value: function startTestDamage() {
+      var tank = this.players[0];
+      var offTank = this.players[1];
+
+      // --- Create some random damage for testing purposes ----
+      var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
+      //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
+      var tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
+      var bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
+      var raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
+      var raidAIHealing = setInterval(raidHealing.bind(this), 4000);
+      //  let manaRegenYolo = setInterval(gainMana.bind(this), 1200);
+      var spike = setInterval(bossSpike.bind(this), 8000);
+
+      // function gainMana() {
+      //   let player = this.players[this.players.length - 1];
+      //   player.gain_resource(1600);
+      // }
+
+      function bossSpike() {
+        var massiveBlow = _util.rng.between(330000, 340900);
+
+        tank.recieve_damage({
+          amount: massiveBlow
+        });
+        offTank.recieve_damage({
+          amount: massiveBlow / 2
+        });
+      }
+
+      function bossSwing() {
+        var bossSwing = _util.rng.between(70000, 90900);
+        var bossSwingCriticalHit = Math.random();
+
+        // 20% chance to critt. Experimental.
+        if (bossSwingCriticalHit < 0.85) bossSwing *= 1.5;
+        tank.recieve_damage({
+          amount: bossSwing
+        });
+        offTank.recieve_damage({
+          amount: bossSwing / 2
+        });
+      }
+
+      function bossAoEDamage() {
+        for (var i = 0; i < this.players.length - 1; i++) {
+          var player = this.players[i];
+          player.recieve_damage({
+            amount: 170000
+          });
         }
-    }, {
-        key: "getPlayerList",
-        value: function getPlayerList() {
-            return this.players;
+      }
+
+      function raidDamage() {
+        var i = _util.rng.between(0, this.players.length - 1);
+        for (; i < this.players.length; i++) {
+          var player = this.players[i];
+          player.recieve_damage({
+            amount: _util.rng.between(85555, 168900)
+          });
         }
-    }, {
-        key: "generateTestPlayers",
-        value: function generateTestPlayers() {
-            var numberOfTanks = undefined,
-                numberOfHealers = undefined,
-                numberOfDps = undefined;
-            var validTankClasses = [0, 1, 5, 9, 10];
-            var validHealerClasses = [1, 4, 6, 9, 10];
+      }
 
-            if (this.raidSize == e.raid_size.GROUP) {
-                numberOfTanks = 1;
-                numberOfHealers = 0;
-                numberOfDps = 3;
-            }
+      function singelTargetDamage() {
+        var random = _util.rng.between(2, this.players.length - 1);
+        this.players[random].recieve_damage({
+          amount: _util.rng.between(100000, 150000)
+        });
+      }
 
-            if (this.raidSize == e.raid_size.TENMAN) {
-                numberOfTanks = 2;
-                numberOfHealers = 2;
-                numberOfDps = 5;
-            }
+      function bossEncounterAdds() {}
 
-            if (this.raidSize == e.raid_size.TWENTYFIVEMAN) {
-                numberOfTanks = 2;
-                numberOfHealers = 5;
-                numberOfDps = 17;
-            }
+      function raidHealing() {
 
-            while (numberOfTanks--) {
-                var classs = validTankClasses[_util.rng.integerInRange(0, validTankClasses.length - 1)],
-                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                    level = 100,
-                    name = data.generatePlayerName();
+        for (var i = 0; i < this.players.length; i++) {
+          var player = this.players[i];
+          var incomingHeal = player.getHealth() + _util.rng.between(80000, 120000);
+          var criticalHeal = Math.random();
 
-                var unit = this.createUnit(classs, race, level, name);
-                this.addPlayer(unit);
-            }
+          // 20% chance to critt. Experimental.
+          if (criticalHeal < 0.8) incomingHeal *= 1.5;
 
-            while (numberOfHealers--) {
-                var classs = validHealerClasses[_util.rng.integerInRange(0, validHealerClasses.length - 1)],
-                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                    level = 100,
-                    name = data.generatePlayerName();
-
-                var unit = this.createUnit(classs, race, level, name);
-                this.addPlayer(unit);
-            }
-
-            while (numberOfDps--) {
-                var classs = _util.rng.integerInRange(e.player_class.MIN, e.player_class.MAX),
-                    race = _util.rng.integerInRange(e.player_race.MIN, e.player_race.MAX),
-                    level = 100,
-                    name = data.generatePlayerName();
-
-                var unit = this.createUnit(classs, race, level, name);
-                this.addPlayer(unit);
-            }
+          player.setHealth(incomingHeal);
         }
+      }
 
-        /**
-         * Add a player to the raidgroup
-         * @param {Object(Player)} unit
-         */
+      function applyAbsorb() {
+        //this.player.setAbsorb(game.rnd.between(115, 88900));
+        tank.setHealth(tank.getHealth() + _util.rng.between(10000, 38900));
+      }
+      // Legge inn AI shields på raidmembers.
+    }
+  }]);
 
-    }, {
-        key: "addPlayer",
-        value: function addPlayer(unit) {
-            this.players.push(unit);
-        }
-
-        // When you create a unit you also have to pass them a reference to the event manager, so they know how to communicate events.
-
-    }, {
-        key: "createUnit",
-        value: function createUnit(classs, race, level, name) {
-
-            // Check if a valid "level" is chosen;
-            if (level < e.PLAYER_LEVEL_MIN || level > e.PLAYER_LEVEL_MAX) level = e.PLAYER_LEVEL_MAX;else level = level;
-
-            switch (classs) {
-                case e.class_e.PRIEST:
-                    return new _priest2.default(race, level, name, this.events);
-                    break;
-
-                default:
-                    return new _player2.default(classs, race, level, name, this.events);
-                    break;
-            }
-        }
-
-        /**
-         * Temporary for testing. Boss damage should be done in a better and more manageable way instead.
-         */
-
-    }, {
-        key: "startTestDamage",
-        value: function startTestDamage() {
-            var tank = this.players[0];
-            var offTank = this.players[1];
-
-            // --- Create some random damage for testing purposes ----
-            var bossSwingInterval = setInterval(bossSwing.bind(this), 1600);
-            //let bossSingelTargetSpell = setInterval(singelTargetDamage.bind(this), 60000);
-            var tankSelfHealOrAbsorb = setInterval(applyAbsorb.bind(this), 5000);
-            var bossTimedDamage = setInterval(bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
-            var raidAoeDamage = setInterval(raidDamage.bind(this), 3000);
-            var raidAIHealing = setInterval(raidHealing.bind(this), 4000);
-            var manaRegenYolo = setInterval(gain_mana.bind(this), 1200);
-            var spike = setInterval(bossSpike.bind(this), 8000);
-
-            function gain_mana() {
-                var player = this.players[this.players.length - 1];
-                player.gain_resource(1600);
-            }
-
-            function bossSpike() {
-                var massiveBlow = _util.rng.between(330000, 340900);
-
-                tank.recive_damage({
-                    amount: massiveBlow
-                });
-                offTank.recive_damage({
-                    amount: massiveBlow / 2
-                });
-            }
-
-            function bossSwing() {
-                var bossSwing = _util.rng.between(70000, 90900);
-                var bossSwingCriticalHit = Math.random();
-
-                // 20% chance to critt. Experimental.
-                if (bossSwingCriticalHit < 0.85) bossSwing *= 1.5;
-                tank.recive_damage({
-                    amount: bossSwing
-                });
-                offTank.recive_damage({
-                    amount: bossSwing / 2
-                });
-            }
-
-            function bossAoEDamage() {
-                for (var i = 0; i < this.players.length - 1; i++) {
-                    var player = this.players[i];
-                    player.recive_damage({
-                        amount: 170000
-                    });
-                }
-            }
-
-            function raidDamage() {
-                var i = _util.rng.between(0, this.players.length - 1);
-                for (; i < this.players.length; i++) {
-                    var player = this.players[i];
-                    player.recive_damage({
-                        amount: _util.rng.between(85555, 168900)
-                    });
-                }
-            }
-
-            function singelTargetDamage() {
-                var random = _util.rng.between(2, this.players.length - 1);
-                this.players[random].recive_damage({
-                    amount: _util.rng.between(100000, 150000)
-                });
-            }
-
-            function bossEncounterAdds() {}
-
-            function raidHealing() {
-
-                for (var i = 0; i < this.players.length; i++) {
-                    var player = this.players[i];
-                    var incomingHeal = player.getCurrentHealth() + _util.rng.between(80000, 120000);
-                    var criticalHeal = Math.random();
-
-                    // 20% chance to critt. Experimental.
-                    if (criticalHeal < 0.8) incomingHeal *= 1.5;
-
-                    player.setHealth(incomingHeal);
-                }
-            }
-
-            function applyAbsorb() {
-                //this.player.setAbsorb(game.rnd.between(115, 88900));
-                tank.setHealth(tank.getCurrentHealth() + _util.rng.between(10000, 38900));
-            }
-
-            // Legge inn AI shields på raidmembers.
-        }
-    }]);
-
-    return Raid;
+  return Raid;
 }();
 
 exports.default = Raid;
@@ -2672,6 +2431,274 @@ var SpellBase = function () {
 exports.default = SpellBase;
 });
 
+;require.register("src/gameObjects/unit", function(exports, require, module) {
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _data = require("./data");
+
+var data = _interopRequireWildcard(_data);
+
+var _enums = require("../enums");
+
+var e = _interopRequireWildcard(_enums);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Unit = function () {
+  function Unit(_class, race, level, name, events) {
+    _classCallCheck(this, Unit);
+
+    // Basic unit data
+    this.level = 100;
+    this.isEnemy = false;
+
+    // Unit current target
+    this.target = this;
+    this.isCasting = false;
+    this.alive = true;
+    this.group = null; // reference to the raid group the players are in?
+
+    // Unit spells
+    this.spells = null;
+    this.buffs = null;
+
+    // Retrieve from Armory, JSON, get from gear.
+    this.gear_stats = {
+      stamina: 7105,
+      haste_rating: 1399
+    };
+
+    this.base_stats = {
+      strenght: 0,
+      agility: 0,
+      stamina: 0,
+      intellect: 0,
+      spirit: 0,
+      mastery_rating: 0,
+      haste_rating: 0,
+      crit_rating: 0
+    };
+
+    this.stats = {
+      health: {
+        value: 0,
+        max_value: 0,
+        min_value: 0
+      },
+      mana: {
+        value: 0,
+        max_value: 0,
+        min_value: 0
+      },
+      absorb: 0,
+      haste: 0,
+      crit: 0,
+      spellpower: 0,
+      attackpower: 0,
+      mastery: 0.08 };
+
+    // 8% is base mastery for every class
+    this.events = events;
+    this.level = level;
+    this.race = race;
+    this.name = name;
+    this.classId = _class;
+
+    this.init_base_stats();
+    this.init_stats();
+  }
+
+  _createClass(Unit, [{
+    key: "init_base_stats",
+    value: function init_base_stats() {
+      /* This is the stats someone would have 0 gear */
+      this.base_stats.agility = data.classBaseStats(this.classId, this.level, e.stat_e.AGILITY) + data.raceBaseStats(this.race, e.stat_e.AGILITY); // +gear
+      this.base_stats.stamina = data.classBaseStats(this.classId, this.level, e.stat_e.STAMINA) + data.raceBaseStats(this.race, e.stat_e.STAMINA) + this.gear_stats.stamina; // + gear
+      this.base_stats.intellect = data.classBaseStats(this.classId, this.level, e.stat_e.INTELLECT) + data.raceBaseStats(this.race, e.stat_e.INTELLECT); // + gear
+      this.base_stats.spirit = data.classBaseStats(this.classId, this.level, e.stat_e.SPIRIT) + data.raceBaseStats(this.race, e.stat_e.SPIRIT); // + gear
+      this.base_stats.strenght = data.classBaseStats(this.classId, this.level, e.stat_e.STRENGHT) + data.raceBaseStats(this.race, e.stat_e.STRENGHT); // + gear
+
+      this.base_stats.mastery_rating = 0;
+      this.base_stats.haste_rating = this.gear_stats.haste_rating;
+      this.base_stats.crit_rating = 0;
+    }
+  }, {
+    key: "init_stats",
+    value: function init_stats() {
+
+      // HEALTH
+      this.stats.health.value = this.stats.health.max_value = this.base_stats.stamina * data.getHpPerStamina(this.level);
+      // HASTE
+      this.stats.haste = this.base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
+      // MANA
+      // Note: When you are specced as restoration, holy etc. you will get a hidden aura that increases your manapool by 400%, this is how healers get more mana.
+      this.stats.mana.value = this.stats.mana.max_value = data.getManaByClass(this.classId, this.level);
+    }
+  }, {
+    key: "avoid",
+    value: function avoid() {
+      //returns dodge, parry, or miss?. Returns false if nothing was avoided.
+    }
+  }, {
+    key: "getSpellList",
+    value: function getSpellList() {
+      var spellList = [];
+      for (var spell in this.spells) {
+        spellList.push(spell);
+      }return spellList;
+    }
+  }, {
+    key: "getMana",
+    value: function getMana() {
+      return this.stats.mana.value;
+    }
+  }, {
+    key: "getMaxMana",
+    value: function getMaxMana() {
+      return this.stats.mana.max_value;
+    }
+  }, {
+    key: "recieve_damage",
+    value: function recieve_damage(dmg) {
+      if (!this.alive) return;
+      var avoided_damage = false;
+
+      //--- Avoidance ---------------------------------------
+      /*
+      if ( dmg.isAvoidable ) {
+           if ( this.avoid() ) {
+              avoided_damage = true; // Note: Only warriors and paladins have block
+          }
+      }
+      */
+      //--- Resistance and absorb ---------------------------
+
+      if (!avoided_damage) {
+
+        //dmg.amount *= this.getResistancePercent('PHYSICAL');
+
+        // Full absorb
+        if (this.stats.absorb > dmg.amount) {
+          this.setAbsorb(-dmg.amount);
+        } else {
+          dmg.amount -= this.stats.absorb;
+          this.setAbsorb(-this.stats.absorb);
+          this.setHealth(this.getHealth() - dmg.amount);
+        }
+      }
+    }
+  }, {
+    key: "cast_spell",
+    value: function cast_spell(spellName) {
+
+      // ## Find spell ####
+      if (!this.spells[spellName]) return;
+      var spell = this.spells[spellName];
+
+      if (this.isCasting) this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");else spell.use();
+    }
+  }, {
+    key: "hasAura",
+    value: function hasAura(aura) {
+      return false;
+    }
+  }, {
+    key: "resistance",
+    value: function resistance(dmg) {
+      return 0;
+    }
+  }, {
+    key: "die",
+    value: function die() {
+      this.alive = false;
+    }
+  }, {
+    key: "getCurrentAbsorb",
+    value: function getCurrentAbsorb() {
+      return this.stats.absorb;
+    }
+  }, {
+    key: "setHealth",
+    value: function setHealth(value) {
+      if (!this.alive) return;
+      if (value <= 0) {
+        this.stats.health.value = 0;
+        this.alive = false;
+        this.events.UNIT_DEATH.dispatch(this);
+        return;
+      }
+      if (value >= this.getMaxHealth()) {
+        this.stats.health.value = this.getMaxHealth();
+      } else {
+        this.stats.health.value = value;
+      }
+
+      this.events.UNIT_HEALTH_CHANGE.dispatch(this);
+      // ## TODO ##
+      // - Make sure it doesnt exceed maximum possible health
+      // - Handle overhealing here? or somewhere else
+    }
+  }, {
+    key: "setAbsorb",
+    value: function setAbsorb(value) {
+      if (!this.alive) return;
+      this.stats.absorb += value;
+      this.events.UNIT_ABSORB.dispatch(this);
+    }
+  }, {
+    key: "getAbsorb",
+    value: function getAbsorb() {
+      return this.stats.absorb;
+    }
+  }, {
+    key: "getMaxHealth",
+    value: function getMaxHealth() {
+      return this.stats.health.max_value;
+    }
+  }, {
+    key: "getHealth",
+    value: function getHealth() {
+      return this.stats.health.value;
+    }
+  }, {
+    key: "setTarget",
+    value: function setTarget(unit) {
+      // Just dont bother if its the same target
+      if (unit == this.target) {
+        return;
+      }
+
+      // Set target & emitt event
+      this.target = unit;
+      this.events.TARGET_CHANGE_EVENT.dispatch();
+    }
+  }, {
+    key: "getTarget",
+    value: function getTarget() {
+      return this.target;
+    }
+  }, {
+    key: "consume_resource",
+    value: function consume_resource(amount) {
+      this.stats.mana.value -= amount;
+      this.events.MANA_CHANGE.dispatch(amount);
+    }
+  }]);
+
+  return Unit;
+}();
+
+exports.default = Unit;
+});
+
 ;require.register("src/main", function(exports, require, module) {
 'use strict';
 
@@ -2693,56 +2720,55 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// Phaser is imported globally in the html file
-
-window.onload = function () {
-
-    /**
-    * Force WEBGL since Canvas doesnt support textures / blendmodes which we use heavily.
-    * Automatically starts the boot state aka. application entry point
-    * Note: Maybe there is no need to have game global since all the states have access to it anyway?
-    */
-    window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, _boot2.default);
-};
-
 /**
  * Adding some extra functionality to the Phaser game engine
  * Adds the ability to load "addons", and a different way to handle keyboard input
  */
 
 var PhaserCustomGame = function (_Phaser$Game) {
-    _inherits(PhaserCustomGame, _Phaser$Game);
+  _inherits(PhaserCustomGame, _Phaser$Game);
 
-    function PhaserCustomGame(width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
-        _classCallCheck(this, PhaserCustomGame);
+  function PhaserCustomGame(width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
+    _classCallCheck(this, PhaserCustomGame);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PhaserCustomGame).call(this, width, height, renderer, parent, state, transparent, antialias, physicsConfig));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PhaserCustomGame).call(this, width, height, renderer, parent, state, transparent, antialias, physicsConfig));
 
-        _this.addons = new _addonManager2.default();
-        _this.version = 0.1;
-        return _this;
+    _this.addons = new _addonManager2.default();
+    _this.version = 0.1;
+    return _this;
+  }
+
+  /**
+   * Keyboard input dispatcher. Sends input to the current state instead of having the redudancy of up a keyboard for each state.
+   * @param  {[type]} keyPressData [description]
+   * @return {[type]}              [description]
+   */
+
+  _createClass(PhaserCustomGame, [{
+    key: 'sendKeyBoardInputToCurrentState',
+    value: function sendKeyBoardInputToCurrentState(keyPressData) {
+
+      var currentState = this.state.getCurrentState();
+      if (!currentState.handleKeyBoardInput) return;else currentState.handleKeyBoardInput(keyPressData);
     }
+  }]);
 
-    /**
-     * Keyboard input dispatcher. Sends input to the current state instead of having the redudancy of up a keyboard for each state.
-     * @param  {[type]} keyPressData [description]
-     * @return {[type]}              [description]
-     */
-
-    _createClass(PhaserCustomGame, [{
-        key: 'sendKeyBoardInputToCurrentState',
-        value: function sendKeyBoardInputToCurrentState(keyPressData) {
-
-            var currentState = this.state.getCurrentState();
-            if (!currentState.handleKeyBoardInput) return;else currentState.handleKeyBoardInput(keyPressData);
-        }
-    }]);
-
-    return PhaserCustomGame;
+  return PhaserCustomGame;
 }(Phaser.Game);
+// Phaser is imported globally in the html file
+
+window.onload = function () {
+
+  /**
+   * Force WEBGL since Canvas doesnt support textures / blendmodes which we use heavily.
+   * Automatically starts the boot state aka. application entry point
+   * Note: Maybe there is no need to have game global since all the states have access to it anyway?
+   */
+  window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined, _boot2.default);
+};
 });
 
-;require.register("src/states/boot", function(exports, require, module) {
+require.register("src/states/boot", function(exports, require, module) {
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2924,7 +2950,7 @@ exports.default = MainMenu;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _eventManager = require("../gameObjects/eventManager");
@@ -2950,68 +2976,70 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Play = function () {
-    function Play() {
-        _classCallCheck(this, Play);
+  function Play() {
+    _classCallCheck(this, Play);
+  }
+
+  _createClass(Play, [{
+    key: "create",
+    value: function create() {
+
+      // Start the world fade-in effect
+      this.world.alpha = 0;
+      this.add.tween(this.world).to({
+        alpha: 1
+      }, 4000, Phaser.Easing.Cubic.InOut, true);
+
+      // Add a background
+      this.game.add.image(this.game.stage.x, this.game.stage.y, "bg");
+
+      // Add Ui parent container, all addon displayObject hooks to this.
+      this.UIParent = this.add.group(this.world);
+
+      this.events = new _eventManager2.default();
+      this.raid = new _raid2.default(this);
+
+      // Set raid size
+      this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);
+
+      // Init player. ## TODO ##: Use data from selection screen. See Phaser documentation for sending args between states?
+      this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF, 100, "Player");
+      this.raid.generateTestPlayers();
+      this.raid.addPlayer(this.player);
+
+      // Load enabled addons
+      this.game.addons.loadEnabledAddons(this);
+
+      // Start the boss/healing simulator
+      this.raid.startTestDamage();
     }
+  }, {
+    key: "update",
+    value: function update() {
+      this.events.GAME_LOOP_UPDATE.dispatch();
+    }
+  }, {
+    key: "handleKeyBoardInput",
+    value: function handleKeyBoardInput(key) {
+      // ## TODO ## : Find a better way to deal with this, maybe just send the input to the addons, and let the addons/ui decide what to do with it.
 
-    _createClass(Play, [{
-        key: "create",
-        value: function create() {
-
-            // Start the world fade-in effect
-            this.world.alpha = 0;
-            this.add.tween(this.world).to({ alpha: 1 }, 4000, Phaser.Easing.Cubic.InOut, true);
-
-            // Add a background
-            this.game.add.image(this.game.stage.x, this.game.stage.y, "bg");
-
-            // Add Ui parent container, all addon displayObject hooks to this.
-            this.UIParent = this.add.group(this.world);
-
-            this.events = new _eventManager2.default();
-            this.raid = new _raid2.default(this);
-
-            // Set raid size
-            this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);
-
-            // Init player. ## TODO ##: Use data from selection screen. See Phaser documentation for sending args between states?
-            this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF, 100, "Player");
-            this.raid.generateTestPlayers();
-            this.raid.addPlayer(this.player);
-
-            // Load enabled addons
-            this.game.addons.loadEnabledAddons(this);
-
-            // Start the boss/healing simulator
-            this.raid.startTestDamage();
+      var keybindings = data.getKeyBindings();
+      for (var binding in keybindings) {
+        var keybinding = keybindings[binding];
+        if (keybinding.key == key) {
+          if (keybinding.spell) this.player.cast_spell(keybinding.spell);
+          break;
         }
-    }, {
-        key: "update",
-        value: function update() {
-            this.events.GAME_LOOP_UPDATE.dispatch();
-        }
-    }, {
-        key: "handleKeyBoardInput",
-        value: function handleKeyBoardInput(key) {
-            // ## TODO ## : Find a better way to deal with this, maybe just send the input to the addons, and let the addons/ui decide what to do with it.
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      this.events.GAME_LOOP_RENDER.dispatch();
+    }
+  }]);
 
-            var keybindings = data.getKeyBindings();
-            for (var binding in keybindings) {
-                var keybinding = keybindings[binding];
-                if (keybinding.key == key) {
-                    if (keybinding.spell) this.player.cast_spell(keybinding.spell);
-                    break;
-                }
-            }
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            this.events.GAME_LOOP_RENDER.dispatch();
-        }
-    }]);
-
-    return Play;
+  return Play;
 }();
 
 exports.default = Play;
@@ -3021,7 +3049,7 @@ exports.default = Play;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.printPrettyError = printPrettyError;
 exports.arg = arg;
@@ -3033,13 +3061,12 @@ var rng = exports.rng = new Phaser.RandomDataGenerator([(Date.now() * Math.rando
  * Prints a formatted error with stacktrace to the console.
  * @param  {String} errorReason Summary of  error occured
  * @param  {Object} error       A javascript error object
- * @return {void}             
+ * @return {void}
  */
 
 function printPrettyError(errorReason, error) {
-    console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
+  console.log('%c %c %c ' + errorReason + '\n%c' + error.stack, 'background: #9854d8', 'background: #6c2ca7', 'color: #ffffff; background: #450f78;', 'color: #450f78; ', 'color: #ce0000;');
 }
-
 /**
  * If you need to give arguments without passing "this"
  * @param  {Function} f
@@ -3047,17 +3074,17 @@ function printPrettyError(errorReason, error) {
  */
 
 function arg(f) {
-    if (typeof f !== "function") throw new TypeError("Argument needs to a function");
+  if (typeof f !== "function") throw new TypeError("Argument needs to a function");
 
-    var slice = Array.prototype.slice,
-        args = slice.call(arguments),
-        fn = f,
-        partial = function partial() {
-        return fn.apply(this, args.concat(slice.call(arguments)));
-    };
+  var slice = Array.prototype.slice,
+      args = slice.call(arguments),
+      fn = f,
+      partial = function partial() {
+    return fn.apply(this, args.concat(slice.call(arguments)));
+  };
 
-    return partial;
-};
+  return partial;
+}
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
@@ -3066,32 +3093,32 @@ function arg(f) {
  */
 
 function freezeObject(objectToFreeze) {
-    var frozenObject = Object.freeze(objectToFreeze);
-    return frozenObject;
+  var frozenObject = Object.freeze(objectToFreeze);
+  return frozenObject;
 }
 
 function speedtest(config) {
-    if (typeof config !== 'Object') {
-        // error: Excepts plain object
-        return;
+  if (typeof config !== 'Object') {
+    // error: Excepts plain object
+    return;
+  }
+
+  subRoutinesToRun = {};
+
+  for (var key in config) {
+    if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
+      subRoutinesToRun[key] = config[key];
     }
+  }
 
-    subRoutinesToRun = {};
+  //dbg
+  console.log(JSON.stringify(subRoutinesToRun));
 
-    for (var key in config) {
-        if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
-            subRoutinesToRun[key] = config[key];
-        }
-    }
+  function _run(iterations) {
 
-    //dbg
-    console.log(JSON.stringify(subRoutinesToRun));
+    // capture date
 
-    function _run(iterations) {
-
-        // capture date
-
-    }
+  }
 }
 });
 
