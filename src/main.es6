@@ -37,6 +37,6 @@ window.onload = () => {
    * Automatically starts the boot state aka. application entry point
    * Note: Maybe there is no need to have game global since all the states have access to it anyway?
    */
-  window.game = new PhaserCustomGame('100%', '100%', Phaser.WEBGL, undefined,
+  window.game = new PhaserCustomGame(window.innerWidth, window.innerHeight, Phaser.WEBGL, undefined,
     Boot);
 };
