@@ -279,7 +279,7 @@ function Debug($) {
             game.debug.text("#### Haste_percent: " + player.target.total_haste() + ' %', 20, 160, '#00FF96');
             game.debug.text("#### Absorb: " + player.stats.absorb, 20, 180, '#00FF96');
         }
-         game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
+          game.debug.text("window.innerWidth: " + window.innerWidth, 20, 200, '#00FF96');
         game.debug.text("window.innerHeight: " + window.innerHeight, 20, 220, '#00FF96');
         //game.debug.text("World CenterX: " + game.world.centerX, 20, 360, '#00FF96');
         //game.debug.text("World CenterY: " + game.world.centerY, 20, 380, '#00FF96');
@@ -1395,6 +1395,28 @@ var UnitFrame = function (_Frame) {
 exports.default = UnitFrame;
 });
 
+;require.register("src/gameObjects/boss", function(exports, require, module) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Boss = function (_Unit) {
+  _inherits(Boss, _Unit);
+
+  function Boss() {
+    _classCallCheck(this, Boss);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Boss).call(this));
+  }
+
+  return Boss;
+}(Unit);
+});
+
 ;require.register("src/gameObjects/class_modules/priest", function(exports, require, module) {
 "use strict";
 
@@ -2108,7 +2130,7 @@ var Player = function () {
             //--- Avoidance ---------------------------------------
             /*
             if ( dmg.isAvoidable ) {
-                 if ( this.avoid() ) {
+                  if ( this.avoid() ) {
                     avoided_damage = true; // Note: Only warriors and paladins have block
                 }
             }
@@ -2672,6 +2694,263 @@ var SpellBase = function () {
 exports.default = SpellBase;
 });
 
+;require.register("src/gameObjects/unit", function(exports, require, module) {
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _data = require("./data");
+
+var data = _interopRequireWildcard(_data);
+
+var _enums = require("../enums");
+
+var e = _interopRequireWildcard(_enums);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Unit = function () {
+    function Unit(_class, race, level, name, events, isEnemy) {
+        _classCallCheck(this, Unit);
+
+        // Basic unit data
+        this.level = 100;
+        this.isEnemy = false;
+
+        // Unit current target
+        this.target = this;
+        this.isCasting = false;
+        this.alive = true;
+        this.group = null; // reference to the raid group the players are in ?
+
+        // Unit spells
+        this.spells = null;
+        this.buffs = null;
+
+        // Retrieve from Armory, JSON, get from gear.
+        this.gear_stats = {
+            stamina: 7105,
+            haste_rating: 1399
+        };
+
+        this.base_stats = {
+            strenght: 0,
+            agility: 0,
+            stamina: 0,
+            intellect: 0,
+            spirit: 0,
+            mastery_rating: 0,
+            haste_rating: 0,
+            crit_rating: 0
+        };
+
+        this.stats = {
+            health: {
+                value: 0,
+                max_value: 0,
+                min_value: 0
+            },
+            mana: {
+                value: 0,
+                max_value: 0,
+                min_value: 0
+            },
+            absorb: 0,
+            haste: 0,
+            crit: 0,
+            spellpower: 0,
+            attackpower: 0,
+            mastery: 0.08 };
+
+        // 8% is base mastery for every class
+        this.isEnemy = isEnemy ? true : false;
+        this.events = events;
+        this.level = level;
+        this.race = race;
+        this.name = name;
+        this.classId = _class;
+
+        this.init_base_stats();
+        this.init_stats();
+    }
+
+    _createClass(Unit, [{
+        key: "init_base_stats",
+        value: function init_base_stats() {
+            /* This is the stats someone would have 0 gear */
+            this.base_stats.agility = data.classBaseStats(this.classId, this.level, e.stat_e.AGILITY) + data.raceBaseStats(this.race, e.stat_e.AGILITY); // +gear
+            this.base_stats.stamina = data.classBaseStats(this.classId, this.level, e.stat_e.STAMINA) + data.raceBaseStats(this.race, e.stat_e.STAMINA) + this.gear_stats.stamina; // + gear
+            this.base_stats.intellect = data.classBaseStats(this.classId, this.level, e.stat_e.INTELLECT) + data.raceBaseStats(this.race, e.stat_e.INTELLECT); // + gear
+            this.base_stats.spirit = data.classBaseStats(this.classId, this.level, e.stat_e.SPIRIT) + data.raceBaseStats(this.race, e.stat_e.SPIRIT); // + gear
+            this.base_stats.strenght = data.classBaseStats(this.classId, this.level, e.stat_e.STRENGHT) + data.raceBaseStats(this.race, e.stat_e.STRENGHT); // + gear
+
+            this.base_stats.mastery_rating = 0;
+            this.base_stats.haste_rating = this.gear_stats.haste_rating;
+            this.base_stats.crit_rating = 0;
+        }
+    }, {
+        key: "init_stats",
+        value: function init_stats() {
+
+            // HEALTH
+            this.stats.health.value = this.stats.health.max_value = this.base_stats.stamina * data.getHpPerStamina(this.level);
+            // HASTE
+            this.stats.haste = this.base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
+            // MANA
+            // Note: When you are specced as restoration, holy etc. you will get a hidden aura that increases your manapool by 400%, this is how healers get more mana.
+            this.stats.mana.value = this.stats.mana.max_value = data.getManaByClass(this.classId, this.level);
+        }
+    }, {
+        key: "avoid",
+        value: function avoid() {
+            //returns dodge, parry, or miss?. Returns false if nothing was avoided.
+        }
+    }, {
+        key: "recieve_damage",
+        value: function recieve_damage(dmg) {
+            if (!this.alive) return;
+            var avoided_damage = false;
+
+            //--- Avoidance ---------------------------------------
+            /*
+            if ( dmg.isAvoidable ) {
+                  if ( this.avoid() ) {
+                    avoided_damage = true; // Note: Only warriors and paladins have block
+                }
+            }
+            */
+            //--- Resistance and absorb ---------------------------
+
+            if (!avoided_damage) {
+
+                //dmg.amount *= this.getResistancePercent('PHYSICAL');
+
+                // Full absorb
+                if (this.stats.absorb > dmg.amount) {
+                    this.setAbsorb(-dmg.amount);
+                } else {
+                    dmg.amount -= this.stats.absorb;
+                    this.setAbsorb(-this.stats.absorb);
+                    this.setHealth(this.getCurrentHealth() - dmg.amount);
+                }
+            }
+        }
+    }, {
+        key: "cast_spell",
+        value: function cast_spell(spellName) {
+
+            // ## Find spell ####
+            if (!this.spells[spellName]) return;
+            var spell = this.spells[spellName];
+
+            if (this.isCasting) this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");else spell.use();
+        }
+    }, {
+        key: "hasAura",
+        value: function hasAura(aura) {
+            return false;
+        }
+    }, {
+        key: "resistance",
+        value: function resistance(dmg) {
+            return 0;
+        }
+    }, {
+        key: "die",
+        value: function die() {
+            this.alive = false;
+        }
+    }, {
+        key: "consume_resource",
+        value: function consume_resource(amount) {
+            this.stats.mana.value -= amount;
+            this.events.MANA_CHANGE.dispatch(amount);
+        }
+    }, {
+        key: "SpellList",
+        get: function get() {
+            var spellList = [];
+            for (var spell in this.spells) {
+                spellList.push(spell);
+            }return spellList;
+        }
+    }, {
+        key: "Mana",
+        get: function get() {
+            return this.stats.mana.value;
+        }
+    }, {
+        key: "MaxMana",
+        get: function get() {
+            return this.stats.mana.max_value;
+        }
+    }, {
+        key: "CurrentAbsorb",
+        get: function get() {
+            return this.stats.absorb;
+        }
+    }, {
+        key: "Health",
+        set: function set(value) {
+            if (!this.alive) return;
+            if (value <= 0) {
+                this.stats.health.value = 0;
+                this.alive = false;
+                this.events.UNIT_DEATH.dispatch(this);
+                return;
+            }
+            if (value >= this.getMaxHealth()) {
+                this.stats.health.value = this.getMaxHealth();
+            } else {
+                this.stats.health.value = value;
+            }
+
+            this.events.UNIT_HEALTH_CHANGE.dispatch(this);
+            // ## TODO ##
+            // - Make sure it doesnt exceed maximum possible health
+            // - Handle overhealing here? or somewhere else
+        },
+        get: function get() {
+            return this.stats.health.value;
+        }
+    }, {
+        key: "Absorb",
+        set: function set(value) {
+            if (!this.alive) return;
+            this.stats.absorb += value;
+            this.events.UNIT_ABSORB.dispatch(this);
+        },
+        get: function get() {
+            return this.stats.absorb;
+        }
+    }, {
+        key: "MaHealth",
+        get: function get() {
+            return this.stats.health.max_value;
+        }
+    }, {
+        key: "Target",
+        set: function set(unit) {
+            // Just dont bother if its the same target
+            if (unit == this.target) {
+                return;
+            }
+
+            // Set target & emitt event
+            this.target = unit;
+            this.events.TARGET_CHANGE_EVENT.dispatch();
+        },
+        get: function get() {
+            return this.target;
+        }
+    }]);
+
+    return Unit;
+}();
+});
+
 ;require.register("src/main", function(exports, require, module) {
 'use strict';
 
@@ -2753,7 +3032,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+        value: true
 });
 
 var _menu = require("./menu");
@@ -2797,69 +3076,69 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Boot = function () {
-    function Boot() {
-        _classCallCheck(this, Boot);
-    }
-
-    _createClass(Boot, [{
-        key: "preload",
-        value: function preload() {
-            this.game.load.video('win', './assets/video/win.mp4');
-            this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
-            this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
-            this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
-            this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
-            this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
-            this.game.load.image("elite", "./assets/textures/elite_texture.png");
-            this.game.load.image("bg", "./assets/play_state_background.png");
-            this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
-            this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
-            this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
+        function Boot() {
+                _classCallCheck(this, Boot);
         }
-    }, {
-        key: "onWindowResize",
-        value: function onWindowResize(data) {
-            this.game.canvas.height = window.innerHeight;
-            this.game.canvas.width = window.innerWidth;
-        }
-    }, {
-        key: "create",
-        value: function create() {
-            var _this = this;
 
-            var isThisDev = true;
+        _createClass(Boot, [{
+                key: "preload",
+                value: function preload() {
+                        this.game.load.video('win', './assets/video/win.mp4');
+                        this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
+                        this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
+                        this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
+                        this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
+                        this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
+                        this.game.load.image("elite", "./assets/textures/elite_texture.png");
+                        this.game.load.image("bg", "./assets/play_state_background.png");
+                        this.game.load.image("icon_5", "./assets/icons/spell_holy_powerwordshield.jpg");
+                        this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
+                        this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
+                }
+        }, {
+                key: "onWindowResize",
+                value: function onWindowResize(data) {
+                        this.game.canvas.height = window.innerHeight;
+                        this.game.canvas.width = window.innerWidth;
+                }
+        }, {
+                key: "create",
+                value: function create() {
+                        var _this = this;
 
-            // Set scalemode for the this.game.
-            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-            this.game.scale.onSizeChange.add(function (data) {
-                return _this.onWindowResize(data);
-            });
+                        var isThisDev = true;
 
-            // Phaser config
-            this.game.time.advancedTiming = true;
-            this.game.tweens.frameBased = true;
+                        // Set scalemode for the this.game.
+                        this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+                        this.game.scale.onSizeChange.add(function (data) {
+                                return _this.onWindowResize(data);
+                        });
 
-            // Register games-states
-            this.game.state.add("MainMenu", _menu2.default);
-            this.game.state.add("Play", _play2.default);
+                        // Phaser config
+                        this.game.time.advancedTiming = true;
+                        this.game.tweens.frameBased = true;
 
-            // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
-            game.addons.add("Cast Bar 0.1", _castbar2.default);
-            game.addons.add("Raid Frames 0.1", _raid_frame2.default);
-            game.addons.add("Unit Frames 0.1", _unit_frames2.default);
-            //game.addons.add("Debug", debugAddon);
-            game.addons.add("BossTimers", _timers2.default);
-            game.addons.add("Action Bar", _action_bar_addon2.default);
+                        // Register games-states
+                        this.game.state.add("MainMenu", _menu2.default);
+                        this.game.state.add("Play", _play2.default);
 
-            // Setup the keyboard for the this.game.
-            this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
+                        // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
+                        game.addons.add("Cast Bar 0.1", _castbar2.default);
+                        game.addons.add("Raid Frames 0.1", _raid_frame2.default);
+                        game.addons.add("Unit Frames 0.1", _unit_frames2.default);
+                        //game.addons.add("Debug", debugAddon);
+                        game.addons.add("BossTimers", _timers2.default);
+                        game.addons.add("Action Bar", _action_bar_addon2.default);
 
-            // Start the post-boot state
-            this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
-        }
-    }]);
+                        // Setup the keyboard for the this.game.
+                        this.game.input.keyboard.addCallbacks(this.game, undefined, undefined, this.game.sendKeyBoardInputToCurrentState);
 
-    return Boot;
+                        // Start the post-boot state
+                        this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+                }
+        }]);
+
+        return Boot;
 }();
 
 exports.default = Boot;
