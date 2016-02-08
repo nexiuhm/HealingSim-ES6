@@ -150,6 +150,17 @@ export default class Unit {
 
     }
 
+    setMana(value) {
+        if(this.getMana() + value > this.getMaxMana() )
+            this._stats.mana.value = this.getMaxMana();
+        else if (value < 0)
+            this._stats.mana.value = 0;
+        else 
+            this._stats.mana.value += value;
+
+        this.events.MANA_CHANGE.dispatch();
+    }
+
     getMaxMana() {
         return this._stats.mana.max_value;
     }
