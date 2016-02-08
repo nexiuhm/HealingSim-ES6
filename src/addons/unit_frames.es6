@@ -34,8 +34,9 @@ export default function UnitFrames($) {
 
   let testBoss = new Player(4, 4, 100, "Ragnaros", $.events, true);
   setInterval(function() {
-    testBoss.recieve_damage({
-      amount: 5250
+    testBoss.apply("APPLY_DIRECT_DAMAGE",{
+      amount: 5250,
+      type: "physical"
     });
   }, 1200);
 

@@ -114,21 +114,22 @@ export default class Unit {
 
         switch (actionType) {
 
-            case APPLY_DIRECT_DAMAGE:
-                // calculateDamageTaken(data)
-                // modify health accordincly
-            case APPLY_DIRECT_HEAL:
+            case "APPLY_DIRECT_DAMAGE":
+                let amount = this.assessDamageTaken(actionData);
+                this.setHealth( this.getHealth() - amount );
+                break;
+            case "APPLY_DIRECT_HEAL":
                 // calculateHealingTaken(data)
                 // modify health accordigly
-            case APPLY_AURA_PERIODIC_DAMAGE:
+            case "APPLY_AURA_PERIODIC_DAMAGE":
                 // add aura to player ( exact way of doing that not decided yet )
                 // aura will apply DIRECT DAMAGE for every tick.
                 // aura will be removed on expiration
-            case APPLY_AURA_PERODIC_HEAL:
+            case "APPLY_AURA_PERODIC_HEAL":
                 // add aura to player ( exact way of doing that not decided yet )
                 // aura will apply DIRECT HEALING for every tick.
                 // aura will be removed on expiration
-            case APPLY_AURA_ABSORB:
+            case "APPLY_AURA_ABSORB":
                 // TODO: Implement this first. Make power word shield show in UI aswell
                 break;
         }
@@ -153,10 +154,10 @@ export default class Unit {
         return this._stats.mana.max_value;
     }
 
-    recieve_damage(dmg) {
+    assessDamageTaken(damage) {
 
         let avoided_damage = false;
-
+        let dmg = damage.amount;
 
         //--- Avoidance ---------------------------------------
         
@@ -167,16 +168,19 @@ export default class Unit {
 
         if (!avoided_damage) {
 
-            //dmg.amount *= this.getResistancePercent('PHYSICAL');
+            dmg *= this.getResistanceMultiplier(damage.type);
 
-            // Full absorb
+            // Consume all avaible absorb
             if (this._stats.absorb > dmg.amount) {
                 this.setAbsorb(-dmg.amount);
+                dmg = 0;
             } else {
-                dmg.amount -= this._stats.absorb;
+                dmg -= this._stats.absorb;
                 this.setAbsorb(-this._stats.absorb);
-                this.setHealth(this.getHealth() - dmg.amount);
+
             }
+
+            return dmg;
         }
     }
 
@@ -191,6 +195,19 @@ export default class Unit {
             this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
         else
             spell.use();
+    }
+
+    /* Todo: currently returns test values */
+    getResistanceMultiplier(resistanceType) {
+
+        switch(resistanceType) {
+            case "physical":
+                return 0.85;
+            case "fire":
+                return 0.95;
+            default: return 1;
+
+        }
     }
 
     getTotalHaste() {
