@@ -29,7 +29,7 @@ export default class Raid {
     return this._raidSize;
   }
 
-  getplayerList() {
+  getPlayerList() {
     return this.players;
   }
 
