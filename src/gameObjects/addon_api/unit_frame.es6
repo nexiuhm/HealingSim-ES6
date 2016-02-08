@@ -118,7 +118,6 @@ export default class UnitFrame extends Frame {
         200, "Linear", true);
     }
 
-    console.log(this.healthBar._bar.width);
     /*
     if (this.unit.healthPercent < 20) {
         this.healthBar.setColor(lowHealthColor)
@@ -131,7 +130,6 @@ export default class UnitFrame extends Frame {
     }
 
     this.absorbIndicator.setValue(this.unit.getCurrentAbsorb());
-    console.log(this.unit.getCurrentAbsorb());
   }
   _onUnitMaxHealthChanged(unit) {
     this.healthBar.setMaxValue(this.unit.getMaxHealth());

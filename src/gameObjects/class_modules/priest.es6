@@ -9,7 +9,7 @@ export default class Priest extends Player {
     }
 
     init_spells() {
-        this.spells = {
+        this._spells = {
             power_word_shield: new power_word_shield(this),
             flash_of_light: new flash_of_light(this),
             clarity_of_will: new clarity_of_will(this),
@@ -40,7 +40,7 @@ class flash_of_light extends SpellBase {
         super.execute();
         //this.target.consumeAura("tidal_waves", 1); 
         let crit = game.rnd.between(1, 2);
-        this.target.setHealth(this.target.getCurrentHealth() + 130000 * crit);
+        this.target.setHealth(this.target.getHealth() + 130000 * crit);
     }
 }
 
