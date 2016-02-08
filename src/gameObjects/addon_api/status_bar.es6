@@ -37,7 +37,7 @@ export default class StatusBar extends Frame {
       this._texture.blendMode = PIXI.blendModes.MULTIPLY;
       this.addChild(this._texture);
     }
-    this._updateBarWidth();
+    this._updateBarWidth(true);
   }
 
   /**
@@ -56,7 +56,6 @@ export default class StatusBar extends Frame {
     // Sometimes we want the bar to be updated without an animation delay.
     if (forceInstantUpdate === true || this._animationDuration === 0) {
       this._bar.width = barWidthInPixels;
-      console.log("FORCE INSTANT");
     } else {
       game.add.tween(this._bar).to({
         width: barWidthInPixels
@@ -75,7 +74,6 @@ export default class StatusBar extends Frame {
     this._maxValue = max;
     this._minValue = min;
     this._currentValue = current;
-    console.log(forceInstantUpdate);
     this._updateBarWidth(forceInstantUpdate);
     return this;
   }
