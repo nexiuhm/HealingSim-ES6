@@ -41,7 +41,7 @@ export default class SpellBase {
         }
 
         if (this.hasCooldown)
-            this.start_cooldown();
+            this._startCooldown();
 
     }
 

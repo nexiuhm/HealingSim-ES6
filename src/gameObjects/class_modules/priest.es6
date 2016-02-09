@@ -65,7 +65,8 @@ class power_infusion extends SpellBase {
     }
 
     onExecute() {
-        this.player.stats.haste += 15;
+        // Temporarly until auras work
+        this.player._stats.haste += 15;
     }
 }
 
