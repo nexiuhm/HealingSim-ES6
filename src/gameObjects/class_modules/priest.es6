@@ -9,7 +9,7 @@ export default class Priest extends Player {
     }
 
     init_spells() {
-        this._spells = {
+        this.spells = {
             power_word_shield: new power_word_shield(this),
             flash_of_light: new flash_of_light(this),
             clarity_of_will: new clarity_of_will(this),
@@ -26,8 +26,9 @@ class flash_of_light extends SpellBase {
         super(data.getSpellData('flash_of_light'), player);
     }
 
-    getCastTime() {
-        let ct = super.getCastTime();
+    cast_time() {
+        let ct = super.cast_time();
+
         //#### Cast time incresed by 200% if Shaman has Tidal Waves buff #### //
         if (this.target.hasAura("tidal_waves")) {
             ct *= 2;
@@ -35,10 +36,11 @@ class flash_of_light extends SpellBase {
         return ct;
     }
 
-    onExecute() {
+    execute() {
+        super.execute();
         //this.target.consumeAura("tidal_waves", 1); 
         let crit = game.rnd.between(1, 2);
-        this.target.setHealth(this.target.getHealth() + 130000 * crit);
+        this.target.setHealth(this.target.getCurrentHealth() + 130000 * crit);
     }
 }
 
@@ -47,13 +49,18 @@ class power_word_shield extends SpellBase {
         super(data.getSpellData('power_word_shield'), player);
     }
 
-    isUsable() {
+    can_use() {
+
         // Can't use shield if target has 'Weakened Soul' debuff
         if (this.target.hasAura("weakened_soul"))
             return false;
+        else
+            return super.can_use();
     }
 
-    onExecute() {
+    execute() {
+        super.execute();
+
         this.target.setAbsorb(190000);
     }
 }
@@ -64,9 +71,9 @@ class power_infusion extends SpellBase {
         super(data.getSpellData('power_infusion'), player);
     }
 
-    onExecute() {
-        // Temporarly until auras work
-        this.player._stats.haste += 15;
+    execute() {
+        super.execute();
+        this.player.stats.haste += 15;
     }
 }
 
@@ -75,7 +82,8 @@ class clarity_of_will extends SpellBase {
         super(data.getSpellData('clarity_of_will'), player);
     }
 
-    onExecute() {
+    execute() {
+        super.execute();
         let crit = game.rnd.between(1, 2);
         this.target.setAbsorb(120000 * crit);
     }

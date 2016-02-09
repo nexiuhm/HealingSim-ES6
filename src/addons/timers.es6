@@ -12,7 +12,7 @@ export default function BigWigs($) {
     let _timers = [];
     // Container for timers
     let timerFrame = new $.newFrame("UIParent")
-        .setPos(game.world.centerX + 250 , game.world.centerY + 100);
+        .setPos(1200, 900);
 
 
 
@@ -20,7 +20,7 @@ export default function BigWigs($) {
     { // -- SCOPE / ANONYMOUS NAMESPACE?-- 
 
         let timer = new $.newStatusBar(timerFrame, 200, 25)
-            .setValues(0, 1, 1, true)
+            .setValues(0, 1, 0)
             .setValue(0, 30000)
             .setColor(0xFF5E14);
 

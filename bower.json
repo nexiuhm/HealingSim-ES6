@@ -20,6 +20,6 @@
     "tests"
   ],
   "dependencies": {
-    "phaser": "dev"
+    "phaser": "https://github.com/photonstorm/phaser/archive/dev.zip"
   }
 }

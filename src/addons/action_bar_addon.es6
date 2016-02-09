@@ -5,9 +5,8 @@
 export default function ActionBar($) {
 
     let testSpellIcon1 = $.newStatusIcon("UIParent", 2)
-        .setPos(game.world.centerX - (50/2) - 300, game.world.centerY - (50/2) + 350);
+        .setPos(300, 300);
     let testSpellIcon2 =  $.newStatusIcon("UIParent", 5)
-        .setPos(game.world.centerX - (50/2) - 350, game.world.centerY - (50/2) + 350);
+        .setPos(300, 350);
 
 }
-	
