@@ -1,4 +1,6 @@
 {
+  "name": "HealingSim-ES6",
+  
   "dependencies": {
     "auto-reload-brunch": "^2.0.0",
     "babel": "6.3.26",
