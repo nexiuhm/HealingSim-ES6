@@ -16,26 +16,6 @@ export function printPrettyError(errorReason, error) {
     'color: #450f78; ',
     'color: #ce0000;');
 }
-/**
- * If you need to give arguments without passing "this"
- * @param  {Function} f
- * @return {Function}
- */
-
-export function arg(f) {
-  if (typeof f !== "function")
-    throw new TypeError("Argument needs to a function");
-
-  var slice = Array.prototype.slice,
-    args = slice.call(arguments),
-    fn = f,
-    partial = function() {
-      return fn.apply(this, args.concat(slice.call(arguments)));
-
-    };
-
-  return partial;
-}
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
@@ -46,32 +26,4 @@ export function arg(f) {
 export function freezeObject(objectToFreeze) {
   let frozenObject = Object.freeze(objectToFreeze);
   return frozenObject;
-}
-
-export function speedtest(config) {
-  if (typeof config !== 'Object') {
-    // error: Excepts plain object
-    return;
-  }
-
-  subRoutinesToRun = {};
-
-  for (var key in config) {
-    if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
-      subRoutinesToRun[key] = config[key];
-
-    }
-
-  }
-
-  //dbg
-  console.log(JSON.stringify(subRoutinesToRun));
-
-
-
-  function _run(iterations) {
-
-    // capture date
-
-  }
 }
