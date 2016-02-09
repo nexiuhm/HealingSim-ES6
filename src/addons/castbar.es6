@@ -7,7 +7,7 @@ export default function CastFrame($) {
     let config = {
         castSuccessColor: 0x00FF96,
         castingColor: 0xFF7D0A,
-        width: 300,
+        width: 250,
         height: 30
     };
 
@@ -15,7 +15,7 @@ export default function CastFrame($) {
 
     // Frame
     let castingFrame = new $.newFrame("UIParent")
-        .setPos(500 - config.width / 2, 500 - config.height / 2)
+        .setPos(game.world.centerX - (config.width/2) , game.world.centerY - (config.height/2) + 250)
         .setAlpha(0);
 
     // Status bar
