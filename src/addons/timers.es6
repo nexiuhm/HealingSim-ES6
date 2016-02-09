@@ -12,7 +12,7 @@ export default function BigWigs($) {
     let _timers = [];
     // Container for timers
     let timerFrame = new $.newFrame("UIParent")
-        .setPos(1200, 900);
+        .setPos(game.world.centerX + 250 , game.world.centerY + 100);
 
 
 

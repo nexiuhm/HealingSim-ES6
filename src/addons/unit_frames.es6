@@ -11,7 +11,7 @@ export default function UnitFrames($) {
    */
   let playerFrame = $.newUnitFrame("UIParent", $.localPlayer(), 300, 50)
     .togglePowerBar()
-    .setPos(500, 800);
+    .setPos(game.world.centerX - (300/2) - 300, game.world.centerY - (50/2) + 250);
 
   playerFrame.inputEnabled = true;
   playerFrame.events.onInputDown.add(() => {
@@ -22,7 +22,7 @@ export default function UnitFrames($) {
    * Target's unit frame
    */
   let targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50)
-    .setPos(1000, 800);
+    .setPos(game.world.centerX - (300/2) + 300, game.world.centerY - (50/2) + 250);;
 
   $.events.TARGET_CHANGE_EVENT.add(() => {
     targetFrame.setUnit($.localPlayer().target);
@@ -41,6 +41,6 @@ export default function UnitFrames($) {
   }, 1200);
 
   let bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50)
-    .setPos(1200, 500);
+    .setPos(game.world.centerX + 250 , game.world.centerY + 10);
 
 }

@@ -13,8 +13,7 @@ export default function RaidFrame($) {
     unitFrameHeight: 40
   };
 
-  let raidFrame = $.newFrame("UIParent")
-    .setPos(800, 400);
+  let raidFrame = $.newFrame("UIParent");
 
   { // Anonymous namespace, since we dont want to pollute this function scope
     let MAX_GROUPS = 5;
@@ -51,7 +50,7 @@ export default function RaidFrame($) {
   } // -- END --
 
   /* TODO: Position parent frame base on how big the raid got */
-
+  raidFrame.setPos(game.world.centerX - 460/2, game.world.centerY - 210/2)
   /**
    * The animation that is fired when the raid has been created
    */
