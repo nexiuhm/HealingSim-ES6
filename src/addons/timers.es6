@@ -20,7 +20,7 @@ export default function BigWigs($) {
     { // -- SCOPE / ANONYMOUS NAMESPACE?-- 
 
         let timer = new $.newStatusBar(timerFrame, 200, 25)
-            .setValues(0, 1, 0)
+            .setValues(0, 1, 1, true)
             .setValue(0, 30000)
             .setColor(0xFF5E14);
 

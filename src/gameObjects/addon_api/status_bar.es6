@@ -99,7 +99,7 @@ export default class StatusBar extends Frame {
     if (duration)
       this._animationDuration = duration;
     else if (duration === 0)
-      this._animationDuration = duration;
+      this._animationDuration = 0;
 
     this._updateBarWidth();
 
