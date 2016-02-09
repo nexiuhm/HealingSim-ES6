@@ -43,7 +43,7 @@ export default class Boot {
 
   create() {
 
-    let isThisDev = true;
+    let isThisDev = false;
 
     // Set scalemode for the this.game.
     this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;

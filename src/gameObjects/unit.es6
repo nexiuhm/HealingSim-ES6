@@ -5,11 +5,10 @@ import * as e from "../enums";
 
 export default class Unit {
 
-    constructor(_class, race, level, name, _events, isEnemy) {
+    constructor(_class, race, level, name, _events) {
 
         // Basic unit data
         this.level = level ? level : 100;
-        this.isEnemy = isEnemy ? true : false; // remove this later
         this.race = race;
         this.name = name;
         this.classId = _class;
