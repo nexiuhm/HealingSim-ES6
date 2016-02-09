@@ -27,87 +27,103 @@ export default class SpellBase {
         let current_cast, current_cooldown;
     }
 
-    use() {
+    /**
+     * _execute  - Executes the spell, applies effects to target(s), consumes resources etc.
+     * @private
+     * @protected
+     */
+    _execute() {
+        this._consumeResource();
 
-        // Save the target beeing casted on
-        this.target = this.player.target;
-
-        // Check if there are any rules that makes the spell unable to be used.
-        if (!this.can_use()) {
-            return;
+        // If the spell added a execute method, run that now
+        if (this.onExecute) {
+            this.onExecute();
         }
-
-        // If no cast time, execute  spell right away
-        if (this.isInstant)
-            this.execute();
-        else
-            this.start_casting();
-
-    }
-
-    execute() {
-
-        this.consumeResource();
 
         if (this.hasCooldown)
             this.start_cooldown();
 
     }
 
-    start_casting() {
+    _startCasting() {
         this.player.isCasting = true;
         // ### TODO: Need to be able to handle channeled spells ###
-        let ct = this.cast_time();
-        this.current_cast = game.time.events.add(ct, () => this.cast_finished());
+        let ct = this.getCastTime();
+        this.current_cast = game.time.events.add(ct, () => this._onCastFinished());
 
         // Send a signal/event that a spell is starting its cast.
         this.player.events.UNIT_STARTS_SPELLCAST.dispatch(ct, this.name);
     }
 
-    start_cooldown() {
+    _startCooldown() {
         this.onCooldown = true;
         // Get the cooldown
         let cd = this.cooldown();
         // Start the timer with callback
-        this.current_cooldown = game.time.events.add(cd, () => this.onCooldownReady());
+        this.current_cooldown = game.time.events.add(cd, () => this._onCooldownReady());
         this.player.events.ON_COOLDOWN_START.dispatch({
             cooldownLenght: cd,
             spellid: this.spellid
         });
     }
 
-    can_use() {
+    /**
+     * [_isReady description]
+     * @return {Boolean} If spell is ok to use.
+     * @private
+     * @protected
+     */
+    _isReady() {
         if (this.onCooldown) {
             return false;
         }
+
+        // Check for special rules added by the spell
+        if (this.isUsable && this.isUsable() === false) {
+            return false;
+        }
+
         return true;
     }
 
-    cast_finished() {
+    _onCastFinished() {
         this.player.isCasting = false;
         this.player.events.UNIT_FINISH_SPELLCAST.dispatch();
-        this.execute();
+        this._execute();
     }
 
-    cast_time() {
-        return this.base_casttime * (1 - (this.player.getTotalHaste() / 100));
-    }
 
-    cancel_cast() {
-        game.time.events.remove(this.current_cast);
-    }
-
-    consumeResource() {
+    _consumeResource() {
         if (!this.hasPowerCost)
             return;
         this.player.consume_resource(this.powerCost);
     }
 
-    onCooldownReady() {
+    _onCooldownReady() {
         this.onCooldown = false;
         this.player.events.ON_COOLDOWN_ENDED.dispatch({
             spellid: this.spellid
         });
+    }
+
+    /** Public interface below */
+
+    use() {
+
+        // Save the target beeing casted on
+        this.target = this.player.target;
+
+        // Check if there are any rules that makes the spell unable to be used.
+        if (!this._isReady()) {
+            return;
+        }
+
+        // If no cast time, execute spell right away
+        if (this.isInstant)
+            this._execute();
+        else
+            this._startCasting();
+
     }
 
     cooldown() {
@@ -117,4 +133,16 @@ export default class SpellBase {
     cost() {
         return this.powerCost;
     }
+
+    getCastTime() {
+        return this.base_casttime * (1 - (this.player.getTotalHaste() / 100));
+
+    }
+
+    // todo: why is this here, its not used?
+    cancel_cast() {
+        game.time.events.remove(this.current_cast);
+    }
+
+
 }

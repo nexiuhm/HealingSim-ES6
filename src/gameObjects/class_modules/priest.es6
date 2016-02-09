@@ -26,9 +26,8 @@ class flash_of_light extends SpellBase {
         super(data.getSpellData('flash_of_light'), player);
     }
 
-    cast_time() {
-        let ct = super.cast_time();
-
+    getCastTime() {
+        let ct = super.getCastTime();
         //#### Cast time incresed by 200% if Shaman has Tidal Waves buff #### //
         if (this.target.hasAura("tidal_waves")) {
             ct *= 2;
@@ -36,8 +35,7 @@ class flash_of_light extends SpellBase {
         return ct;
     }
 
-    execute() {
-        super.execute();
+    onExecute() {
         //this.target.consumeAura("tidal_waves", 1); 
         let crit = game.rnd.between(1, 2);
         this.target.setHealth(this.target.getHealth() + 130000 * crit);
@@ -49,18 +47,13 @@ class power_word_shield extends SpellBase {
         super(data.getSpellData('power_word_shield'), player);
     }
 
-    can_use() {
-
+    isUsable() {
         // Can't use shield if target has 'Weakened Soul' debuff
         if (this.target.hasAura("weakened_soul"))
             return false;
-        else
-            return super.can_use();
     }
 
-    execute() {
-        super.execute();
-
+    onExecute() {
         this.target.setAbsorb(190000);
     }
 }
@@ -71,8 +64,7 @@ class power_infusion extends SpellBase {
         super(data.getSpellData('power_infusion'), player);
     }
 
-    execute() {
-        super.execute();
+    onExecute() {
         this.player.stats.haste += 15;
     }
 }
@@ -82,8 +74,7 @@ class clarity_of_will extends SpellBase {
         super(data.getSpellData('clarity_of_will'), player);
     }
 
-    execute() {
-        super.execute();
+    onExecute() {
         let crit = game.rnd.between(1, 2);
         this.target.setAbsorb(120000 * crit);
     }
