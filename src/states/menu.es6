@@ -5,8 +5,7 @@ export default class MainMenu {
      */
 
     create() {
-        this.add.image(0, 0, "MenuScreenBackground");
-        this.add.image(0, 0, "MenuScreenText").blendMode = PIXI.blendModes.ADD;
+        this.add.image(0, 0, "MenuScreenConcept");
         this.printAddonList();
     }
 

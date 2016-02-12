@@ -21,6 +21,7 @@ export default class Boot {
   preload() {
     this.game.load.video('win', './assets/video/win.mp4');
     this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
+    this.game.load.image("MenuScreenConcept", "./assets/concept_for_menu_state.png");
     this.game.load.image("MenuScreenBackground",
       "./assets/textures/bg_texture.png");
     this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
@@ -43,7 +44,7 @@ export default class Boot {
 
   create() {
 
-    let isThisDev = true;
+    let isThisDev = false;
 
     // Set scalemode for the this.game.
     this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
