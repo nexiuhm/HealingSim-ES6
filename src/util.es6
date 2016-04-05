@@ -47,31 +47,3 @@ export function freezeObject(objectToFreeze) {
   let frozenObject = Object.freeze(objectToFreeze);
   return frozenObject;
 }
-
-export function speedtest(config) {
-  if (typeof config !== 'Object') {
-    // error: Excepts plain object
-    return;
-  }
-
-  subRoutinesToRun = {};
-
-  for (var key in config) {
-    if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
-      subRoutinesToRun[key] = config[key];
-
-    }
-
-  }
-
-  //dbg
-  console.log(JSON.stringify(subRoutinesToRun));
-
-
-
-  function _run(iterations) {
-
-    // capture date
-
-  }
-}
