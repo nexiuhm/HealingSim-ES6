@@ -139,7 +139,7 @@ export default class Raid {
     let tank = this.players[0];
     let offTank = this.players[1];
 
-    let bossSwing = rng.between(70000, 90900);
+    let bossSwing = rng.between(90000, 115900);
     let bossSwingCriticalHit = Math.random();
 
     // 20% chance to critt. Experimental.

@@ -154,6 +154,9 @@ export default class UnitFrame extends Frame {
     if (unit != this.unit)
       return;
     this.healthBar.setValue(0);
+    this.playerName.setText("DEAD");
+    this.healthBar.setColor(0x000000);
+    this.absorbIndicator.setColor(0x00000);
   }
 
   /* Public interface below */

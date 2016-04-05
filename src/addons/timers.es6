@@ -1,5 +1,5 @@
 ﻿/**
- * Addon showing timers for important events. 
+ * Addon showing timers for important events. Similar to DBM / BigWigs
  */
 
 export default function BigWigs($) {
@@ -11,8 +11,10 @@ export default function BigWigs($) {
 
     let _timers = [];
     // Container for timers
-    let timerFrame = new $.newFrame("UIParent")
+    let timerFrame = $.newFrame("UIParent")
         .setPos(game.world.centerX + 250 , game.world.centerY + 100);
+
+    let emphasizedTimerFrame = $.newFrame("UIParent");
 
 
 
@@ -39,6 +41,10 @@ export default function BigWigs($) {
              // move bar to BigTimerFrame
         
     }); */
+
+    function addTimer() {
+        
+    }
 
     //## Called when a timerbar is removed or added.
 

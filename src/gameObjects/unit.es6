@@ -115,8 +115,7 @@ export default class Unit {
         switch (actionType) {
 
             case "APPLY_DIRECT_DAMAGE":
-                let amount = this.assessDamageTaken(actionData);
-                this.setHealth( this.getHealth() - amount );
+                this.setHealth( this.getHealth() - this.assessDamageTaken(actionData) );
                 break;
             case "APPLY_DIRECT_HEAL":
                 // calculateHealingTaken(data)
@@ -130,7 +129,15 @@ export default class Unit {
                 // aura will apply DIRECT HEALING for every tick.
                 // aura will be removed on expiration
             case "APPLY_AURA_ABSORB":
-                // TODO: Implement this first. Make power word shield show in UI aswell
+        
+                // Add aura to array
+                let auraid = this._auras.push(actionData);
+
+                // Schedule removal of aura if it should expire at some point.
+                if(actionData.duration > 0) {
+                  game.time.events.add(actionData.duration,() => { this._auras[auraid] = undefined; console.log("aura done"); } );
+                }
+        
                 break;
         }
 
@@ -182,16 +189,19 @@ export default class Unit {
             dmg *= this.getResistanceMultiplier(damage.type);
 
             // Consume all avaible absorb
-            if (this._stats.absorb > dmg.amount) {
-                this.setAbsorb(-dmg.amount);
-                dmg = 0;
-            } else {
-                dmg -= this._stats.absorb;
-                this.setAbsorb(-this._stats.absorb);
-
-            }
+            dmg = this._consumeAbsorb(dmg);
 
             return dmg;
+        }
+    }
+
+    _consumeAbsorb(dmg) {
+        if (this._stats.absorb > dmg) {
+                this.setAbsorb(-dmg);
+                return 0;
+        } else {
+            this.setAbsorb(-this._stats.absorb);
+            return dmg-this._stats.absorb;
         }
     }
 
