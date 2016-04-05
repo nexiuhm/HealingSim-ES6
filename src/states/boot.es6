@@ -35,6 +35,9 @@ export default class Boot {
     this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
+
+    // Menu screen assets
+    this.game.load.image("play_button", "./assets/play_button.png");
   }
 
   onWindowResize(data) {
@@ -44,7 +47,6 @@ export default class Boot {
 
   create() {
 
-    let isThisDev = false;
 
     // Set scalemode for the this.game.
     this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
@@ -71,6 +73,6 @@ export default class Boot {
       this.game.sendKeyBoardInputToCurrentState);
 
     // Start the post-boot state
-    this.game.state.start(isThisDev ? "Play" : "MainMenu"); // Go directly to playstate when developing
+    this.game.state.start("MainMenu"); // Go directly to playstate when developing
   }
 }
