@@ -155,6 +155,7 @@ export default class UnitFrame extends Frame {
       return;
     this.healthBar.setValue(0);
     this.playerName.setText("DEAD");
+    // temporary, should remove alpha instead of setting color
     this.healthBar.setColor(0x000000);
     this.absorbIndicator.setColor(0x00000);
   }

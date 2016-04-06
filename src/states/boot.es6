@@ -1,6 +1,6 @@
 import menuState from "./menu";
 import playState from "./play";
-
+import successState from "./success";
 /**
  * TODO: Import addons dynamically. This can't be done with the import statement since its only used for static analysis. Check out System.Import()
  * Low priority
@@ -19,7 +19,7 @@ import actionBar from "../addons/action_bar_addon";
 export default class Boot {
 
   preload() {
-    this.game.load.video('win', './assets/video/win.mp4');
+    this.game.load.video('win', './assets/win.mp4');
     this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
     this.game.load.image("MenuScreenConcept", "./assets/concept_for_menu_state.png");
     this.game.load.image("MenuScreenBackground",
@@ -59,6 +59,7 @@ export default class Boot {
     // Register games-states
     this.game.state.add("MainMenu", menuState);
     this.game.state.add("Play", playState);
+    this.game.state.add("Success", successState);
 
     // Register addons to the game // TODO: Read a json file in the addon directory which describes the addons instead of adding them manually.
     game.addons.add("Cast Bar 0.1", castFrame);

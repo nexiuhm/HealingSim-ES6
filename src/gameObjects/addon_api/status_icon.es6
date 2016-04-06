@@ -9,7 +9,7 @@ export default class StatusIcon extends Frame {
   constructor(parent, spellid, events) {
     super(parent);
     this.spellid = spellid;
-    this.events = events;
+    this._events = events;
 
     // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
     this.cooldownOverlayAngle = {
@@ -39,8 +39,8 @@ export default class StatusIcon extends Frame {
     this.addChild(this.cd_overlay);
 
     // listen to cooldown start event
-    this.events.ON_COOLDOWN_START.add((e) => this._onCooldownStart(e));
-    this.events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
+    this._events.ON_COOLDOWN_START.add((e) => this._onCooldownStart(e));
+    this._events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
   }
 
   _onCooldownStart(event) {
@@ -53,8 +53,10 @@ export default class StatusIcon extends Frame {
     this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
       current: 270
     }, event.cooldownLenght, undefined, true);
+    // Start cooldown counter over icon
+  
     // Hook the update cooldown arc to the main loop
-    this.events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
+    this._events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
 
   }
 
