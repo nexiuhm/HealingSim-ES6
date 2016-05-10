@@ -10,58 +10,108 @@ export default class MainMenu {
 
         // Add the concept to work from to the screen
         this.add.image(0, 0, "MenuScreenConcept");
-        this.printAddonList();
 
-        // Storage for menu selections
+
+        // Storage for menu selections. Feeding it with default values to start with
         this.selections = {
-            boss: 0,
-            class: 0,
-            difficulty: 0
+            boss: 'brackenspore',
+            class: 'priest',
+            difficulty: 'n',
+            playerName: 'Player'
         }
 
-        // Setup play button - just doing it in a straightforward way for now.
+   
+
+        //  #### Create selection menus ####
+
+        let bossSelectionOptions = createRadioSelectionGroup ({
+            
+
+            buttons: {
+
+                priest: { icon: 'id', value: 'priest' },
+                paladin: { icon: 'id', value: 'paladin' , inActive: true },
+                shaman: { icon: 'id', value: 'shaman', inActive: true},
+                druid: {icon: 'id' , value: 'druid', inActive: true }
+                
+
+            },
+
+            
+            onSelectionCallback: onClassSelected // 
+
+
+
+        });
+
+        let classSelectionOptions = null;
+
+
+        let difficultySelectionOptions = null;
+
+
+        // Name slection - Neeed to create some kind of input field. Phaser doesnt have this built in so it will take some work.
+
+
+        //  #################################
+        //  ##### Setup featured frames ##### - Updates when a relevant selections have been made (boss or class)
+        //  #################################
+
+            // Todo!
+
+        // ##################################
+        // ########## Play button ########### - Just doing it in a straightforward way for now.
+        // ##################################
+
         let playbutton = this.add.sprite(500,500, "play_button");
         playbutton.alpha = 0.6;
         playbutton.inputEnabled = true;
         playbutton.events.onInputOver.add(()=>{playbutton.alpha = 1;});
         playbutton.events.onInputOut.add(()=>{playbutton.alpha = 0.6;});
-        playbutton.events.onInputDown.add(this.startGame,this);
+        playbutton.events.onInputDown.add(onPlayButtonPressed,this);
 
-        // Setup selection buttons
-        // - Buttons have values associated with them, F.ex a boss id. 1,2,3 etc..
-        // - Onclick handlers changes the selections object data.
-        // - 3 states - focus/mouseover - activated 
-        // - Only 1 activated button possible per button group.
-        
-        // Setup featured frames
-        // - Updates when a relevant selections have been made (boss or class)
-        
+        // ##################################
+        // ########### Callbacks ############
+        // ##################################
 
-        
-    }
+        function onClassSelected () {
 
-   
-
-     startGame(keyCode) {
-
-        // Validate selections?
-        // Start game state passing the selected data
-        this.game.state.start("Play");
-    }
-        
-
-
-
-     printAddonList() {
-        let addonList = this.game.addons.getListOfAddons();
-        let lineHeight = 15;
-        let headerText = this.game.add.bitmapText(0, 0, "myriad", "### REGISTRED ADDONS ###", 14).tint = 0xFF00FF;
-        for (let i = 0; i < addonList.length; i++) {
-            this.add.bitmapText(0, lineHeight * i + lineHeight, "myriad", "## Addon Name: " + addonList[i][0] + "  ## Enabled : " + addonList[i][1], 14);
+            // Update selection data object
+            // Update featured-class frame
         }
-    }
 
-   
+        function onBossSelected() {
+            // Update selection data object
+            // Update featured-boss frame
+        }
+
+        function onDifficultySelected() {
+            // Update selection data object
+        }
+
+        function onPlayButtonPressed() {
+            this.game.state.start("Play");
+        }
+
+
+
+
+        // ##################################
+        // ##### Helper functions below #####
+        // ##################################
+
+        function createRadioSelectionGroup(configObject) {
+            // dbg
+            console.table(configObject);
+
+
+
+       }
+
+
+
+
+    }
 
 
 
