@@ -35,6 +35,7 @@ export default class Boot {
     this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
+    this.game.load.audio("menu_select_sound", "./assets/sounds/menu_selection_sound.mp3");
 
     // Menu screen assets
     this.game.load.image("play_button", "./assets/play_button.png");
