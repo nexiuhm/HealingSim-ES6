@@ -9,11 +9,17 @@ export default class MainMenu {
     create() {
 
         // Add the concept to work from to the screen
-        this.add.image(0, 0, "MenuScreenConcept");
+        let bg = this.add.image(0, 0, "menu_bg");
+        bg.height = window.innerHeight;
+        bg.width = window.innerWidth;
 
+        addEmitter();
 
-        // Soundfx
-        let menu_select = this.add.audio("menu_select_sound");
+        // Sound objects
+        let sound = {
+            optionSelected: this.add.audio("menu_select_sound"),
+            enterWorld: this.add.audio("enter_world")
+        }
 
         // Storage for menu selections. Feeding it with default values to start with
         let selections = {
@@ -22,6 +28,7 @@ export default class MainMenu {
             difficulty: 'n',
             playerName: 'Player'
         }
+
 
 
    
@@ -35,22 +42,22 @@ export default class MainMenu {
 
             position: {
                 x: 150,
-                y: 150
+                y: 250
             },
 
             buttons: {
 
-                priest: { icon: 'id', value: 'priest' },
-                paladin: { icon: 'id', value: 'paladin' },
-                shaman: { icon: 'id', value: 'shaman'},
-                druid: {icon: 'id' , value: 'druid'}
+                priest: { icon: 'icon_placeholder', value: 'priest' },
+                paladin: { icon: 'icon_placeholder', value: 'paladin' },
+                shaman: { icon: 'icon_placeholder', value: 'shaman'},
+                druid: {icon: 'icon_placeholder' , value: 'druid'}
                 
 
             },
 
             
             onSelectionCallback: onClassSelected,
-          
+            callbackContext: this
 
         });
 
@@ -62,18 +69,19 @@ export default class MainMenu {
 
             position: {
                 x: 150,
-                y: 350
+                y: 450
             },
 
             buttons: {
 
-                brackenspore: { icon: 'id', value: 'priest' },
-                testboss: { icon: 'id', value: 'paladin' },
+                brackenspore: { icon: 'icon_placeholder', value: 'brackenspore' },
+                testboss: { icon: 'icon_placeholder', value: 'testboss' },
 
             },
 
             
             onSelectionCallback: onBossSelected,
+            callbackContext: this
           
 
         });
@@ -86,19 +94,38 @@ export default class MainMenu {
 
             position: {
                 x: 150,
-                y: 550
+                y: 650
             },
 
             buttons: {
 
-                brackenspore: { icon: 'id', value: 'priest' },
-                testboss: { icon: 'id', value: 'paladin' },
+                normal: { icon: 'icon_normal', value: 'normal' },
+                heroic: { icon: 'icon_heroic', value: 'heroic' },
+                mythic: { icon: 'icon_placeholder', value: 'mythic'}
 
             },
 
             
             onSelectionCallback: onDifficultySelected,
+            callbackContext: this
           
+
+        });
+
+
+
+        let featuredBoss = createFeaturedBox({
+            headerText: "textureId",
+
+            position: {
+
+            },
+
+
+            slides: {
+                brackenspore: { image: '', headerText: '' , infoText: ''}
+            }
+
 
         });
 
@@ -111,8 +138,14 @@ export default class MainMenu {
         // ####### Name slection ############
         // ##################################
 
-            // - Neeed to create some kind of input field. Phaser doesnt have this built in so it will take some work. Use reg-exp to validate the text input ? Current game font only supports a-Z & 0-9
+            createInputField({
 
+                regExpRule: "([A-z])\w+", // A-z no white space or digits
+                maxCharacters: 10,
+
+                onValidInputCallback: null // update selection object
+
+            });
         //  #################################
         //  ##### Setup featured frames ##### - Updates when a relevant selections have been made (boss or class)
         //  #################################
@@ -123,7 +156,7 @@ export default class MainMenu {
         // ########## Play button ########### - Just doing it in a straightforward way for now.
         // ##################################
 
-        let playbutton = this.add.sprite(500,500, "play_button");
+        let playbutton = this.add.sprite(window.innerWidth - 500,window.innerHeight-300, "play_button");
         playbutton.alpha = 0.6;
         playbutton.inputEnabled = true;
         playbutton.events.onInputOver.add(()=>{playbutton.alpha = 1;});
@@ -136,27 +169,40 @@ export default class MainMenu {
 
         function onClassSelected (selectedValue) {
             selections.class = selectedValue;
-            console.log("-- UPDATED FEAUTRED CLASS FRAME --");
-            menu_select.play();
+            game.debug.text("#### SELECTED CLASS ##########  " + selectedValue, 600, 600, '#00FF96');
+
+            sound.optionSelected.play();
 
         }
 
-        function onBossSelected() {
-            // Update selection data object
+        function onBossSelected(selectedValue) {
             // Update featured-boss frame
-            console.log("-- UPDATED FEAUTRED BOSS FRAME --");
+            selections.boss = selectedValue;
+            game.debug.text("#### SELECTED BOSS ##########  " + selectedValue, 600, 600, '#00FF96');
+
+            sound.optionSelected.play();
+
 
         }
 
-        function onDifficultySelected() {
+        function onDifficultySelected(selectedValue) {
             // Update selection data object
+            selections.difficulty = selectedValue;
+            game.debug.text("#### SELECTED DIFFICULY ##########  " + selectedValue, 600, 600, '#00FF96');
+
+            sound.optionSelected.play();
+
+
         }
 
         function onPlayButtonPressed() {
 
             // Start play state and pass it the menu selection data.
+            sound.enterWorld.play();
             this.game.state.start("Play", undefined, undefined, selections);
         }
+
+
 
 
 
@@ -167,16 +213,40 @@ export default class MainMenu {
 
         function createFeaturedBox(configObject) {
 
+         
+
         }
 
         function createInputField(configObject) {
+            // Phaser keyboard
+            let cfg = configObject;
+            let inputTextValue = "";
+            let _inputValidationRegExp = new RegExp(cfg.regExpRule);
+
+
+            // Adds a char to the input "field"
+            function _addChar(c) {
+
+                // Return if adding the char causes maxCharacter overflow
+                if(inputTextValue.length + 1 > cfg.maxCharacters) return;
+
+            }
+
+        
+
+
+            function _validateInput(string) {
+                return _inputValidationRegExp.exec(string);
+            }
+            
+
 
         }
 
         function createOptionPanel(configObject) {
 
             // Check if the config object has at least some of the important stuff in it
-            if(!configObject.buttons || !configObject.onSelectionCallback) return console.log("Missing required configuration data");
+            if(!configObject.buttons || !configObject.onSelectionCallback) return console.log("Missing required data");
     
 
 
@@ -214,7 +284,7 @@ export default class MainMenu {
 
                let currentButton = configObject.buttons[button];
 
-               let displayObject = game.add.sprite(100, anchors.button, "icon_5");
+               let displayObject = game.add.sprite(100, anchors.button, currentButton.icon);
                displayObject.height = 50;
                displayObject.width = 50;
                 // Add some additonal data to the sprite object ( make sure to not colliide names with anything already exsiting on the sprite object or ebola will happen!)
@@ -254,8 +324,7 @@ export default class MainMenu {
                         if(activeButton) activeButton.alpha = 0.6;
 
 
-                        console.log(configObject.dataWriteTarget);
-                        console.log(selections);
+                        
                         // Set active button to the button just pressed.
                         activeButton = button;
 
@@ -268,6 +337,39 @@ export default class MainMenu {
 
 
 
+
+       }
+
+        // ##################################
+        // ##### Visual effects #####
+        // ##################################
+
+       function addEmitter(){
+              
+
+            var emitter = game.add.emitter(game.world.centerX, 100, 700);
+
+            emitter.width = 300;
+            emitter.angle = 30; // uncomment to set an angle for the rain.
+            emitter.blendMode = Phaser.blendModes.ADD;
+            emitter.makeParticles(["icon_5", "icon_2"]);
+            emitter.minParticleAlpha = 0.1;
+            emitter.maxParticleAlpha = 0.5;
+            emitter.minParticleScale = 0.1;
+            emitter.maxParticleScale = 0.6;
+
+            emitter.setYSpeed(3, 5);
+            emitter.setXSpeed(-5, 5);
+
+            emitter.minRotation = 0;
+            emitter.maxRotation = 0;
+            emitter.gravity = 5;
+
+            emitter.start(false, 18600, 900, 0);
+
+
+
+    
 
        }
 

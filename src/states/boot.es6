@@ -19,6 +19,8 @@ import actionBar from "../addons/action_bar_addon";
 export default class Boot {
 
   preload() {
+
+    // Todo, better loading. Maybe a JSON file that gets read instead of typing it all out here.
     this.game.load.video('win', './assets/win.mp4');
     this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
     this.game.load.image("MenuScreenConcept", "./assets/concept_for_menu_state.png");
@@ -35,7 +37,15 @@ export default class Boot {
     this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
+    this.game.load.image("icon_normal","./assets/icons/icon_normal.png");
+    this.game.load.image("icon_heroic","./assets/icons/icon_heroic.png");
+        this.game.load.image("icon_placeholder","./assets/icons/icon_placeholder.png");
+            this.game.load.image("menu_bg","./assets/textures/menu_bg.png");
+
+
     this.game.load.audio("menu_select_sound", "./assets/sounds/menu_selection_sound.mp3");
+    this.game.load.audio("enter_world", "./assets/sounds/enter_world.mp3");
+
 
     // Menu screen assets
     this.game.load.image("play_button", "./assets/play_button.png");
@@ -54,9 +64,8 @@ export default class Boot {
     this.game.scale.onSizeChange.add((data) => this.onWindowResize(data));
 
     // Phaser config
-    this.game.time.advancedTiming = true;
+    this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu 
     this.game.tweens.frameBased = true;
-
     // Register games-states
     this.game.state.add("MainMenu", menuState);
     this.game.state.add("Play", playState);
