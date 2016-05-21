@@ -8,11 +8,14 @@ export default class MainMenu {
 
     create() {
 
-        // Add the concept to work from to the screen
         let bg = this.add.image(0, 0, "menu_bg");
         bg.height = window.innerHeight;
         bg.width = window.innerWidth;
 
+        this.add.image(150,50, "game_logo");
+
+
+        // Some visual effect
         addEmitter();
 
         // Sound objects
@@ -31,11 +34,9 @@ export default class MainMenu {
 
 
 
-   
-
         //  #### Create selection menus ####
 
-        createOptionPanel  ({
+        createOptionPanel ({
             
 
             headerText: "SELECT CLASS",
@@ -52,12 +53,18 @@ export default class MainMenu {
                 shaman: { icon: 'icon_placeholder', value: 'shaman'},
                 druid: {icon: 'icon_placeholder' , value: 'druid'}
                 
-
             },
 
             
-            onSelectionCallback: onClassSelected,
-            callbackContext: this
+            onSelectionCallback: function onClassSelected(selectedValue) {
+                selections.class = selectedValue;
+                this.game.debug.text("#### DEBUG - SELECTED CLASS =  " + selectedValue, 600, 600, '#00FF96');
+                // Emitt class selected event subscriped to by the featured frame?
+                sound.optionSelected.play();
+
+            },
+
+            callbackContext: this // State should be 'this'
 
         });
 
@@ -80,14 +87,25 @@ export default class MainMenu {
             },
 
             
-            onSelectionCallback: onBossSelected,
+            onSelectionCallback: function onBossSelected(selectedValue) {
+                // Update featured-boss frame
+                selections.boss = selectedValue;
+                game.debug.text("#### SELECTED BOSS ##########  " + selectedValue, 600, 600, '#00FF96');
+
+                sound.optionSelected.play();
+
+            },
+
             callbackContext: this
           
 
         });
 
 
-           createOptionPanel ({
+
+
+
+        createOptionPanel ({
             
 
             headerText: "SELECT DIFFICULY",
@@ -106,104 +124,87 @@ export default class MainMenu {
             },
 
             
-            onSelectionCallback: onDifficultySelected,
+            onSelectionCallback: function onDifficultySelected(selectedValue) {
+                // Update selection data object
+                selections.difficulty = selectedValue;
+                game.debug.text("#### SELECTED DIFFICULY ##########  " + selectedValue, 600, 600, '#00FF96');
+
+                sound.optionSelected.play();
+
+
+            },
+
             callbackContext: this
           
 
         });
 
 
-
-        let featuredBoss = createFeaturedBox({
-            headerText: "textureId",
-
-            position: {
-
-            },
-
-
-            slides: {
-                brackenspore: { image: '', headerText: '' , infoText: ''}
-            }
-
-
-        });
-
-
-
-    
-
-
         // ##################################
         // ####### Name slection ############
         // ##################################
 
-            createInputField({
+         game.add.text(150,850, "SELECT NAME", {fill: 'lightgray'});
 
-                regExpRule: "([A-z])\w+", // A-z no white space or digits
-                maxCharacters: 10,
 
-                onValidInputCallback: null // update selection object
+         let nameInputField = game.add.inputField(150, 910, {
+            font: '17px Arial',
+            fill: '#FFFFFF',
+            fontWeight: 'bold',
+            width: 250,
+            height: 25,
+            padding: 10,
+            fillAlpha: 0.3,
+            borderWidth: 2,
+            borderColor: '#90EE90',
+            borderRadius: 7,
+            placeHolder: 'Player',
+            backgroundColor: "#000000",
+            type: Fabrique.InputType.text
 
-            });
+         });
+
+            
+
         //  #################################
         //  ##### Setup featured frames ##### - Updates when a relevant selections have been made (boss or class)
         //  #################################
 
-            // Todo!
+            // Todo! 
+            // adding concept as placeholder for now
+            game.add.image(game.world.centerX + 150,250, "temp_featured");
+
+
+
+
+
+
 
         // ##################################
         // ########## Play button ########### - Just doing it in a straightforward way for now.
         // ##################################
 
-        let playbutton = this.add.sprite(window.innerWidth - 500,window.innerHeight-300, "play_button");
-        playbutton.alpha = 0.6;
-        playbutton.inputEnabled = true;
-        playbutton.events.onInputOver.add(()=>{playbutton.alpha = 1;});
-        playbutton.events.onInputOut.add(()=>{playbutton.alpha = 0.6;});
-        playbutton.events.onInputDown.add(onPlayButtonPressed,this);
+        { // Anon namespace
 
-        // ##################################
-        // ########### Callbacks ############
-        // ##################################
+            let playbutton = this.add.sprite(window.innerWidth - 500, window.innerHeight-300, "play_button");
+            playbutton.alpha = 0.6;
+            playbutton.inputEnabled = true;
+            playbutton.events.onInputOver.add(()=>{playbutton.alpha = 1;});
+            playbutton.events.onInputOut.add(()=>{playbutton.alpha = 0.6;});
+            playbutton.events.onInputDown.add( onPlayButtonPressed, this);
 
-        function onClassSelected (selectedValue) {
-            selections.class = selectedValue;
-            game.debug.text("#### SELECTED CLASS ##########  " + selectedValue, 600, 600, '#00FF96');
+            function onPlayButtonPressed() {
 
-            sound.optionSelected.play();
+                // Start play state and pass it the menu selection data.
+                sound.enterWorld.play();
 
+                
+                selections.playerName = nameInputField.value || selections.playerName;
+                
+
+                this.game.state.start("Play", undefined, undefined, selections);
+            }
         }
-
-        function onBossSelected(selectedValue) {
-            // Update featured-boss frame
-            selections.boss = selectedValue;
-            game.debug.text("#### SELECTED BOSS ##########  " + selectedValue, 600, 600, '#00FF96');
-
-            sound.optionSelected.play();
-
-
-        }
-
-        function onDifficultySelected(selectedValue) {
-            // Update selection data object
-            selections.difficulty = selectedValue;
-            game.debug.text("#### SELECTED DIFFICULY ##########  " + selectedValue, 600, 600, '#00FF96');
-
-            sound.optionSelected.play();
-
-
-        }
-
-        function onPlayButtonPressed() {
-
-            // Start play state and pass it the menu selection data.
-            sound.enterWorld.play();
-            this.game.state.start("Play", undefined, undefined, selections);
-        }
-
-
-
 
 
 
@@ -213,35 +214,9 @@ export default class MainMenu {
 
         function createFeaturedBox(configObject) {
 
-         
-
+            // Todo
         }
 
-        function createInputField(configObject) {
-            // Phaser keyboard
-            let cfg = configObject;
-            let inputTextValue = "";
-            let _inputValidationRegExp = new RegExp(cfg.regExpRule);
-
-
-            // Adds a char to the input "field"
-            function _addChar(c) {
-
-                // Return if adding the char causes maxCharacter overflow
-                if(inputTextValue.length + 1 > cfg.maxCharacters) return;
-
-            }
-
-        
-
-
-            function _validateInput(string) {
-                return _inputValidationRegExp.exec(string);
-            }
-            
-
-
-        }
 
         function createOptionPanel(configObject) {
 
@@ -255,8 +230,8 @@ export default class MainMenu {
 
 
             let anchors = {
-                headerText : {x: configObject.position.x, y: configObject.position.y},
-                buttons : {x: configObject.position.x , y: configObject.position.y}
+                headerText : { x: configObject.position.x, y: configObject.position.y },
+                buttons : { x: configObject.position.x , y: configObject.position.y }
             }
 
             let sizes = {
@@ -300,8 +275,8 @@ export default class MainMenu {
                 let button = buttons[i];
                 button.x = anchors.buttons.x + i * 70;
                 button.y = anchors.buttons.y;
-                button.alpha = 0.5;
-
+                button.alpha = 0.7;
+                 button.blendMode = Phaser.blendModes.SCREEN;
                 // Needed for the sprite to accept input events
                 button.inputEnabled = true;
 
@@ -310,7 +285,7 @@ export default class MainMenu {
                 button.events.onInputOut.add( () => {
                     
                         // Dont fade the active/selected button on mouse out
-                        if(!(button === activeButton)) button.alpha = 0.6;
+                        if(!(button === activeButton)) button.alpha = 0.7;
 
                 });
 
@@ -321,7 +296,7 @@ export default class MainMenu {
                         if(activeButton === button) return;
 
                         // Fade the previous active button
-                        if(activeButton) activeButton.alpha = 0.6;
+                        if(activeButton) activeButton.alpha = 0.7;
 
 
                         
@@ -329,7 +304,7 @@ export default class MainMenu {
                         activeButton = button;
 
                         // Invoke the onSelectCallback if any. Call it with "this" set to undefined to avoid potential bullshit errors
-                        configObject.onSelectionCallback.call(undefined, button.value);
+                        configObject.onSelectionCallback.call(configObject.callbackContext, button.value);
 
 
                 });
@@ -350,7 +325,7 @@ export default class MainMenu {
             var emitter = game.add.emitter(game.world.centerX, 100, 700);
 
             emitter.width = 300;
-            emitter.angle = 30; // uncomment to set an angle for the rain.
+            emitter.angle = 30; 
             emitter.blendMode = Phaser.blendModes.ADD;
             emitter.makeParticles(["icon_5", "icon_2"]);
             emitter.minParticleAlpha = 0.1;

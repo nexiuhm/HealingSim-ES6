@@ -33,7 +33,7 @@ export default class Play {
 
     // Init player. ## TODO ##: Use data from selection screen. See Phaser documentation for sending args between states?
     this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF,
-      100, this.config.class);
+      100, this.config.playerName);
     this.raid.generateTestPlayers();
     this.raid.addPlayer(this.player);
 
