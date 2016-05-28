@@ -22,8 +22,6 @@ export default class Unit {
         this.events = _events;
         this.group = null; // reference to the raid group the player is in ?
 
-
-
         // Retrieve from Armory, JSON, get from gear.
         this.gear_stats = {
             stamina: 7105,
@@ -56,12 +54,9 @@ export default class Unit {
          */
         this._spells = null;
 
-
         // Install unit
         this.init_base_stats();
         this.init_stats();
-
-
     }
 
     init_base_stats() {
@@ -139,7 +134,6 @@ export default class Unit {
         }
     }
 
-
     getSpellList() {
         let spellList = [];
         for (let spell in this._spells)
@@ -173,10 +167,8 @@ export default class Unit {
         let dmg = damage.amount;
 
         //--- Avoidance ---------------------------------------
-
             // TODO - Take avoidance into account.
             // This is only the case if the damage source is melee
-
         //--- Resistance and absorb ---------------------------
 
         if (!avoided_damage) {
