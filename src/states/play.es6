@@ -42,8 +42,6 @@ export default class Play {
 
     // Start the boss/healing simulator
     this.raid.startTestDamage();
-
-
   }
 
   update() {
