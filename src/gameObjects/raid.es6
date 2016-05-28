@@ -20,7 +20,6 @@ export default class Raid {
     this._raidSize = null;
   }
 
-
   setRaidSize(size) {
     this._raidSize = size;
   }
@@ -56,7 +55,6 @@ export default class Raid {
       numberOfDps = 17;
     }
 
-
     while (numberOfTanks--) {
       let classs = validTankClasses[rng.integerInRange(0, validTankClasses.length -
           1)],
@@ -90,7 +88,6 @@ export default class Raid {
     }
   }
 
-
   /**
    * Add a player to the raidgroup
    * @param {Object(Player)} unit
@@ -116,7 +113,6 @@ export default class Raid {
       default:
         return new Player(classs, race, level, name, this.events);
     }
-
   }
 
   /**
@@ -126,13 +122,10 @@ export default class Raid {
   bossSpike() {
     let tank = this.players[0];
     let offTank = this.players[1];
-
     let massiveBlow = rng.between(330000, 340900);
 
     tank.apply("APPLY_DIRECT_DAMAGE", { amount: massiveBlow, type: "physical" });
     offTank.apply("APPLY_DIRECT_DAMAGE", { amount: massiveBlow/ 2, type: "physical" });
-
-
   }
 
   bossSwing() {
@@ -146,16 +139,14 @@ export default class Raid {
     if (bossSwingCriticalHit < 0.85)
       bossSwing *= 1.5;
 
-      tank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing, type: "physical" });
-      offTank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing/ 2, type: "physical" });
-
+    tank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing, type: "physical" });
+    offTank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing/ 2, type: "physical" });
   }
 
   bossAoEDamage() {
     for (let i = 0; i < this.players.length - 1; i++) {
       let unit = this.players[i];
       unit.apply("APPLY_DIRECT_DAMAGE", { amount: 170000, type: "fire" });
-
     }
   }
 
@@ -170,7 +161,6 @@ export default class Raid {
   singleTargetDamage() {
     let random = rng.between(2, this.players.length - 1);
     this.players[random].apply("APPLY_DIRECT_DAMAGE", { amount: rng.between(100000, 150000), type: "fire" });
-
   }
 
   bossEncounterAdds() {
@@ -181,8 +171,7 @@ export default class Raid {
 
     for (let i = 0; i < this.players.length; i++) {
       let player = this.players[i];
-      let incomingHeal = player.getHealth() + rng.between(80000,
-        120000);
+      let incomingHeal = player.getHealth() + rng.between(80000, 120000);
       let criticalHeal = Math.random();
 
       // 20% chance to critt. Experimental.
@@ -218,7 +207,5 @@ export default class Raid {
     let raidAIHealing = setInterval(this.raidHealing.bind(this), 4000);
     let manaRegenYolo = setInterval(this.gainMana.bind(this), 1200);
     let spike = setInterval(this.bossSpike.bind(this), 8000);
-
-  
   }
 }

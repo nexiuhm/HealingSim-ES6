@@ -22,7 +22,7 @@ export default class Unit {
         this.events = _events;
         this.group = null; // reference to the raid group the player is in ?
 
-        
+
 
         // Retrieve from Armory, JSON, get from gear.
         this.gear_stats = {
@@ -32,26 +32,26 @@ export default class Unit {
 
         /**
          * _base_stats  Base stat storage for the unit
-         * @priavte
+         * @private
          * @protected
          */
         this._base_stats = {};
          /**
          * _stats   Stat storage for the unit
-         * @priavte
+         * @private
          * @protected
          */
         this._stats = {};
          /**
          * _auras Aura storage for the unit
-         * @priavte
+         * @private
          * @protected
          */
         this._auras = [];
 
          /**
          * _auras Spell storage for the unit
-         * @priavte
+         * @private
          * @protected
          */
         this._spells = null;
@@ -89,10 +89,10 @@ export default class Unit {
             max_value:  this._base_stats.stamina * data.getHpPerStamina(this.level),
             value: this._base_stats.stamina * data.getHpPerStamina(this.level)
         };
-        
+
         /* Haste */
         this._stats.haste = this._base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
-       
+
         /* Mana */
         this._stats.mana = {
             min_value: 0,
@@ -103,8 +103,6 @@ export default class Unit {
         /* Absorb */
         this._stats.absorb = 0;
     }
-
-
 
     /**
      * Apply's an action to the unit.
@@ -129,7 +127,7 @@ export default class Unit {
                 // aura will apply DIRECT HEALING for every tick.
                 // aura will be removed on expiration
             case "APPLY_AURA_ABSORB":
-        
+
                 // Add aura to array
                 let auraid = this._auras.push(actionData);
 
@@ -137,10 +135,8 @@ export default class Unit {
                 if(actionData.duration > 0) {
                   game.time.events.add(actionData.duration,() => { this._auras[auraid] = undefined; console.log("aura done"); } );
                 }
-        
                 break;
         }
-
     }
 
 
@@ -154,7 +150,6 @@ export default class Unit {
 
     getMana() {
         return this._stats.mana.value;
-
     }
 
     setMana(value) {
@@ -162,7 +157,7 @@ export default class Unit {
             this._stats.mana.value = this.getMaxMana();
         else if (value < 0)
             this._stats.mana.value = 0;
-        else 
+        else
             this._stats.mana.value += value;
 
         this.events.MANA_CHANGE.dispatch();
@@ -178,10 +173,10 @@ export default class Unit {
         let dmg = damage.amount;
 
         //--- Avoidance ---------------------------------------
-        
-            // TODO - Take avoidance into account. 
-            // This is only the case if the damage source is melee 
-            
+
+            // TODO - Take avoidance into account.
+            // This is only the case if the damage source is melee
+
         //--- Resistance and absorb ---------------------------
 
         if (!avoided_damage) {
@@ -227,7 +222,6 @@ export default class Unit {
             case "fire":
                 return 0.95;
             default: return 1;
-
         }
     }
 
