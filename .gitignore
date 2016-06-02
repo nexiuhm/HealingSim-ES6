@@ -1,3 +1,6 @@
+### Ignore public folder aka. test compiles ###
+/public/
+
 
 # Created by https://www.gitignore.io/api/node,osx,sublimetext,windows
 
