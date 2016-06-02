@@ -91,7 +91,8 @@ export default class MainMenu {
         // ####### Name slection ############
         // ##################################
 
-         game.add.text(150,850, "SELECT NAME", {fill: 'lightgray'});
+         game.add.bitmapText(150,850, "myriad", "SELECT NAME", 15);
+
 
          let nameInputField = game.add.inputField(150, 910, {
             font: '17px Arial',
@@ -166,9 +167,8 @@ export default class MainMenu {
             };
 
             if(configObject.headerText) {
-
                 // Todo: Style the header text with fonts & color etc
-                let headerText = game.add.text(anchors.headerText.x, anchors.headerText.y, configObject.headerText, {fill: 'lightgray'});
+                let headerText = game.add.bitmapText(anchors.headerText.x, anchors.headerText.y, "myriad", configObject.headerText, 15);
 
                 // When there is a headertext the button anchor are moved below
                 anchors.buttons.y += sizes.headerText.height + 10;
@@ -223,22 +223,23 @@ export default class MainMenu {
        // ##################################
 
        function addEmitter(){
-            var emitter = game.add.emitter(game.world.centerX, 100, 700);
+            var emitter = game.add.emitter(300,500,0);
 
             emitter.width = 300;
+            emitter.height = 400;
             emitter.angle = 30;
-            emitter.blendMode = Phaser.blendModes.ADD;
-            emitter.makeParticles(["icon_5", "icon_2"]);
-            emitter.minParticleAlpha = 0.1;
-            emitter.maxParticleAlpha = 0.5;
-            emitter.minParticleScale = 0.1;
-            emitter.maxParticleScale = 0.6;
-            emitter.setYSpeed(3, 5);
-            emitter.setXSpeed(-5, 5);
+            emitter.blendMode = Phaser.blendModes.SCREEN;
+            emitter.makeParticles("heal_particle");
+            emitter.minParticleAlpha = 0.5;
+            emitter.maxParticleAlpha = 1;
+            emitter.minParticleScale = 0.01;
+            emitter.maxParticleScale = 0.1;
+            emitter.setYSpeed(7, 5);
+            emitter.setXSpeed(-5, 22);
             emitter.minRotation = 0;
-            emitter.maxRotation = 0;
-            emitter.gravity = 5;
-            emitter.start(false, 18600, 900, 0);
+            emitter.maxRotation = 1;
+            emitter.gravity = -1;
+            emitter.start(true, 58600, 10, 500);
        }
     }
 }

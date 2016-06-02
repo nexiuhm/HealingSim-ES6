@@ -46,6 +46,8 @@ export default class Boot {
     this.game.load.audio("menu_select_sound", "./assets/sounds/menu_selection_sound.mp3");
     this.game.load.audio("enter_world", "./assets/sounds/enter_world.mp3");
     this.game.load.image("temp_featured", "./assets/icons/temp_featured.png");
+    this.game.load.image("heal_particle", "./assets/textures/heal_particle.png");
+
 
 
     // Menu screen assets
