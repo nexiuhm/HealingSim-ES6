@@ -2,7 +2,7 @@
 
 ## Healing Simulator
 Based on the popular video-game "World Of Warcraft". Written in Javascript/ES6 using the Phaser.js library.
-
+- Current build: http://nexiuhm.github.io/Hg-hosting/   ( long load time ) 
 
 ### How to contribute
 
