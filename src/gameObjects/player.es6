@@ -1,8 +1,7 @@
 import * as data from "./data";
 import * as e from "../enums";
 
-
-/** 
+/**
  *  TODO: This class is really messy atm, need to find better ways.
  */
 export default class Player {
@@ -182,7 +181,7 @@ export default class Player {
 
     die() {
         this.alive = false;
-        //## TODO ## 
+        //## TODO ##
         // - Remove all auras that doesnt presist through death.
         // - Other stuff that needs to happen when you die.
     }
@@ -237,7 +236,7 @@ export default class Player {
             return;
         }
 
-        // Set target & emitt event 
+        // Set target & emitt event
         this.target = unit;
         this.events.TARGET_CHANGE_EVENT.dispatch();
     }
@@ -278,4 +277,12 @@ export default class Player {
         );
         return lowestPlayers.slice(0, players);
     }
+  }
+}
+export default class Player extends Unit {
+  constructor(_class, race, level, name, events, isEnemy) {
+    super(_class, race, level, name, events,isEnemy);
+
+    this.specialization = null; // spec
+  }
 }

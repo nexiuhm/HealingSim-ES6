@@ -38,7 +38,7 @@ class flash_of_light extends SpellBase {
 
     execute() {
         super.execute();
-        //this.target.consumeAura("tidal_waves", 1); 
+        //this.target.consumeAura("tidal_waves", 1);
         let crit = game.rnd.between(1, 2);
         this.target.setHealth(this.target.getCurrentHealth() + 130000 * crit);
     }
@@ -62,6 +62,18 @@ class power_word_shield extends SpellBase {
         super.execute();
 
         this.target.setAbsorb(190000);
+
+        // Note. this is work-in-progress, atm it has no effect.
+        this.target.apply("APPLY_AURA_BLANK", {
+            name: "weakened_soul",
+            duration: 15000 // how long until the aura/buff expires in ms
+        });
+
+        this.target.apply("APPLY_AURA_ABSORB", {
+            value: 190000, // if value goes to <0 aura should we removed
+            spell: this.spellid, // so that the aura is associated with a spell
+            duration: 15000 // how long until the aura/buff expires in ms
+        });
     }
 }
 
@@ -71,9 +83,9 @@ class power_infusion extends SpellBase {
         super(data.getSpellData('power_infusion'), player);
     }
 
-    execute() {
-        super.execute();
-        this.player.stats.haste += 15;
+    onExecute() {
+        // Temporary until auras work
+        this.player._stats.haste += 15;
     }
 }
 
@@ -85,13 +97,11 @@ class clarity_of_will extends SpellBase {
     execute() {
         super.execute();
         let crit = game.rnd.between(1, 2);
-        this.target.setAbsorb(120000 * crit);
+        this.target.setAbsorb(130000 * crit);
     }
-
 }
 /*
 
-           
               .,-:;//;:=,
           . :H@@@MM@M#H/.,+%;,
        ,/X+ +M@@M@MM%=,-%HMMM@X/,

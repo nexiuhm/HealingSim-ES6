@@ -108,7 +108,7 @@ export default class UnitFrame extends Frame {
 
         console.log(this.healthBar._bar.width);
         /*
-        if (this.unit.healthPercent < 20) { 
+        if (this.unit.healthPercent < 20) {
             this.healthBar.setColor(lowHealthColor)
         } */
     }
@@ -141,11 +141,14 @@ export default class UnitFrame extends Frame {
     }
 
     _onUnitDeath(unit) {
-        if (unit != this.unit)
-            return;
-        this.healthBar.setValue(0);
+      if (unit != this.unit)
+        return;
+      this.healthBar.setValue(0);
+      this.playerName.setText("DEAD");
+      // temporary, should remove alpha instead of setting color
+      this.healthBar.setColor(0x000000);
+      this.absorbIndicator.setColor(0x00000);
     }
-
     /* Public interface below */
 
     togglePowerBar() {

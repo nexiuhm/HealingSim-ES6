@@ -49,6 +49,8 @@ export default function CastFrame($) {
         cast_bar.setColor(config.castSuccessColor)
             .setValue(0, 0,true);
 
+        castingFrame.setAlpha(0.5);
+
     }
 
 }

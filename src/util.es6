@@ -5,7 +5,7 @@ export var rng = new Phaser.RandomDataGenerator([(Date.now() * Math.random()).to
  * Prints a formatted error with stacktrace to the console.
  * @param  {String} errorReason Summary of  error occured
  * @param  {Object} error       A javascript error object
- * @return {void}             
+ * @return {void}
  */
 
 export function printPrettyError(errorReason, error) {
@@ -16,7 +16,6 @@ export function printPrettyError(errorReason, error) {
         'color: #450f78; ',
         'color: #ce0000;');
 }
-
 
 /**
  * If you need to give arguments without passing "this"
@@ -37,7 +36,7 @@ export function arg(f) {
         };
 
     return partial;
-};
+}
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
@@ -61,22 +60,16 @@ export function speedtest(config) {
     for (var key in config) {
         if (config.hasOwnProperty(key) && typeof config[key] === 'Function') {
             subRoutinesToRun[key] = config[key];
-
         }
-
     }
 
     //dbg
     console.log(JSON.stringify(subRoutinesToRun));
 
-
-
-
-
-
     function _run(iterations) {
-
         // capture date
-
     }
+}
+  let frozenObject = Object.freeze(objectToFreeze);
+  return frozenObject;
 }

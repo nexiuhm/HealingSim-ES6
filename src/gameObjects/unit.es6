@@ -20,6 +20,8 @@ class Unit {
         this.spells = null;
         this.buffs = null;
 
+        this.events = _events;
+
         // Retrieve from Armory, JSON, get from gear.
         this.gear_stats = {
             stamina: 7105,
@@ -56,19 +58,54 @@ class Unit {
             mastery: 0.08, // 8% is base mastery for every class
         };
 
+        /**
+         * _base_stats  Base stat storage for the unit
+         * @private
+         * @protected
+         */
+        this._base_stats = {};
+         /**
+         * _stats   Stat storage for the unit
+         * @private
+         * @protected
+         */
+        this._stats = {};
+         /**
+         * _auras Aura storage for the unit
+         * @private
+         * @protected
+         */
+        this._auras = [];
 
+         /**
+         * _auras Spell storage for the unit
+         * @private
+         * @protected
+         */
+        this._spells = null;
 
-        this.isEnemy = isEnemy ? true : false;
-        this.events = events;
-        this.level = level;
-        this.race = race;
-        this.name = name;
-        this.classId = _class;
-
-
+        // Install unit
         this.init_base_stats();
         this.init_stats();
 
+
+
+        /* Health */
+        this._stats.health = {
+            min_value: 0,
+            max_value:  this._base_stats.stamina * data.getHpPerStamina(this.level),
+            value: this._base_stats.stamina * data.getHpPerStamina(this.level)
+        };
+
+        /* Haste */
+        this._stats.haste = this._base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
+
+        /* Mana */
+        this._stats.mana = {
+            min_value: 0,
+            max_value:  data.getManaByClass(this.classId, this.level),
+            value: data.getManaByClass(this.classId, this.level)
+        };
 
     }
 
@@ -100,7 +137,44 @@ class Unit {
         //returns dodge, parry, or miss?. Returns false if nothing was avoided.
     }
 
-    get SpellList() {
+    get SpellList() {}
+
+    /**
+     * Apply's an action to the unit.
+     */
+
+    apply(actionType, actionData) {
+
+        switch (actionType) {
+
+            case "APPLY_DIRECT_DAMAGE":
+                this.setHealth( this.getHealth() - this.assessDamageTaken(actionData) );
+                break;
+            case "APPLY_DIRECT_HEAL":
+                // calculateHealingTaken(data)
+                // modify health accordigly
+            case "APPLY_AURA_PERIODIC_DAMAGE":
+                // add aura to player ( exact way of doing that not decided yet )
+                // aura will apply DIRECT DAMAGE for every tick.
+                // aura will be removed on expiration
+            case "APPLY_AURA_PERODIC_HEAL":
+                // add aura to player ( exact way of doing that not decided yet )
+                // aura will apply DIRECT HEALING for every tick.
+                // aura will be removed on expiration
+            case "APPLY_AURA_ABSORB":
+
+                // Add aura to array
+                let auraid = this._auras.push(actionData);
+
+                // Schedule removal of aura if it should expire at some point.
+                if(actionData.duration > 0) {
+                  game.time.events.add(actionData.duration,() => { this._auras[auraid] = undefined; console.log("aura done"); } );
+                }
+                break;
+        }
+    }
+
+    getSpellList() {
         let spellList = [];
         for (let spell in this.spells)
             spellList.push(spell);
@@ -108,14 +182,20 @@ class Unit {
         return spellList;
     }
 
-    get Mana() {
-        return this.stats.mana.value;
+    getMana() {
+        return this._stats.mana.value;
+    }
+
+    setMana(value) {
+        if(this.getMana() + value > this.getMaxMana() )
+            this._stats.mana.value = this.getMaxMana();
+        else if (value < 0)
+            this._stats.mana.value = 0;
+        else
+            this._stats.mana.value += value;
 
     }
 
-    get MaxMana() {
-        return this.stats.mana.max_value;
-    }
 
     recieve_damage(dmg) {
         if (!this.alive)
@@ -132,6 +212,8 @@ class Unit {
             }
         }
         */
+            // TODO - Take avoidance into account.
+            // This is only the case if the damage source is melee
         //--- Resistance and absorb ---------------------------
 
         if (!avoided_damage) {
@@ -146,6 +228,20 @@ class Unit {
                 this.setAbsorb(-this.stats.absorb);
                 this.setHealth(this.getCurrentHealth() - dmg.amount);
             }
+            // Consume all avaible absorb
+            dmg = this._consumeAbsorb(dmg);
+
+            return dmg;
+        }
+    }
+
+    _consumeAbsorb(dmg) {
+        if (this._stats.absorb > dmg) {
+                this.setAbsorb(-dmg);
+                return 0;
+        } else {
+            this.setAbsorb(-this._stats.absorb);
+            return dmg-this._stats.absorb;
         }
     }
 
@@ -160,6 +256,22 @@ class Unit {
             this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
         else
             spell.use();
+    }
+
+    /* Todo: currently returns test values */
+    getResistanceMultiplier(resistanceType) {
+
+        switch(resistanceType) {
+            case "physical":
+                return 0.85;
+            case "fire":
+                return 0.95;
+            default: return 1;
+        }
+    }
+
+    getTotalHaste() {
+        return this._stats.haste;
     }
 
     hasAura(aura) {
