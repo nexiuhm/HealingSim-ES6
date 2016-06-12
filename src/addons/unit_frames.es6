@@ -1,5 +1,6 @@
 ﻿
 import Player from "../gameObjects/player";
+import Boss from "../gameObjects/boss";
 
 /**
  * Addon creating the basic unit frames needed.
@@ -22,7 +23,7 @@ export default function UnitFrames($) {
    * Target's unit frame
    */
   let targetFrame = $.newUnitFrame("UIParent", $.localPlayer().target, 300, 50)
-    .setPos(game.world.centerX - (300/2) + 300, game.world.centerY - (50/2) + 250);;
+    .setPos(game.world.centerX - (300/2) + 300, game.world.centerY - (50/2) + 250);
 
   $.events.TARGET_CHANGE_EVENT.add(() => {
     targetFrame.setUnit($.localPlayer().target);
@@ -32,7 +33,7 @@ export default function UnitFrames($) {
    * Boss test frame
    */
 
-  let testBoss = new Player(4, 4, 100, "Ragnaros", $.events, true);
+  let testBoss = new Boss(4, 4, 100, "Ragnaros", $.events, true);
   setInterval(function() {
     testBoss.apply("APPLY_DIRECT_DAMAGE",{
       amount: 18250,

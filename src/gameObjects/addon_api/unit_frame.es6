@@ -1,5 +1,6 @@
 import Frame from "./frame";
 import StatusBar from "./status_bar";
+import Boss from "../boss";
 import * as data from "../data";
 
 export default class UnitFrame extends Frame {
@@ -32,7 +33,7 @@ export default class UnitFrame extends Frame {
       this._initPowerBar();
     }
 
-    if (this.unit.isEnemy) {
+    if (this.unit instanceof Boss) {
       this.dragonTexture = new Phaser.Sprite(game, this._width - 55, -10,
         "elite");
       this.addChild(this.dragonTexture);
@@ -76,7 +77,7 @@ export default class UnitFrame extends Frame {
   _initHealthBar() {
     this.healthBar = new StatusBar(this, this._width, this._height / 4 * (
       this.config.powerBarEnabled ? 3 : 4));
-    this.healthBar.setColor(this.unit.isEnemy ? this.config.enemyColor : data
+    this.healthBar.setColor((this.unit instanceof Boss) ? this.config.enemyColor : data
       .getClassColor(this.unit.classId));
     this.healthBar.setValues(0, this.unit.getMaxHealth(), this.unit.getHealth(),
       true);
@@ -86,7 +87,7 @@ export default class UnitFrame extends Frame {
         this.healthBar._height / 2, "myriad", null, 12);
       this.playerName.setText(this.unit.name);
       this.playerName.anchor.set(0.5);
-      this.playerName.tint = this.unit.isEnemy ? this.config.enemyColor :
+      this.playerName.tint = (this.unit instanceof Boss) ? this.config.enemyColor :
         data.getClassColor(this.unit.classId);
       this.healthBar.addChild(this.playerName);
     }
