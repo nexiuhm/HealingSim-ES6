@@ -1,5 +1,6 @@
 import * as data from "./data";
 import * as e from "../enums";
+import Stat from "./stat";
 
 // Todo, import events istead of passing it as a parameter to the constructor.
 
@@ -21,18 +22,7 @@ export default class Unit {
         this.events = _events;
         this.group = null; // reference to the raid group the player is in ?
 
-        // Retrieve from Armory, JSON, get from gear.
-        this.gear_stats = {
-            stamina: 7105,
-            haste_rating: 1399
-        };
 
-        /**
-         * _base_stats  Base stat storage for the unit
-         * @private
-         * @protected
-         */
-        this._base_stats = {};
          /**
          * _stats   Stat storage for the unit
          * @private
@@ -54,22 +44,9 @@ export default class Unit {
         this._spells = null;
 
         // Install unit
-        this.init_base_stats();
         this.init_stats();
     }
 
-    init_base_stats() {
-        /* This is the stats someone would have with 0 gear */
-        this._base_stats.agility = data.classBaseStats(this.classId, this.level, e.stat_e.AGILITY) + data.raceBaseStats(this.race, e.stat_e.AGILITY); // +gear
-        this._base_stats.stamina = data.classBaseStats(this.classId, this.level, e.stat_e.STAMINA) + data.raceBaseStats(this.race, e.stat_e.STAMINA) + this.gear_stats.stamina; // + gear
-        this._base_stats.intellect = data.classBaseStats(this.classId, this.level, e.stat_e.INTELLECT) + data.raceBaseStats(this.race, e.stat_e.INTELLECT); // + gear
-        this._base_stats.spirit = data.classBaseStats(this.classId, this.level, e.stat_e.SPIRIT) + data.raceBaseStats(this.race, e.stat_e.SPIRIT); // + gear
-        this._base_stats.strenght = data.classBaseStats(this.classId, this.level, e.stat_e.STRENGHT) + data.raceBaseStats(this.race, e.stat_e.STRENGHT); // + gear
-
-        this._base_stats.mastery_rating = 0;
-        this._base_stats.haste_rating = this.gear_stats.haste_rating;
-        this._base_stats.crit_rating = 0;
-    }
 
     init_stats() {
 
@@ -77,22 +54,14 @@ export default class Unit {
          * Will make a stat-manager or something like that eventually, feels redundant to always have to specify min_vale etc.
          */
 
-        /* Health */
-        this._stats.health = {
-            min_value: 0,
-            max_value:  this._base_stats.stamina * data.getHpPerStamina(this.level),
-            value: this._base_stats.stamina * data.getHpPerStamina(this.level)
-        };
-
+        /* Health                    Min value -- Max value */
+        this._stats.health = new Stat(   0,        600000);
+        this._stats.health.onMinValue = this.die.bind(this);
         /* Haste */
-        this._stats.haste = this._base_stats.haste_rating * data.getCombatRating(e.combat_rating_e.RATING_MOD_HASTE_SPELL, this.level);
+        this._stats.haste = 1200;
 
         /* Mana */
-        this._stats.mana = {
-            min_value: 0,
-            max_value:  data.getManaByClass(this.classId, this.level),
-            value: data.getManaByClass(this.classId, this.level)
-        };
+        this._stats.mana = new Stat(0,200000);
 
         /* Absorb */
         this._stats.absorb = 0;
@@ -103,33 +72,28 @@ export default class Unit {
      */
 
     apply(actionType, actionData) {
+        if(!this.alive) return;
 
         switch (actionType) {
 
             case "APPLY_DIRECT_DAMAGE":
-                this.setHealth( this.getHealth() - this.assessDamageTaken(actionData) );
+                this.setHealth(this._stats.health.getValue() - this.assessDamageTaken(actionData));
                 break;
             case "APPLY_DIRECT_HEAL":
                 // calculateHealingTaken(data)
                 // modify health accordigly
             case "APPLY_AURA_PERIODIC_DAMAGE":
-                // add aura to player ( exact way of doing that not decided yet )
-                // aura will apply DIRECT DAMAGE for every tick.
-                // aura will be removed on expiration
+                // Create a aura object based on data from spell. ( spell id, aura type, duration, tick() callback )
+
             case "APPLY_AURA_PERODIC_HEAL":
                 // add aura to player ( exact way of doing that not decided yet )
                 // aura will apply DIRECT HEALING for every tick.
                 // aura will be removed on expiration
             case "APPLY_AURA_ABSORB":
 
-                // Add aura to array
-                let auraid = this._auras.push(actionData);
-
-                // Schedule removal of aura if it should expire at some point.
-                if(actionData.duration > 0) {
-                  game.time.events.add(actionData.duration,() => { this._auras[auraid] = undefined; console.log("aura done"); } );
-                }
-                break;
+               this._auras.push(actionData);
+               this.events.AURA_APPLIED.dispatch(this);
+               this.events.UNIT_ABSORB.dispatch(this);
         }
     }
 
@@ -142,22 +106,17 @@ export default class Unit {
     }
 
     getMana() {
-        return this._stats.mana.value;
+        return this._stats.mana.getValue();
     }
 
     setMana(value) {
-        if(this.getMana() + value > this.getMaxMana() )
-            this._stats.mana.value = this.getMaxMana();
-        else if (value < 0)
-            this._stats.mana.value = 0;
-        else
-            this._stats.mana.value += value;
+        this._stats.mana.setValue(value);
 
         this.events.MANA_CHANGE.dispatch();
     }
 
     getMaxMana() {
-        return this._stats.mana.max_value;
+        return this._stats.mana.maxValue();
     }
 
     assessDamageTaken(damage) {
@@ -172,7 +131,7 @@ export default class Unit {
 
         if (!avoided_damage) {
 
-            dmg *= this.getResistanceMultiplier(damage.type);
+            dmg *= 0.6;
 
             // Consume all avaible absorb
             dmg = this._consumeAbsorb(dmg);
@@ -182,13 +141,34 @@ export default class Unit {
     }
 
     _consumeAbsorb(dmg) {
-        if (this._stats.absorb > dmg) {
-                this.setAbsorb(-dmg);
-                return 0;
-        } else {
-            this.setAbsorb(-this._stats.absorb);
-            return dmg-this._stats.absorb;
-        }
+       // ----- WIP ----------
+
+       // Sort auras by remaining time.
+       for(let aura in this._auras) {
+         aura = this._auras[aura];
+         if(aura.value > 0) {
+
+           // If the damage is completely mitigated by the absorb buff.
+
+            if((aura.value - dmg) > 0) {
+              aura.value = aura.value - dmg;
+              dmg = 0;
+              break;
+            }
+
+          // If damage is damage exceeds the absorb buff. Kill the aura and continue to next one
+            else  {
+              dmg -= aura.value;
+              aura.value = 0;
+            }
+
+         }
+
+       }
+       this.events.UNIT_ABSORB.dispatch(this);
+
+       return dmg;
+
     }
 
     cast_spell(spellName) {
@@ -204,53 +184,35 @@ export default class Unit {
             spell.use();
     }
 
-    /* Todo: currently returns test values */
-    getResistanceMultiplier(resistanceType) {
-
-        switch(resistanceType) {
-            case "physical":
-                return 0.85;
-            case "fire":
-                return 0.95;
-            default: return 1;
-        }
-    }
-
-    getTotalHaste() {
-        return this._stats.haste;
-    }
 
     hasAura(aura) {
         return false;
     }
 
-    resistance(dmg) {
-        return 0;
-    }
 
     die() {
         this.alive = false;
+        this.events.UNIT_DEATH.dispatch(this);
     }
 
     getCurrentAbsorb() {
-        return this._stats.absorb;
+      let totalAbsorb = 0;
+
+
+      for(let aura in this._auras) {
+        aura = this._auras[aura];
+        if(true) {
+           totalAbsorb += aura.value;
+
+        }
+
+      }
+
+      return totalAbsorb;
     }
 
     setHealth(value) {
-        if (!this.alive)
-            return;
-        if (value <= 0) {
-            this._stats.health.value = 0;
-            this.alive = false;
-            this.events.UNIT_DEATH.dispatch(this);
-            return;
-        }
-        if (value >= this.getMaxHealth()) {
-            this._stats.health.value = this.getMaxHealth();
-        } else {
-            this._stats.health.value = value;
-        }
-
+        this._stats.health.setValue(value);
         this.events.UNIT_HEALTH_CHANGE.dispatch(this);
         // ## TODO ##
         // - Make sure it doesnt exceed maximum possible health
@@ -258,22 +220,32 @@ export default class Unit {
     }
 
     setAbsorb(value) {
-        if (!this.alive)
-            return;
-        this._stats.absorb += value;
+
         this.events.UNIT_ABSORB.dispatch(this);
     }
 
     getAbsorb() {
-        return this._stats.absorb;
+        let totalAbsorb = 0;
+
+
+        for(let aura in this._auras) {
+          aura = this._auras[aura];
+          if(true) {
+             totalAbsorb += aura.value;
+
+          }
+
+        }
+
+        return totalAbsorb;
     }
 
     getMaxHealth() {
-        return this._stats.health.max_value;
+        return this._stats.health.maxValue();
     }
 
     getHealth() {
-        return this._stats.health.value;
+        return this._stats.health.getValue();
     }
 
     setTarget(unit) {
@@ -292,7 +264,7 @@ export default class Unit {
     }
 
     consume_resource(amount) {
-        this._stats.mana.value -= amount;
+        this._stats.mana.setValue(this.getMana() - amount);
         this.events.MANA_CHANGE.dispatch(amount);
     }
 }

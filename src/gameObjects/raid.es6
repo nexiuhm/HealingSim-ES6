@@ -193,7 +193,7 @@ export default class Raid {
 
   gainMana() {
     let player = this.players[this.players.length - 1];
-      player.setMana(1600);
+      player.setMana(player.getMana() + 1600);
   }
 
   startTestDamage() {

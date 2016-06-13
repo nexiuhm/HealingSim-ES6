@@ -135,7 +135,7 @@ export default class SpellBase {
     }
 
     getCastTime() {
-        return this.base_casttime * (1 - (this.player.getTotalHaste() / 100));
+        return this.base_casttime;
 
     }
 

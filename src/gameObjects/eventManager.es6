@@ -14,5 +14,8 @@ export default class EventManager { // ### TODO: Give the event system more feat
     this.ON_COOLDOWN_START = new Phaser.Signal();
     this.ON_COOLDOWN_ENDED = new Phaser.Signal();
     this.MANA_CHANGE = new Phaser.Signal();
+    this.AURA_APPLIED = new Phaser.Signal();
+
+
   }
 }
