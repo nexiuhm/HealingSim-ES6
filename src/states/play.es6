@@ -56,7 +56,7 @@ export default class Play {
       let keybinding = keybindings[binding];
       if (keybinding.key == key) {
         if (keybinding.spell)
-          this.player.cast_spell(keybinding.spell);
+          this.player.cast(keybinding.spell);
         break;
       }
     }

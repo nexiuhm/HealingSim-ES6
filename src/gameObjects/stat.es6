@@ -32,5 +32,9 @@ export default class Stat {
     return this._maxValue;
   }
 
+  percent() {
+    return this._currentValue / this._maxValue;
+  }
+
 
 }

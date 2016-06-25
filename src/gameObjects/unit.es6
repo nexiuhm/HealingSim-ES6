@@ -1,7 +1,7 @@
 import * as data from "./data";
 import * as e from "../enums";
 import Stat from "./stat";
-
+import Aura from "./aura";
 // Todo, import events istead of passing it as a parameter to the constructor.
 
 export default class Unit {
@@ -34,7 +34,7 @@ export default class Unit {
          * @private
          * @protected
          */
-        this._auras = [];
+        this._auras = new Array();
 
          /**
          * _auras Spell storage for the unit
@@ -43,8 +43,10 @@ export default class Unit {
          */
         this._spells = null;
 
+
         // Install unit
         this.init_stats();
+
     }
 
 
@@ -56,15 +58,18 @@ export default class Unit {
 
         /* Health                    Min value -- Max value */
         this._stats.health = new Stat(   0,        600000);
-        this._stats.health.onMinValue = this.die.bind(this);
-        /* Haste */
-        this._stats.haste = 1200;
+        // Stat will use this callback when it has reached its minimum value
+        this._stats.health.onMinValue = () => { this.die() };
 
         /* Mana */
         this._stats.mana = new Stat(0,200000);
 
-        /* Absorb */
-        this._stats.absorb = 0;
+        /* Haste */
+        this._stats.haste = new Stat(0, 1);
+        this._stats.haste.setValue(0);
+
+
+
     }
 
     /**
@@ -89,16 +94,31 @@ export default class Unit {
                 // add aura to player ( exact way of doing that not decided yet )
                 // aura will apply DIRECT HEALING for every tick.
                 // aura will be removed on expiration
+
+            case "APPLY_AURA_BLANK":
+                this._auras.push(new Aura(actionData.duration, undefined , undefined, actionData.name));
+                break;
             case "APPLY_AURA_ABSORB":
 
-               this._auras.push(actionData);
+               let aura = new Aura(actionData.duration, actionData.type, actionData.value, actionData.name);
+               this._auras.push(aura);
+
+
                this.events.AURA_APPLIED.dispatch(this);
                this.events.UNIT_ABSORB.dispatch(this);
+               console.table(this._auras);
         }
+    }
+
+    applyModifier(target, value ){
+         // if target modifiy exists on target continue
+
+         // if value is
     }
 
     getSpellList() {
         let spellList = [];
+
         for (let spell in this._spells)
             spellList.push(spell);
 
@@ -111,13 +131,14 @@ export default class Unit {
 
     setMana(value) {
         this._stats.mana.setValue(value);
-
         this.events.MANA_CHANGE.dispatch();
     }
 
     getMaxMana() {
         return this._stats.mana.maxValue();
     }
+
+
 
     assessDamageTaken(damage) {
 
@@ -144,9 +165,9 @@ export default class Unit {
        // ----- WIP ----------
 
        // Sort auras by remaining time.
-       for(let aura in this._auras) {
-         aura = this._auras[aura];
-         if(aura.value > 0) {
+       //let absorbAurasByTimeRemaining = this._auras.sort((a,b)=> { if(a.duration < b.duration) return -1;}
+       for(let aura of this._auras) {
+         if(aura.type === "absorb") {
 
            // If the damage is completely mitigated by the absorb buff.
 
@@ -160,37 +181,71 @@ export default class Unit {
             else  {
               dmg -= aura.value;
               aura.value = 0;
+              this._auras.splice(aura, 1);
             }
 
          }
 
        }
+
+
        this.events.UNIT_ABSORB.dispatch(this);
 
        return dmg;
 
     }
 
-    cast_spell(spellName) {
+    cast(spellName) {
 
-        // ## Find spell ####
-        if (!this._spells[spellName])
-            return;
-        let spell = this._spells[spellName];
+        if (!this.hasSpell(spellName)) {
+          console.log("Trying to cast a spell but can't find it on the unit");
+        }
+        else {
+          let spellToBeCasted = this._spells[spellName];
 
-        if (this.isCasting)
-            this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
-        else
-            spell.use();
+          if (this.isCasting)
+              this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
+          else
+              spellToBeCasted.use();
+        }
     }
 
 
-    hasAura(aura) {
-        return false;
+    hasAura(auraName) {
+            for(let aura of this._auras) {
+
+              if(aura.name === auraName && (aura._remaining > 0)) {
+                 return true;
+              }
+
+            }
+            return false;
+    }
+
+    getAura(auraName) {
+      for(let aura of this._auras) {
+
+        if(aura.name === auraName) {
+           return aura;
+        }
+
+      }
+      
+    }
+
+
+    hasSpell(spell) {
+      if(this._spells.hasOwnProperty(spell)) return true;
+      else return false;
     }
 
 
     die() {
+
+        if(this.hasAura("guardian_spirit")) {
+          // this.stats.health = this.getAura(guardian_spirit).value();
+          // return;
+        }
         this.alive = false;
         this.events.UNIT_DEATH.dispatch(this);
     }
@@ -201,7 +256,7 @@ export default class Unit {
 
       for(let aura in this._auras) {
         aura = this._auras[aura];
-        if(true) {
+        if(aura.type === "absorb") {
            totalAbsorb += aura.value;
 
         }
@@ -219,10 +274,7 @@ export default class Unit {
         // - Handle overhealing here? or somewhere else
     }
 
-    setAbsorb(value) {
 
-        this.events.UNIT_ABSORB.dispatch(this);
-    }
 
     getAbsorb() {
         let totalAbsorb = 0;
@@ -230,7 +282,7 @@ export default class Unit {
 
         for(let aura in this._auras) {
           aura = this._auras[aura];
-          if(true) {
+          if(aura.type === "absorb") {
              totalAbsorb += aura.value;
 
           }

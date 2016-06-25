@@ -78,6 +78,10 @@ export default class SpellBase {
             return false;
         }
 
+        if(!this.player.alive) {
+            return false;
+        }
+
         // Check for special rules added by the spell
         if (this.isUsable && this.isUsable() === false) {
             return false;
@@ -135,7 +139,7 @@ export default class SpellBase {
     }
 
     getCastTime() {
-        return this.base_casttime;
+        return this.base_casttime * (1-this.player._stats.haste.getValue());
 
     }
 
