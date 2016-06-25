@@ -12,6 +12,7 @@ export default class MainMenu {
         addEmitter();
 
         // Sound objects
+        let soundEnabled = false;
         let sound = {
             optionSelected: this.add.audio("menu_select_sound"),
             enterWorld: this.add.audio("enter_world")
@@ -43,7 +44,9 @@ export default class MainMenu {
                 selections.class = selectedValue;
                 this.game.debug.text("#### DEBUG - SELECTED CLASS =  " + selectedValue, 600, 600, '#00FF96');
                 // Emitt class selected event subscriped to by the featured frame?
-                sound.optionSelected.play();
+                if(soundEnabled) {
+                  sound.optionSelected.play();
+                }
             },
             callbackContext: this // State should be 'this'
         });
@@ -62,7 +65,9 @@ export default class MainMenu {
                 // Update featured-boss frame
                 selections.boss = selectedValue;
                 game.debug.text("#### SELECTED BOSS ##########  " + selectedValue, 600, 600, '#00FF96');
-                sound.optionSelected.play();
+                if(soundEnabled) {
+                  sound.optionSelected.play();
+                }
             },
             callbackContext: this
         });
@@ -82,7 +87,9 @@ export default class MainMenu {
                 // Update selection data object
                 selections.difficulty = selectedValue;
                 game.debug.text("#### SELECTED DIFFICULY ##########  " + selectedValue, 600, 600, '#00FF96');
-                sound.optionSelected.play();
+                if(soundEnabled) {
+                  sound.optionSelected.play();
+                }
             },
             callbackContext: this
         });
@@ -134,7 +141,9 @@ export default class MainMenu {
 
             function onPlayButtonPressed() {
                 // Start play state and pass it the menu selection data.
-                sound.enterWorld.play();
+                if(soundEnabled) {
+                  sound.enterWorld.play();
+                }
                 selections.playerName = nameInputField.value || selections.playerName;
                 this.game.state.start("Play", undefined, undefined, selections);
             }
