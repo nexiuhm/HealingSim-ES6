@@ -17,7 +17,7 @@ export default class StatusIcon extends Frame {
     };
 
     // Spell icon
-    this.spellIcon = new Phaser.Image(game, 0, 0, "icon_" + spellid);
+    this.spellIcon = new Phaser.Image(game, 0, 0, spellid);
     this.spellIcon.width = 50;
     this.spellIcon.height = 50;
 
@@ -54,7 +54,7 @@ export default class StatusIcon extends Frame {
       current: 270
     }, event.cooldownLenght, undefined, true);
     // Start cooldown counter over icon
-  
+
     // Hook the update cooldown arc to the main loop
     this._events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
 

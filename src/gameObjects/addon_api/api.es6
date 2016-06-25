@@ -17,6 +17,11 @@ function localPlayer() {
   return player;
 }
 
+function getSpells() {
+
+  return player.getSpellList();
+
+}
 function newFrame(parent) {
   if (parent === "UIParent") {
     parent = state.UIParent ? state.UIParent : state.world;
@@ -75,6 +80,7 @@ export function init(_state) {
     "newUnitFrame": newUnitFrame,
     "newStatusIcon": newStatusIcon,
     "newStatusBar": newStatusBar,
+    "getSpells": getSpells,
     "events": state.events // TODO: Better way
   };
 

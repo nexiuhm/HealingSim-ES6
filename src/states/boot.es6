@@ -32,9 +32,15 @@ export default class Boot {
       "./assets/textures/action_bar_texture.png");
     this.game.load.image("elite", "./assets/textures/elite_texture.png");
     this.game.load.image("bg", "./assets/play_state_background.png");
-    this.game.load.image("icon_5",
+    this.game.load.image("power_word_shield",
       "./assets/icons/spell_holy_powerwordshield.jpg");
-    this.game.load.image("icon_2", "./assets/icons/power_infusion.jpg");
+
+    // Spell icons
+    this.game.load.image("power_infusion", "./assets/icons/power_infusion.jpg");
+    this.game.load.image("power_word_shield","./assets/icons/spell_holy_powerwordshield.jpg");
+    this.game.load.image("clarity_of_will", "./assets/icons/ability_priest_clarityofwill.jpg");
+    this.game.load.image("flash_of_light", "./assets/icons/spell_holy_flashheal.jpg");
+
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
     this.game.load.image("icon_normal","./assets/icons/icon_normal.png");
@@ -68,7 +74,7 @@ export default class Boot {
     this.game.scale.onSizeChange.add((data) => this.onWindowResize(data));
 
     // Phaser config
-    this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu 
+    this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu
     this.game.tweens.frameBased = true;
     // Register games-states
     this.game.state.add("MainMenu", menuState);
