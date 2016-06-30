@@ -22,6 +22,15 @@ export function printPrettyError(errorReason, error) {
  * @return {Function}
  */
 
+ // Taken from Stackoverflow :
+ export function createUniqueID() {
+   let uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+   var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+   return v.toString(16);});
+
+   return uid;
+ }
+
 export function arg(f) {
   if (typeof f !== "function")
     throw new TypeError("Argument needs to a function");

@@ -76,51 +76,74 @@ export default class Unit {
      * Apply's an action to the unit.
      */
 
-    apply(actionType, actionData) {
-        if(!this.alive) return;
 
-        switch (actionType) {
+    applyDamage(amount, type, source) {
 
-            case "APPLY_DIRECT_DAMAGE":
-                this.setHealth(this._stats.health.getValue() - this.assessDamageTaken(actionData));
-                break;
-            case "APPLY_DIRECT_HEAL":
-                // calculateHealingTaken(data)
-                // modify health accordigly
-            case "APPLY_AURA_PERIODIC_DAMAGE":
-                // Create a aura object based on data from spell. ( spell id, aura type, duration, tick() callback )
+      this._stats.health.setValue(this._stats.health.getValue() - this.assessDamageTaken(amount) );
+      this.events.UNIT_HEALTH_CHANGE.dispatch(this);
 
-            case "APPLY_AURA_PERODIC_HEAL":
-                // add aura to player ( exact way of doing that not decided yet )
-                // aura will apply DIRECT HEALING for every tick.
-                // aura will be removed on expiration
-
-            case "APPLY_AURA_BLANK":
-                this._auras.push(new Aura(actionData.duration, undefined , undefined, actionData.name));
-                break;
-            case "APPLY_AURA_ABSORB":
-
-               let aura = new Aura(actionData.duration, actionData.type, actionData.value, actionData.name);
-               this._auras.push(aura);
+    }
 
 
-               this.events.AURA_APPLIED.dispatch(this);
-               this.events.UNIT_ABSORB.dispatch(this);
-               console.table(this._auras);
+    applyHealing(value) {
+
+      // Check modifiers --- to buff healing recived etc
+      this._stats.health.setValue(value);
+      this.events.UNIT_HEALTH_CHANGE.dispatch(this);
+
+    }
+
+    applyAura(name, type, duration, value, source, flags) {
+
+        // Check if the aura contains special "flags". F.ex some auras can only exist one instance of. Most hots etc cant be applied twice etc
+        if(flags) {
+
+          // If the aura can only exist once per caster.
+          if(flags.unique) {
+
+            // Check if there actually exists an identical aura on the player. If it does expire current one
+            if(this.getAura(name)) {
+              this.removeAura(this.getAura(name));
+            }
+
+          }
+
         }
+
+        let aura = new Aura(duration, type, value, name);
+
+        // Make sure the aura array is cleaned up after an aura expires.
+        aura.onExpired( () => { this.removeAura(aura); } );
+        // Add aura to aura array.
+        this._auras.push(aura);
+
+        // Dispatch events
+        if(type === "absorb") {
+          this.events.UNIT_ABSORB.dispatch(this);
+        }
+
+        this.events.AURA_APPLIED.dispatch(this);
+
+
     }
 
-    applyModifier(target, value ){
-         // if target modifiy exists on target continue
+    removeAura(aura) {
+      // Find & remove aura
+      for(let i = 0; i < this._auras.length; i++) {
+         if(aura.id === this._auras[i].id) {
+           this._auras.splice(i, 1);
+           return;
+         }
+      }
 
-         // if value is
     }
+
 
     getSpellList() {
         let spellList = [];
 
         for (let spell in this._spells)
-            spellList.push(spell);
+            spellList.push(spell.toString());
 
         return spellList;
     }
@@ -140,10 +163,9 @@ export default class Unit {
 
 
 
-    assessDamageTaken(damage) {
+    assessDamageTaken(dmg) {
 
         let avoided_damage = false;
-        let dmg = damage.amount;
 
         //--- Avoidance ---------------------------------------
             // TODO - Take avoidance into account.
@@ -151,10 +173,10 @@ export default class Unit {
         //--- Resistance and absorb ---------------------------
 
         if (!avoided_damage) {
-
+            // physical damage is reduce because player has armor
             dmg *= 0.6;
 
-            // Consume all avaible absorb
+            // Reduce damge based on absorbed amount
             dmg = this._consumeAbsorb(dmg);
 
             return dmg;
@@ -181,7 +203,7 @@ export default class Unit {
             else  {
               dmg -= aura.value;
               aura.value = 0;
-              this._auras.splice(aura, 1);
+              this.removeAura(aura);
             }
 
          }
@@ -203,8 +225,8 @@ export default class Unit {
         else {
           let spellToBeCasted = this._spells[spellName];
 
-          if (this.isCasting)
-              this.events.UI_ERROR_MESSAGE.dispatch("Can't do that yet");
+          if (this.isCasting || !this.alive)
+              this.events.UI_ERROR_MESSAGE.dispatch("Can't do that");
           else
               spellToBeCasted.use();
         }
@@ -214,7 +236,7 @@ export default class Unit {
     hasAura(auraName) {
             for(let aura of this._auras) {
 
-              if(aura.name === auraName && (aura._remaining > 0)) {
+              if(aura.name === auraName) {
                  return true;
               }
 
@@ -224,13 +246,10 @@ export default class Unit {
 
     getAura(auraName) {
       for(let aura of this._auras) {
-
         if(aura.name === auraName) {
            return aura;
         }
-
       }
-      
     }
 
 
@@ -243,8 +262,8 @@ export default class Unit {
     die() {
 
         if(this.hasAura("guardian_spirit")) {
-          // this.stats.health = this.getAura(guardian_spirit).value();
-          // return;
+          this._stats.health.setValue(400000);
+          return;
         }
         this.alive = false;
         this.events.UNIT_DEATH.dispatch(this);
@@ -266,13 +285,6 @@ export default class Unit {
       return totalAbsorb;
     }
 
-    setHealth(value) {
-        this._stats.health.setValue(value);
-        this.events.UNIT_HEALTH_CHANGE.dispatch(this);
-        // ## TODO ##
-        // - Make sure it doesnt exceed maximum possible health
-        // - Handle overhealing here? or somewhere else
-    }
 
 
 

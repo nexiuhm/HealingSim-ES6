@@ -122,45 +122,47 @@ export default class Raid {
   bossSpike() {
     let tank = this.players[0];
     let offTank = this.players[1];
-    let massiveBlow = rng.between(330000, 340900);
+    let massiveBlow = rng.between(350000, 380900);
 
-    tank.apply("APPLY_DIRECT_DAMAGE", { amount: massiveBlow, type: "physical" });
-    offTank.apply("APPLY_DIRECT_DAMAGE", { amount: massiveBlow/ 2, type: "physical" });
+    tank.applyDamage(massiveBlow, "physical" );
+    offTank.applyDamage(massiveBlow/2, "physical" );
   }
 
   bossSwing() {
     let tank = this.players[0];
     let offTank = this.players[1];
 
-    let bossSwing = rng.between(90000, 115900);
+    let bossSwing = rng.between(110000, 195900);
     let bossSwingCriticalHit = Math.random();
 
     // 20% chance to critt. Experimental.
     if (bossSwingCriticalHit < 0.85)
       bossSwing *= 1.5;
 
-    tank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing, type: "physical" });
-    offTank.apply("APPLY_DIRECT_DAMAGE", { amount: bossSwing/ 2, type: "physical" });
+    tank.applyDamage(bossSwing, "physical" );
+    offTank.applyDamage(bossSwing/2, "physical" );
   }
 
   bossAoEDamage() {
     for (let i = 0; i < this.players.length - 1; i++) {
       let unit = this.players[i];
-      unit.apply("APPLY_DIRECT_DAMAGE", { amount: 170000, type: "fire" });
+      unit.applyDamage(770000, "fire");
     }
   }
 
   raidDamage() {
     let i = rng.between(0, this.players.length - 1);
+    let damageAmount = rng.between(100000, 150000);
     for (; i < this.players.length; i++) {
       let unit = this.players[i];
-      unit.apply("APPLY_DIRECT_DAMAGE", { amount: rng.between(85555, 168900), type: "fire" });
+      unit.applyDamage(damageAmount,"fire");
     }
   }
 
   singleTargetDamage() {
-    let random = rng.between(2, this.players.length - 1);
-    this.players[random].apply("APPLY_DIRECT_DAMAGE", { amount: rng.between(100000, 150000), type: "fire" });
+    let randomPlayer = rng.between(2, this.players.length - 1);
+    let damageAmount = rng.between(100000, 150000);
+    this.players[randomPlayer].applyDamage(damageAmount, "fire");
   }
 
   bossEncounterAdds() {
@@ -178,17 +180,8 @@ export default class Raid {
       if (criticalHeal < 0.8)
         incomingHeal *= 1.5;
 
-      player.setHealth(incomingHeal);
+      player.applyHealing(incomingHeal);
     }
-  }
-
-  applyAbsorb() {
-    let tank = this.players[0];
-    let offTank = this.players[1];
-    //this.player.setAbsorb(game.rnd.between(115, 88900));
-    tank.setHealth(tank.getHealth() + rng.between(10000, 38900));
-
-    // Legge inn AI shields på raidmembers.
   }
 
   gainMana() {
@@ -201,7 +194,6 @@ export default class Raid {
     // --- Create some random damage for testing purposes ----
     let bossSwingInterval = setInterval(this.bossSwing.bind(this), 1600);
     let bossSingelTargetSpell = setInterval(this.singleTargetDamage.bind(this), 60000);
-    let tankSelfHealOrAbsorb = setInterval(this.applyAbsorb.bind(this), 5000);
     let bossTimedDamage = setInterval(this.bossAoEDamage.bind(this), 30000); // Big aoe after 3 minutes, 180000
     let raidAoeDamage = setInterval(this.raidDamage.bind(this), 3000);
     let raidAIHealing = setInterval(this.raidHealing.bind(this), 4000);

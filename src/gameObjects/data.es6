@@ -49,6 +49,10 @@ let keybindings = { // keybinding         // spellbidning
     ACTION_BUTTON_4: {
         key: '4',
         spell: 'power_infusion'
+    },
+    ACTION_BUTTON_5: {
+        key: '5',
+        spell: 'guardian_spirit'
     }
 };
 
@@ -73,32 +77,23 @@ let spelldata = {
 
     },
 
-    healing_surge: {
-        casttime: 1500,
-        resource_cost: 10000,
-        resource_type: "mana",
-        cooldown: 0,
-        name: 'Flash Of Light',
-        id: 3
 
-    },
+        guardian_spirit: {
+            casttime: 0,
+            resource_cost: 10000,
+            resource_type: "mana",
+            cooldown: 25000,
+            name: 'Guardian Spirit',
+            id: "guardian_spirit"
 
-    chain_heal: {
-        casttime: 1620,
-        resource_cost: 10,
-        resource_type: "mana",
-        cooldown: 0,
-        name: 'Chain Heal',
-        id: 4
+        },
 
-
-    },
 
     power_word_shield: {
         casttime: 0,
         resource_cost: 4400,
         resource_type: "mana",
-        cooldown: 6000,
+        cooldown: 1200,
         name: 'Power Word Shield',
         id: "power_word_shield"
     },

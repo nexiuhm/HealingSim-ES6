@@ -35,10 +35,8 @@ export default function UnitFrames($) {
 
   let testBoss = new Boss(4, 4, 100, "Ragnaros", $.events, true);
   setInterval(function() {
-    testBoss.apply("APPLY_DIRECT_DAMAGE",{
-      amount: 18250,
-      type: "physical"
-    }); if(testBoss.getHealth() <= 0) game.state.start("Success");
+    testBoss.applyDamage(18250, "physical");
+    if(testBoss.getHealth() <= 0) game.state.start("Success");
   }, 1200);
 
   let bossFrame = $.newUnitFrame("UIParent", testBoss, 300, 50)

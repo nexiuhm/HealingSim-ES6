@@ -29,11 +29,16 @@ export default class Aura {
     }
   }
 
+  onExpired(callbackFunction) {
+    this._onExpiredCallback = callbackFunction;
+  }
+
   expire() {
     if(this._timer) this._timer.stop();
     this._remaining = 0;
-
-    delete this;
+    if(this._onExpiredCallback) {
+      this._onExpiredCallback();
+    }
   }
 
   remaining() {

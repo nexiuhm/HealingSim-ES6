@@ -10,6 +10,7 @@ export default class Priest extends Player {
 
     init_spells() {
         this._spells = {
+          guardian_spirit: new guardian_spirit(this),
 
             power_infusion: new power_infusion(this),
             clarity_of_will: new clarity_of_will(this),
@@ -31,20 +32,18 @@ class flash_of_light extends SpellBase {
         let ct = super.getCastTime();
         //#### Cast time incresed by 200% if Shaman has Tidal Waves buff #### //
         if (this.player.hasAura("borrowed_time")) {
-            ct *= 0.7;
+            ct *= 0.8;
         }
         return ct;
     }
 
     onExecute() {
-        //this.target.consumeAura("tidal_waves", 1);
         let crit = game.rnd.between(1, 2);
-        this.target.setHealth(this.target.getHealth() + 130000 * crit);
+        this.target.applyHealing(this.target.getHealth() + 130000 * crit);
         if(this.player.hasAura("borrowed_time")) {
           this.player.getAura("borrowed_time").expire();
         }
 
-        console.table(this.player._auras);
     }
 }
 
@@ -59,29 +58,21 @@ class power_word_shield extends SpellBase {
             return false;
         else
             return true;
+
     }
 
     onExecute() {
 
 
-        // Note. this is work-in-progress, atm it has no effect.
-        this.target.apply("APPLY_AURA_BLANK", {
-            name: "weakened_soul",
-            duration: 15000 // how long until the aura/buff expires in ms
-        });
 
-        this.player.apply("APPLY_AURA_BLANK", {
-            name: "borrowed_time",
-            duration: 6000 // how long until the aura/buff expires in ms
-        });
+        // Apply borrowed time ( incresed cast speed on next healing spell ) to casting player.
+        this.player.applyAura("borrowed_time", undefined, 6000, undefined, this.player, {unique: true});
 
-        this.target.apply("APPLY_AURA_ABSORB", {
-            name: "Power word: Shield",
-            value: 190000, // if value goes to <0 aura should we removed
-            spell: this.spellid, // so that the aura is associated with a spell
-            duration: 15000, // how long until the aura/buff expires in ms
-            type: "absorb"
-        });
+        // Apply absorb and weakened soul debuff to target
+        this.target.applyAura("Power word: Shield", "absorb", 15000, 280000, this.player, {unique: true});
+        this.target.applyAura("weakened_soul", undefined, 15000, undefined, this.player, {unique: true});
+
+
     }
 }
 
@@ -103,14 +94,21 @@ class clarity_of_will extends SpellBase {
     }
 
     onExecute() {
-        let crit = game.rnd.between(1, 2);
-        this.target.apply("APPLY_AURA_ABSORB", {
-            name: "Clairy Of Will",
-            value: 190000, // if value goes to <0 aura should we removed
-            spell: this.spellid, // so that the aura is associated with a spell
-            duration: 15000, // how long until the aura/buff expires in ms
-            type: "absorb"
-        });
+      this.target.applyAura("clarity_of_will", "absorb", 15000, 200000, this.player);
+
+    }
+
+}
+
+
+class guardian_spirit extends SpellBase {
+    constructor(player) {
+        super(data.getSpellData('guardian_spirit'), player);
+    }
+
+    onExecute() {
+      this.target.applyAura("guardian_spirit", undefined, 15000, undefined, this.player);
+
     }
 
 }
