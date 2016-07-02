@@ -78,7 +78,7 @@ export default class Unit {
 
 
     applyDamage(amount, type, source) {
-
+      if(!this.alive) return;
       this._stats.health.setValue(this._stats.health.getValue() - this.assessDamageTaken(amount) );
       this.events.UNIT_HEALTH_CHANGE.dispatch(this);
 
@@ -86,7 +86,7 @@ export default class Unit {
 
 
     applyHealing(value) {
-
+      if(!this.alive) return;
       // Check modifiers --- to buff healing recived etc
       this._stats.health.setValue(value);
       this.events.UNIT_HEALTH_CHANGE.dispatch(this);
@@ -94,6 +94,7 @@ export default class Unit {
     }
 
     applyAura(name, type, duration, value, source, flags) {
+        if(!this.alive) return;
 
         // Check if the aura contains special "flags". F.ex some auras can only exist one instance of. Most hots etc cant be applied twice etc
         if(flags) {
@@ -122,16 +123,19 @@ export default class Unit {
           this.events.UNIT_ABSORB.dispatch(this);
         }
 
-        this.events.AURA_APPLIED.dispatch(this);
+        this.events.AURA_APPLIED.dispatch(this, name);
 
 
     }
 
     removeAura(aura) {
       // Find & remove aura
+
       for(let i = 0; i < this._auras.length; i++) {
          if(aura.id === this._auras[i].id) {
            this._auras.splice(i, 1);
+           this.events.AURA_REMOVED.dispatch(this, aura.name);
+
            return;
          }
       }

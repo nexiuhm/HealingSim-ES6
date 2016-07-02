@@ -1,6 +1,9 @@
+
+import {createUniqueID} from "../util";
+
 export default class Aura {
   constructor(duration, type, value, source) {
-    this._id = 0; // generate unique id
+    this._id = createUniqueID();
     this.source = source;
     this.name = source;
     this._remaining = duration;

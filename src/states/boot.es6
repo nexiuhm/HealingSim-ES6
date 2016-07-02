@@ -35,12 +35,14 @@ export default class Boot {
     this.game.load.image("power_word_shield",
       "./assets/icons/spell_holy_powerwordshield.jpg");
 
-    // Spell icons
+    // Spell icons //////////////////
     this.game.load.image("power_infusion", "./assets/icons/power_infusion.jpg");
     this.game.load.image("power_word_shield","./assets/icons/spell_holy_powerwordshield.jpg");
     this.game.load.image("clarity_of_will", "./assets/icons/ability_priest_clarityofwill.jpg");
     this.game.load.image("flash_of_light", "./assets/icons/spell_holy_flashheal.jpg");
+    this.game.load.image("guardian_spirit", "./assets/icons/spell_holy_guardianspirit.jpg");
 
+    //////////////////////////////////
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
     this.game.load.image("icon_normal","./assets/icons/icon_normal.png");
