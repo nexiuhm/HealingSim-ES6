@@ -31,20 +31,7 @@ export function printPrettyError(errorReason, error) {
    return uid;
  }
 
-export function arg(f) {
-  if (typeof f !== "function")
-    throw new TypeError("Argument needs to a function");
 
-  var slice = Array.prototype.slice,
-    args = slice.call(arguments),
-    fn = f,
-    partial = function() {
-      return fn.apply(this, args.concat(slice.call(arguments)));
-
-    };
-
-  return partial;
-}
 
 /**
  * Freeze an object so that no changes can be made to it. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze

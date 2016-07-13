@@ -36,7 +36,7 @@ export default class MainMenu {
                 y: 250
             },
             options: {
-                priest: { icon: 'icon_placeholder', value: 'priest' },
+                priest: { icon: 'icon_priest', value: 'priest' },
                 paladin: { icon: 'icon_placeholder', value: 'paladin' },
                 shaman: { icon: 'icon_placeholder', value: 'shaman'},
                 druid: {icon: 'icon_placeholder' , value: 'druid'}

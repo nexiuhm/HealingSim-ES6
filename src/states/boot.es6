@@ -43,11 +43,16 @@ export default class Boot {
     this.game.load.image("guardian_spirit", "./assets/icons/spell_holy_guardianspirit.jpg");
 
     //////////////////////////////////
-    this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
-      "./assets/fonts/font.xml");
+    // Menu icons
     this.game.load.image("icon_normal","./assets/icons/icon_normal.png");
     this.game.load.image("icon_heroic","./assets/icons/icon_heroic.png");
+    this.game.load.image("icon_priest","./assets/icons/icon_priest.png");
+
     this.game.load.image("icon_placeholder","./assets/icons/icon_placeholder.png");
+    
+    this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
+      "./assets/fonts/font.xml");
+
     this.game.load.image("menu_bg","./assets/textures/menu_bg.png");
 
     this.game.load.image("game_logo", "./assets/icons/temp_gamelogo.png");

@@ -1,17 +1,13 @@
 ﻿
-import {
-  freezeObject
-}
-from "./util";
 
-const stat_e = freezeObject({
+const stat_e = Object.freeze({
   "STRENGHT": 0,
   "AGILITY": 1,
   "STAMINA": 2,
   "INTELLECT": 3,
   "SPIRIT": 4
 });
-const class_e = freezeObject({
+const class_e = Object.freeze({
   "WARRIOR": 0,
   "PALADIN": 1,
   "HUNTER": 2,
@@ -24,7 +20,7 @@ const class_e = freezeObject({
   "MONK": 9,
   "DRUID": 10
 });
-const race_e = freezeObject({
+const race_e = Object.freeze({
   "RACE_NONE": 0,
   "RACE_BEAST": 1,
   "RACE_DRAGONKIN": 2,
@@ -51,7 +47,7 @@ const race_e = freezeObject({
   "RACE_UNKNOWN": 23
 });
 
-const combat_rating_e = freezeObject({
+const combat_rating_e = Object.freeze({
   "RATING_MOD_DODGE": 0,
   "RATING_MOD_PARRY": 1,
   "RATING_MOD_HIT_MELEE": 2,
@@ -80,20 +76,20 @@ const combat_rating_e = freezeObject({
 
 
 
-const player_class = freezeObject({
+const player_class = Object.freeze({
   "MIN": 0,
   "MAX": 10
 });
-const player_level = freezeObject({
+const player_level = Object.freeze({
   "MIN": 1,
   "MAX": 100
 });
-const player_race = freezeObject({
+const player_race = Object.freeze({
   "MIN": 7,
   "MAX": 21
 });
 
-const raid_size = freezeObject({
+const raid_size = Object.freeze({
   "TENMAN": 10,
   "GROUP": 5,
   "TWENTYFIVEMAN": 25
