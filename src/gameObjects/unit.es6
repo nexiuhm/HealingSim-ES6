@@ -34,7 +34,7 @@ export default class Unit {
          * @private
          * @protected
          */
-        this._auras = new Array();
+        this._auras = [];
 
          /**
          * _auras Spell storage for the unit
@@ -59,7 +59,7 @@ export default class Unit {
         /* Health                    Min value -- Max value */
         this._stats.health = new Stat(   0,        600000);
         // Stat will use this callback when it has reached its minimum value
-        this._stats.health.onMinValue = () => { this.die() };
+        this._stats.health.onMinValue = () => { this.die(); };
 
         /* Mana */
         this._stats.mana = new Stat(0,200000);
