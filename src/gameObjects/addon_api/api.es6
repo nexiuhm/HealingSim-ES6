@@ -3,7 +3,7 @@ import StatusBar from "./status_bar";
 import UnitFrame from "./unit_frame";
 import StatusIcon from "./status_icon";
 
-let game, player, raid, state;
+let game, player, raid, boss, state;
 
 function setTarget(unit) {
   player.setTarget(unit);
@@ -17,16 +17,18 @@ function localPlayer() {
   return player;
 }
 
-function getSpells() {
-
-  return player.getSpellList();
-
+function getBoss() {
+  return boss;
 }
+
+function getSpells() {
+  return player.getSpellList();
+}
+
 function newFrame(parent) {
   if (parent === "UIParent") {
     parent = state.UIParent ? state.UIParent : state.world;
   }
-
   return new Frame(parent);
 }
 
@@ -34,9 +36,7 @@ function newUnitFrame(parent, unit, width, height) {
   if (parent === "UIParent") {
     parent = state.UIParent ? state.UIParent : state.world;
   }
-
   return new UnitFrame(parent, unit, width, height, state.events);
-
 }
 
 function newStatusBar(parent, width, height) {
@@ -44,7 +44,6 @@ function newStatusBar(parent, width, height) {
     parent = state.UIParent ? state.UIParent : state.world;
   }
   return new StatusBar(parent, width, height);
-
 }
 
 function newStatusIcon(parent, spellid) {
@@ -52,7 +51,6 @@ function newStatusIcon(parent, spellid) {
     parent = state.UIParent ? state.UIParent : state.world;
   }
   return new StatusIcon(parent, spellid, state.events);
-
 }
 
 /**
@@ -70,12 +68,14 @@ export function init(_state) {
   game = _state.game;
   player = _state.player;
   raid = _state.raid;
+  boss = _state.boss;
   state = _state;
 
   let api = {
     "getGroupMembers": getGroupMembers,
     "localPlayer": localPlayer,
     "setTarget": setTarget,
+    "getBoss": getBoss,
     "newFrame": newFrame,
     "newUnitFrame": newUnitFrame,
     "newStatusIcon": newStatusIcon,
@@ -85,7 +85,5 @@ export function init(_state) {
   };
 
   //api.freeze; // Might aswell freeze the object cause it should never change.
-
   return api;
-
 }
