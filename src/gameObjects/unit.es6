@@ -111,11 +111,13 @@ export default class Unit {
 
         }
 
+        // Create aura object for the new aura to be applied
         let aura = new Aura(duration, type, value, name);
 
         // Make sure the aura array is cleaned up after an aura expires.
         aura.onExpired( () => { this.removeAura(aura); } );
-        // Add aura to aura array.
+
+        // Add aura to the units aura array.
         this._auras.push(aura);
 
         // Dispatch events
@@ -135,7 +137,6 @@ export default class Unit {
          if(aura.id === this._auras[i].id) {
            this._auras.splice(i, 1);
            this.events.AURA_REMOVED.dispatch(this, aura.name);
-
            return;
          }
       }

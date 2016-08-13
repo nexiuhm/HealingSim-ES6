@@ -26,7 +26,7 @@ export default class MainMenu {
         };
 
         // ################################################
-        // ####### EPlayer class selection panel #########
+        // ####### Player class selection panel #########
         // ################################################
 
         createOptionPanel ({

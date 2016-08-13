@@ -24,16 +24,13 @@ export default class Boot {
     this.game.load.video('win', './assets/win.mp4');
     this.game.load.image("MenuScreenText", "./assets/menu_state_text.png");
     this.game.load.image("MenuScreenConcept", "./assets/concept_for_menu_state.png");
-    this.game.load.image("MenuScreenBackground",
-      "./assets/textures/bg_texture.png");
+    this.game.load.image("MenuScreenBackground", "./assets/textures/bg_texture.png");
     this.game.load.image("castbar_texture", "./assets/textures/BantoBar.png");
     this.game.load.image("castbar_texture2", "./assets/textures/LiteStep.png");
-    this.game.load.image("ab_texture",
-      "./assets/textures/action_bar_texture.png");
+    this.game.load.image("ab_texture", "./assets/textures/action_bar_texture.png");
     this.game.load.image("elite", "./assets/textures/elite_texture.png");
     this.game.load.image("bg", "./assets/play_state_background.png");
-    this.game.load.image("power_word_shield",
-      "./assets/icons/spell_holy_powerwordshield.jpg");
+    this.game.load.image("power_word_shield", "./assets/icons/spell_holy_powerwordshield.jpg");
 
     // Spell icons //////////////////
     this.game.load.image("power_infusion", "./assets/icons/power_infusion.jpg");
@@ -42,29 +39,21 @@ export default class Boot {
     this.game.load.image("flash_of_light", "./assets/icons/spell_holy_flashheal.jpg");
     this.game.load.image("guardian_spirit", "./assets/icons/spell_holy_guardianspirit.jpg");
 
-    //////////////////////////////////
-    // Menu icons
+    // Menu assets ///////////////////////
     this.game.load.image("icon_normal","./assets/icons/icon_normal.png");
     this.game.load.image("icon_heroic","./assets/icons/icon_heroic.png");
     this.game.load.image("icon_priest","./assets/icons/icon_priest.png");
-
     this.game.load.image("icon_placeholder","./assets/icons/icon_placeholder.png");
-    
-    this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
-      "./assets/fonts/font.xml");
-
+    this.game.load.image("play_button", "./assets/play_button.png");
     this.game.load.image("menu_bg","./assets/textures/menu_bg.png");
-
-    this.game.load.image("game_logo", "./assets/icons/temp_gamelogo.png");
     this.game.load.audio("menu_select_sound", "./assets/sounds/menu_selection_sound.mp3");
     this.game.load.audio("enter_world", "./assets/sounds/enter_world.mp3");
+    this.game.load.image("game_logo", "./assets/icons/temp_gamelogo.png");
     this.game.load.image("temp_featured", "./assets/icons/temp_featured.png");
     this.game.load.image("heal_particle", "./assets/textures/heal_particle.png");
 
-
-
-    // Menu screen assets
-    this.game.load.image("play_button", "./assets/play_button.png");
+    // Fonts ///////////////////////////
+    this.game.load.bitmapFont("myriad", "./assets/fonts/font.png", "./assets/fonts/font.xml");
   }
 
   onWindowResize(data) {

@@ -10,8 +10,7 @@ export default class Priest extends Player {
 
     init_spells() {
         this._spells = {
-          guardian_spirit: new guardian_spirit(this),
-
+            guardian_spirit: new guardian_spirit(this),
             power_infusion: new power_infusion(this),
             clarity_of_will: new clarity_of_will(this),
             power_word_shield: new power_word_shield(this),
@@ -62,8 +61,6 @@ class power_word_shield extends SpellBase {
     }
 
     onExecute() {
-
-
 
         // Apply borrowed time ( incresed cast speed on next healing spell ) to casting player.
         this.player.applyAura("borrowed_time", undefined, 6000, undefined, this.player, {unique: true});
