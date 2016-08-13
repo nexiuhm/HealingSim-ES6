@@ -13,13 +13,32 @@ export default function ActionBar($) {
 
     // Get a list of all spells avaiable to the player class
     let playerSpells = $.getSpells();
-    console.table(playerSpells);
     // Create a new action button for every spell in the array
     for ( let i = 0 ; i < playerSpells.length; i++ ) {
-          $.newStatusIcon("UIParent", playerSpells[i])
+          let statusIcon = $.newStatusIcon("UIParent", playerSpells[i])
           .setPos(game.world.centerX - (config.actionButtonSize/2) - (300 + (i * (config.actionButtonSize + 1))), game.world.centerY - (50/2) + 350);
 
+          $.events.ON_COOLDOWN_START.add((e) => _onCooldownStart(e));
+          $.events.ON_COOLDOWN_ENDED.add((e) => _onCooldownEnded(e));
+
+
+          _onCooldownStart(e) {
+            if(e.spellid != statusIcon.spellid) return;
+            statusIcon.start(e.duration);
+          }
+
+          _onCooldownEnded(e) {
+            if(e.spellid != statusIcon.spellid) return;
+            statusIcon.start(e.duration);
+          }
+
     }
+
+    newActionButton(){
+
+    }
+
+
 
     // Todo - make it clearer, its looks very unreadable atm
 
