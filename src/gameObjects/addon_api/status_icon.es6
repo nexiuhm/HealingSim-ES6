@@ -6,20 +6,20 @@ import Frame from "./frame";
  */
 export default class StatusIcon extends Frame {
 
-  constructor(parent, spellid, events) {
+  constructor(parent, spellid,  _events ) {
     super(parent);
     this.spellid = spellid;
-    this._events = events;
-
-    // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference.
+    // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference to the main game loop.
     this.cooldownOverlayAngle = {
-      current: -90
+      value: -90
     };
 
+    // Start and end angles for the clock overlay.
+    this.startAngle = -90;
+    this.endAngle = 270;
+
     // Spell icon
-    this.spellIcon = new Phaser.Image(game, 0, 0, spellid);
-    this.spellIcon.width = 50;
-    this.spellIcon.height = 50;
+    this.icon = null;
 
     // Alpha mask for cooldown overlay
     let mask = new Phaser.Graphics(game, 0, 0);
@@ -38,37 +38,43 @@ export default class StatusIcon extends Frame {
     this.addChild(this.spellIcon);
     this.addChild(this.cd_overlay);
 
+
+
     // listen to cooldown start event
-    this._events.ON_COOLDOWN_START.add((e) => this._onCooldownStart(e));
-    this._events.ON_COOLDOWN_ENDED.add((e) => this._onCooldownEnded(e));
+
   }
 
-  _onCooldownStart(event) {
+  // Public
 
-    // The event is fired every time a spell cooldown starts, so we need to check if its the correct spell.
-    if (event.spellid != this.spellid)
-      return;
-    // Create a timer that updates a letiable locally.
-    this.cd_overlay.alpha = 0.8;
-    this.animTween = game.add.tween(this.cooldownOverlayAngle).to({
-      current: 270
-    }, event.cooldownLenght, undefined, true);
-    // Start cooldown counter over icon
+  start(duration) {
+    _onDurationStart(duration);
+  }
+
+  end() {
+      _onDurationEnded();
+  }
+
+  _onDurationStart(duration) {
+    // Prep
+    this.cooldownOverlayAngle.value = this.startAngle;
+    this.cd_overlay.visible = true;
+
+    // This tween updates the cooldownOverlayAngle variable that the cooldown arc is drawn from.
+    this.animationTimer = game.add.tween(this.cooldownOverlayAngle).to({
+      value: this.endAngle;
+    }, duration, undefined, true);
 
     // Hook the update cooldown arc to the main loop
     this._events.GAME_LOOP_UPDATE.add(() => this._updateCooldownArc());
 
   }
 
-  _onCooldownEnded(event) {
+  _onDurationEnded() {
 
-    if (event.spellid != this.spellid)
-      return;
     //this.hook.remove();
     // #TODO## Remove hook from game loop
-    this.cd_overlay.alpha = 0;
-    this.animTween.stop();
-    this.cooldownOverlayAngle.current = -90;
+    this.cd_overlay.visible = false;
+    this.animationTimer.stop();
     this.cd_overlay.clear();
 
   }
@@ -78,7 +84,7 @@ export default class StatusIcon extends Frame {
     this.cd_overlay.clear();
     this.cd_overlay.beginFill(0x323232);
     this.cd_overlay.arc(25, 25, 50, Phaser.Math.degToRad(270), Phaser.Math.degToRad(
-      this.cooldownOverlayAngle.current), true);
+      this.cooldownOverlayAngle.value), true);
     this.cd_overlay.endFill();
     // clear
     // redraw based on new values
