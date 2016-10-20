@@ -3,7 +3,6 @@ import Raid from "../gameObjects/raid";
 import * as e from "../enums";
 import * as data from "../gameObjects/data";
 
-
 export default class Play {
 
   init(config) {
@@ -12,6 +11,17 @@ export default class Play {
   }
 
   create() {
+    /*
+      1. Sett opp backendverden(rename raid), som håndtere alle objekter i spillet
+      2. Gi encounter(boss), raid, player til backendverden
+      3. Rendre frontend av backendverden(Legge opp til signalhåndtering)
+      4. Trigge enounter for å starte spillet med countdown(dbmpull)
+      5. Frontend kjenner kun til events som emitta(Phaser.signal)
+      6. Når boss er død, trigger success etter 10 sek og finish sound(UI for at
+         du vant før success state)
+
+      SIDE-NOTE: Spells eneste måten å interacte mellom objekter
+    */
 
     // Start the world fade-in effect
     this.world.alpha = 0;
