@@ -1,5 +1,10 @@
 import Unit from "./unit";
+import SpellBase from "./spell_base";
+/*
 
+Base class to create bosses from
+
+*/
 
 export default class Boss extends Unit {
   constructor(_class, race, level, name, events) {
@@ -24,4 +29,29 @@ export default class Boss extends Unit {
   // Add summonAdds
     // Add functionality for boss to summon add. Consider to add this to unit
     // since there are classes who summon things that heal.
+
+    // Add Scripted AI to control the bosses actions.
+    bindActionRoutine(callbackFunction) {
+
+      this.actionRoutine = callbackFunction;
+
+    }
+    // This function gets called on every game update. And executes the assigned boss AI function above.
+    doAction() {
+      if(this.actionRoutine) {
+        this.actionRoutine.call(this);
+      }
+      else return;
+    }
+}
+
+class melee_swing extends SpellBase {
+    constructor(spelldata, unit) {
+      super(spelldata,unit);
+      this.targetMechanism = "highest_threat"
+
+    }
+
+
+
 }
