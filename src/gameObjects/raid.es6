@@ -1,7 +1,7 @@
 ﻿
 import * as e from "../enums";
 import Player from "./player";
-import Priest from "./class_modules/priest";
+import Priest from "./units/priest";
 import * as data from "./data";
 import {
   rng
