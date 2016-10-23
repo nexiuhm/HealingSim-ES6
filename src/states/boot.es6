@@ -70,8 +70,8 @@ export default class Boot {
     this.game.scale.onSizeChange.add((data) => this.onWindowResize(data));
 
     // Phaser config
-    this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu
-    this.game.tweens.frameBased = true;
+    //this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu
+    this.game.tweens.frameBased = false;
     // Register games-states
     this.game.state.add("MainMenu", menuState);
     this.game.state.add("Play", playState);
@@ -81,7 +81,7 @@ export default class Boot {
     game.addons.add("Cast Bar 0.1", castFrame);
     game.addons.add("Raid Frames 0.1", raidFrames);
     game.addons.add("Unit Frames 0.1", unitFrames);
-    game.addons.add("Debug", debugAddon);
+    //game.addons.add("Debug", debugAddon);
     game.addons.add("BossTimers", bossTimers);
     game.addons.add("Action Bar", actionBar);
 

@@ -22,21 +22,18 @@ export default function ActionBar($) {
           $.events.ON_COOLDOWN_ENDED.add((e) => _onCooldownEnded(e));
 
 
-          _onCooldownStart(e) {
+          function _onCooldownStart(e) {
             if(e.spellid != statusIcon.spellid) return;
             statusIcon.start(e.duration);
           }
 
-          _onCooldownEnded(e) {
+          function _onCooldownEnded(e) {
             if(e.spellid != statusIcon.spellid) return;
             statusIcon.start(e.duration);
           }
 
     }
 
-    newActionButton(){
-
-    }
 
 
 

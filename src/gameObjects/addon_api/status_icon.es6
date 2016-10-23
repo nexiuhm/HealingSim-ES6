@@ -6,9 +6,10 @@ import Frame from "./frame";
  */
 export default class StatusIcon extends Frame {
 
-  constructor(parent, spellid,  _events ) {
+  constructor(parent, spellid, _events ) {
     super(parent);
     this.spellid = spellid;
+    this._events = _events;
     // Value used to draw the clock overlay. Its an object since it needs to be passed as a reference to the main game loop.
     this.cooldownOverlayAngle = {
       value: -90
@@ -19,7 +20,7 @@ export default class StatusIcon extends Frame {
     this.endAngle = 270;
 
     // Spell icon
-    this.icon = null;
+    //this.icon = null;
 
     // Alpha mask for cooldown overlay
     let mask = new Phaser.Graphics(game, 0, 0);
@@ -35,7 +36,7 @@ export default class StatusIcon extends Frame {
 
     // adding displayObjects to the parent container
     this.addChild(mask);
-    this.addChild(this.spellIcon);
+    //this.addChild(this.spellIcon);
     this.addChild(this.cd_overlay);
 
 
@@ -47,11 +48,11 @@ export default class StatusIcon extends Frame {
   // Public
 
   start(duration) {
-    _onDurationStart(duration);
+    this._onDurationStart(duration);
   }
 
   end() {
-      _onDurationEnded();
+      this._onDurationEnded();
   }
 
   _onDurationStart(duration) {
@@ -61,7 +62,7 @@ export default class StatusIcon extends Frame {
 
     // This tween updates the cooldownOverlayAngle variable that the cooldown arc is drawn from.
     this.animationTimer = game.add.tween(this.cooldownOverlayAngle).to({
-      value: this.endAngle;
+      value: this.endAngle
     }, duration, undefined, true);
 
     // Hook the update cooldown arc to the main loop

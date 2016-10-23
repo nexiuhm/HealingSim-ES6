@@ -1,4 +1,3 @@
-import EventManager from "../gameObjects/eventManager";
 import Raid from "../gameObjects/raid";
 import * as e from "../enums";
 import * as data from "../gameObjects/data";
@@ -18,13 +17,15 @@ export default class Play {
       alpha: 1
     }, 4000, Phaser.Easing.Cubic.InOut, true);
 
+
+
     // Add a background
     this.game.add.image(this.game.stage.x, this.game.stage.y, "bg");
 
+    this.initSignals();
     // Add Ui parent container, all addon displayObject hooks to this.
     this.UIParent = this.add.group(this.world);
 
-    this.events = new EventManager();
     this.raid = new Raid(this);
 
     // Set raid size
@@ -69,11 +70,11 @@ export default class Play {
      this.events = {
        GAME_LOOP_UPDATE: new Phaser.Signal(),
        TARGET_CHANGE_EVENT: new Phaser.Signal(),
-       UNIT_HEALTH_CHANGE: = new Phaser.Signal(),
+       UNIT_HEALTH_CHANGE: new Phaser.Signal(),
        UNIT_ABSORB: new Phaser.Signal(),
        UNIT_STARTS_SPELLCAST: new Phaser.Signal(),
-       NIT_FINISH_SPELLCAST: new Phaser.Signal(),
-       UNIT_CANCEL_SPELLCAST: = new Phaser.Signal(),
+       UNIT_FINISH_SPELLCAST: new Phaser.Signal(),
+       UNIT_CANCEL_SPELLCAST: new Phaser.Signal(),
        UI_ERROR_MESSAGE: new Phaser.Signal(),
        UNIT_DEATH: new Phaser.Signal(),
        GAME_LOOP_RENDER: new Phaser.Signal(),
