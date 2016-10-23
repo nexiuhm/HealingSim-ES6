@@ -49,7 +49,7 @@ export default class Boot {
     this.game.load.image("icon_priest","./assets/icons/icon_priest.png");
 
     this.game.load.image("icon_placeholder","./assets/icons/icon_placeholder.png");
-    
+
     this.game.load.bitmapFont("myriad", "./assets/fonts/font.png",
       "./assets/fonts/font.xml");
 
@@ -82,7 +82,7 @@ export default class Boot {
 
     // Phaser config
     this.game.time.advancedTiming = true; // REMOVE WHEN DONE - takes some cpu
-    this.game.tweens.frameBased = true;
+    this.game.tweens.frameBased = false;
     // Register games-states
     this.game.state.add("MainMenu", menuState);
     this.game.state.add("Play", playState);
