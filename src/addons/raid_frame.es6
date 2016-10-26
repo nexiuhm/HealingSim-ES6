@@ -39,9 +39,18 @@ export default function RaidFrame($) {
         if (unit === $.localPlayer()) {
           unitFrame.togglePowerBar();
         }
+
         unitFrame.events.onInputDown.add(() => {
           $.localPlayer().setTarget(unitFrame.unit);
         });
+
+        /* Mouse over healing
+
+        unitFrame.events.onInputOver.add(() => {
+          $.localPlayer().setTarget(unitFrame.unit);
+        });
+
+        */
 
         // add to the array
         unitFrames.push(unitFrame);
