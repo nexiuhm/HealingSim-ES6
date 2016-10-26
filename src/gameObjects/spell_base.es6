@@ -114,7 +114,7 @@ export default class SpellBase {
 
     use() {
 
-        // Save the target beeing casted on
+        // TODO instead of the current target there should be many more ways of deciding targets for the spell.
         this.target = this.player.target;
 
         // Check if there are any rules that makes the spell unable to be used.

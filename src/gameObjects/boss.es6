@@ -9,49 +9,44 @@ Base class to create bosses from
 export default class Boss extends Unit {
   constructor(_class, race, level, name, events) {
     super(_class, race, level, name, events);
+
+    this.isEnemy = true;
+    this.phase = null;
+    this.isEngaged = false;
+     // Creates a Phaser.Timer http://phaser.io/docs/2.6.2/Phaser.Timer.html
+    this._timers = game.time.create(false);
+
+
   }
 
-  // Add bossSwing
-    // Needs to hit a certain range. Thinking of melee camp.
-    // Collect code from raid object and refactor to fit here.
-
-  // Add bossSingelTargetSpell
-    // Hits random targets. Have to be decided on range to target to prepare for
-    // unique mechanics.
-    // Collect code from raid object and refactor to fit here.
-
-  // raidAoeDamage
-    // Hits everyone, or a group related to each on range. This needs to be ready
-    // for unique spells that needs to hit a group of ppl.
-    // Collect code from raid object and refactor to fit here.
-
-
-  // Add summonAdds
-    // Add functionality for boss to summon add. Consider to add this to unit
-    // since there are classes who summon things that heal.
-
-    // Add Scripted AI to control the bosses actions.
-    bindActionRoutine(callbackFunction) {
-
-      this.actionRoutine = callbackFunction;
-
+  engage() {
+    if(!this.isEngaged) {
+      this._timers.start();
+      this.isEngaged = true;
     }
-    // This function gets called on every game update. And executes the assigned boss AI function above.
-    doAction() {
-      if(this.actionRoutine) {
-        this.actionRoutine.call(this);
-      }
-      else return;
-    }
+  }
+  // Clear all pending actions, usually needed if there is a phase change.
+  clearActions () {
+     this._timers.removeAll();
+  }
+
+  debug_timeSinceEngage() {
+     return (this._timers.ms + " ms / " + this._timers.ms * 0.001 + " sec")
+  }
+
+
+  scheduleAction(spellId, milliseconds) {
+    // Add a new looping event to the timer container object.
+    this._timers.loop( milliseconds, () => { console.log("Dbg - Boss castng spell: " + spellId + "  . \n Time since engage  " + this.debug_timeSinceEngage() ); } );
+
+  }
 }
 
+/*
 class melee_swing extends SpellBase {
     constructor(spelldata, unit) {
       super(spelldata,unit);
-      this.targetMechanism = "highest_threat"
-
+      this.targetMechanism = "highest_threat";
+      this.requiresPhase = 2;
     }
-
-
-
-}
+}*/
