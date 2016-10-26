@@ -10,8 +10,7 @@ export default class Priest extends Player {
 
     init_spells() {
         this._spells = {
-          guardian_spirit: new guardian_spirit(this),
-
+            guardian_spirit: new guardian_spirit(this),
             power_infusion: new power_infusion(this),
             clarity_of_will: new clarity_of_will(this),
             power_word_shield: new power_word_shield(this),

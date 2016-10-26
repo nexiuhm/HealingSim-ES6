@@ -5,8 +5,23 @@ import * as data from "../gameObjects/data";
 export default class Play {
 
   init(config) {
-    console.log(config);
+    // Save the options set in the menu.
     this.config = config;
+
+    // Set-up the signals used to trigger changes in the user interface etc.
+    this.initSignals();
+
+    // Create game world ( TODO rename )
+    this.raid = new Raid(this);
+
+    // Create NPC's for the group
+    this.raid.setRaidSize(e.raid_size.TENMAN);
+    this.raid.generateTestPlayers();
+
+    // Add the playable unit to the game world
+    this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF, 100, this.config.playerName);
+    this.raid.addPlayer(this.player);
+
   }
 
   create() {
@@ -19,9 +34,8 @@ export default class Play {
       6. Når boss er død, trigger success etter 10 sek og finish sound(UI for at
          du vant før success state)
 
-      SIDE-NOTE: Spells eneste måten å interacte mellom objekter
+      SIDE-NOTE: Spells eneste måten å interacte mellom unit objekter
     */
-
     // Start the world fade-in effect
     this.world.alpha = 0;
     this.add.tween(this.world).to({
@@ -31,26 +45,13 @@ export default class Play {
     // Add a background
     this.game.add.image(this.game.stage.x, this.game.stage.y, "bg");
 
-    // Add Ui parent container, all addon displayObject hooks to this.
+    // Add Ui parent container, all addon/modules use this a parent container. TODO Probably not needed ? (world can be the parent)
     this.UIParent = this.add.group(this.world);
 
-    // Set-up the signals used to trigger changes in the user interface etc.
-    this.initSignals();
-    this.raid = new Raid(this);
-
-    // Set raid size
-    this.raid.setRaidSize(e.raid_size.TWENTYFIVEMAN);
-
-    // Init player. ## TODO ##: Use data from selection screen. See Phaser documentation for sending args between states?
-    this.player = this.raid.createUnit(e.class_e.PRIEST, e.race_e.RACE_BLOOD_ELF,
-      100, this.config.playerName);
-    this.raid.generateTestPlayers();
-    this.raid.addPlayer(this.player);
-
-    // Load enabled addons
+    // Load enabled addons. TODO possible rename to modules for clarity ?
     this.game.addons.loadEnabledAddons(this);
 
-    // Start the boss/healing simulator
+    // Start the boss/healing simulator.
     this.raid.startTestDamage();
   }
 

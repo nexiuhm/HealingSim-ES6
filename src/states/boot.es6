@@ -92,7 +92,7 @@ export default class Boot {
     game.addons.add("Cast Bar 0.1", castFrame);
     game.addons.add("Raid Frames 0.1", raidFrames);
     game.addons.add("Unit Frames 0.1", unitFrames);
-    game.addons.add("Debug", debugAddon);
+    //game.addons.add("Debug", debugAddon);
     game.addons.add("BossTimers", bossTimers);
     game.addons.add("Action Bar", actionBar);
 
