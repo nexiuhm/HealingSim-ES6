@@ -17,6 +17,7 @@ npm install
 
 #####Start the watcher & local test server
 ```
+npm run dev
 ```
 - Whenever you make changes to the files it will automatically compile and refresh the browser window.
 
