@@ -1,3 +1,5 @@
+import Fabrique from 'phaser-input';
+
 export default class MainMenu {
 
     create() {

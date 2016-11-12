@@ -1,6 +1,9 @@
 import menuState from "./menu";
 import playState from "./play";
 import successState from "./success";
+
+import Fabrique from 'phaser-input';
+
 /**
  * TODO: Import addons dynamically. This can't be done with the import statement since its only used for static analysis. Check out System.Import()
  * Low priority
@@ -59,7 +62,7 @@ export default class Boot {
     this.game.load.audio("menu_select_sound", "./assets/sounds/menu_selection_sound.mp3");
     this.game.load.audio("enter_world", "./assets/sounds/enter_world.mp3");
     this.game.load.image("temp_featured", "./assets/icons/temp_featured.png");
-    this.game.load.image("heal_particle", "./assets/textures/heal_particle.png");
+    this.game.load.image("heal_particle", "./assets/textures/blue_particle.png");
 
 
 

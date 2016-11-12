@@ -1,6 +1,8 @@
-﻿
-import Boot from './states/boot';
-import AddonManager from './gameObjects/addonManager';
+import 'pixi'
+import 'p2'
+import Phaser from 'phaser'
+import Boot from './states/boot'
+import AddonManager from './gameObjects/addonManager'
 /**
  * Adding some extra functionality to the Phaser game engine
  * Adds the ability to load "addons", and a different way to handle keyboard input
