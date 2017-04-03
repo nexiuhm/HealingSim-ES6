@@ -21,7 +21,5 @@
   },
 
   "dependencies": {
-    "phaser": "2.6.0",
-    "phaser-input": "1.2.5"
   }
 }
